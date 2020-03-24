@@ -76,7 +76,7 @@ if (isAntDesignProPreview) {
 
 export default {
   plugins,
-  hash: true,
+  hash: false,
   targets: {
     ie: 11,
   },
@@ -189,8 +189,10 @@ export default {
     },
   },
   manifest: {
-    basePath: '/',
+    basePath: '/admin',
   },
+  base: '/admin/',
+  publicPath: '/admin/',
   proxy: proxy[REACT_APP_ENV || 'dev'],
   chainWebpack: webpackPlugin,
 };
