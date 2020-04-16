@@ -1,4 +1,5 @@
-import request from '@/utils/request';
+import request from '@/services/request';
+
 export async function queryRule(params) {
   return request('/api/rule', {
     params,

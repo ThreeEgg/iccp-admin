@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { PageLoading } from '@ant-design/pro-layout';
 import { Redirect } from 'umi';
 import { stringify } from 'querystring';
+import { getAuthorityToken } from '@/common/authority';
 
 class SecurityLayout extends React.Component {
   state = {
@@ -13,21 +14,28 @@ class SecurityLayout extends React.Component {
     this.setState({
       isReady: true,
     });
-    const { dispatch } = this.props;
+    if (this.props.initAuthority) {
+      return;
+    }
 
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
+    // 判断本地登录态
+    if (getAuthorityToken()) {
+      // 同步取出本地的用户、im信息
+      this.props.dispatch({
+        type: 'user/save',
+        payload: {
+          userInfo: localStorage.userInfo ? JSON.parse(localStorage.userInfo) : {},
+          imInfo: localStorage.imInfo ? JSON.parse(localStorage.imInfo) : {},
+          isLogin: localStorage.isLogin > 0,
+        },
       });
     }
   }
 
   render() {
     const { isReady } = this.state;
-    const { children, loading, currentUser } = this.props; // You can replace it to your authentication rule (such as check token exists)
-    // 你可以把它替换成你自己的登录认证规则（比如判断 token 是否存在）
+    const { children, loading, isLogin } = this.props;
 
-    const isLogin = currentUser && currentUser.userid;
     const queryString = stringify({
       redirect: window.location.href,
     });
@@ -45,6 +53,6 @@ class SecurityLayout extends React.Component {
 }
 
 export default connect(({ user, loading }) => ({
-  currentUser: user.currentUser,
+  isLogin: user.isLogin,
   loading: loading.models.user,
 }))(SecurityLayout);

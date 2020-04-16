@@ -12,8 +12,9 @@ import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
+import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+
 const noMatch = (
   <Result
     status={403}
@@ -63,10 +64,6 @@ const defaultFooterDom = (
 );
 
 const footerRender = () => {
-  if (!isAntDesignPro()) {
-    return defaultFooterDom;
-  }
-
   return (
     <>
       {defaultFooterDom}
@@ -104,7 +101,7 @@ const BasicLayout = props => {
   useEffect(() => {
     if (dispatch) {
       dispatch({
-        type: 'user/fetchCurrent',
+        type: 'user/getUserInfo',
       });
     }
   }, []);

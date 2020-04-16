@@ -1,8 +1,15 @@
 module.exports = {
   extends: [require.resolve('@umijs/fabric/dist/eslint')],
   globals: {
-    ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: true,
     page: true,
     REACT_APP_ENV: true,
+  },
+  rules: {
+    'arrow-body-style': 1,
+    'spaced-comment': 1,
+    '@typescript-eslint/no-unused-vars': 1,
+    'import/newline-after-import': 1,
+    'consistent-return': 1,
+    'no-unused-expressions': 1,
   },
 };
