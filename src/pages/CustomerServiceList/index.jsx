@@ -3,8 +3,10 @@ import { Button, Divider, Dropdown, Menu, message } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
+import router from 'umi/router';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
+import { getChatList } from '@/services/system';
 import { queryRule, updateRule, addRule, removeRule } from './service';
 /**
  * 添加节点
@@ -76,86 +78,72 @@ const TableList = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [stepFormValues, setStepFormValues] = useState({});
+  const [total, setTotal] = useState(0);
   const actionRef = useRef();
+
+  const gotoChatDetail = chatItem => {
+    console.log(chatItem);
+    router.push('/chatDetail');
+  };
+
   const columns = [
     {
-      title: '规则名称',
-      dataIndex: 'name',
-      rules: [
-        {
-          required: true,
-          message: '规则名称为必填项',
-        },
-      ],
+      title: '客户类型',
+      dataIndex: 'userTypeStr',
+      valueType: 'option',
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
+      title: '客户ID',
+      dataIndex: 'userId',
       valueType: 'textarea',
     },
     {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
+      title: '客户名称',
+      dataIndex: 'clientUserName',
       hideInForm: true,
       renderText: val => `${val} 万`,
     },
     {
-      title: '状态',
-      dataIndex: 'status',
+      title: '聊天创建时间',
+      dataIndex: 'firstChatTime',
+      valueType: 'dateTimeRange',
       hideInForm: true,
-      valueEnum: {
-        0: {
-          text: '关闭',
-          status: 'Default',
-        },
-        1: {
-          text: '运行中',
-          status: 'Processing',
-        },
-        2: {
-          text: '已上线',
-          status: 'Success',
-        },
-        3: {
-          text: '异常',
-          status: 'Error',
-        },
-      },
     },
     {
-      title: '上次调度时间',
-      dataIndex: 'updatedAt',
-      sorter: true,
-      valueType: 'dateTime',
+      title: '最后聊天时间',
+      dataIndex: 'lastChatTime',
+      valueType: 'dateTimeRange',
       hideInForm: true,
+    },
+    {
+      title: '当前客服ID',
+      dataIndex: 'serviceUserId',
+      hideInSearch: true,
+    },
+    {
+      title: '当前客服',
+      dataIndex: 'serviceUserName',
+      hideInSearch: true,
     },
     {
       title: '操作',
-      dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            配置
-          </a>
+          <a onClick={() => gotoChatDetail(record)}>查看聊天详情</a>
           <Divider type="vertical" />
-          <a href="">订阅警报</a>
+          <a href="">更换客服</a>
         </>
       ),
     },
   ];
+
   return (
     <PageHeaderWrapper className="customer-service-list">
       <ProTable
-        headerTitle="查询表格"
+        rowKey="id"
+        headerTitle="客服对话查询"
         actionRef={actionRef}
-        rowKey="key"
         onChange={(_, _filter, _sorter) => {
           const sorterResult = _sorter;
 
@@ -163,8 +151,12 @@ const TableList = () => {
             setSorter(`${sorterResult.field}_${sorterResult.order}`);
           }
         }}
-        params={{
-          sorter,
+        pagination={{
+          defaultCurrent: 1,
+          total,
+          showQuickJumper: true,
+          showLessItems: true,
+          showSizeChanger: true,
         }}
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
@@ -193,7 +185,27 @@ const TableList = () => {
             </Dropdown>
           ),
         ]}
-        request={params => []}
+        request={params => {
+          params.pageNum = params.current;
+          delete params.current;
+          delete params._timestamp;
+          if (params.firstChatTime) {
+            params.firstChatTimeBegin = params.firstChatTime[0];
+            params.firstChatTimeEnd = params.firstChatTime[1];
+            delete params.firstChatTime;
+          }
+
+          if (params.lastChatTime) {
+            params.lastChatTimeBegin = params.lastChatTime[0];
+            params.lastChatTimeEnd = params.lastChatTime[1];
+            delete params.lastChatTime;
+          }
+          return getChatList(params);
+        }}
+        postData={data => {
+          setTotal(data.pageInfo.totalResults);
+          return data.items;
+        }}
         tableAlertRender={false}
         columns={columns}
         rowSelection={{}}

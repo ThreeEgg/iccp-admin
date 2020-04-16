@@ -13,5 +13,7 @@ module.exports = {
     'no-unused-expressions': 1,
     'react/self-closing-comp': 1,
     'lines-between-class-members': 1,
+    'prefer-destructuring': 1,
+    'no-underscore-dangle': 1,
   },
 };

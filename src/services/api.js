@@ -61,4 +61,7 @@ export default {
   fileUpload: '/support/upload',
   getContinentList: '/system/continent/list',
   getCountryList: '/system/country/list',
+
+  // 后台管理
+  getChatList: '/system/chatlist/list',
 };
