@@ -55,7 +55,6 @@ const plugins = [
     },
   ],
 ];
-
 export default {
   plugins,
   hash: true,
@@ -86,35 +85,54 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/dashboard',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
+              path: '/dashboard',
+              name: '数据总览',
               icon: 'smile',
-              component: './Welcome',
-            },
+              component: './Dashboard',
+            }, // {
+            //   path: '/admin',
+            //   name: 'admin',
+            //   icon: 'crown',
+            //   component: './Admin',
+            //   authority: ['admin'],
+            //   routes: [
+            //     {
+            //       path: '/admin/sub-page',
+            //       name: 'sub-page',
+            //       icon: 'smile',
+            //       component: './Welcome',
+            //       authority: ['admin'],
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'list.table-list',
+            //   icon: 'table',
+            //   path: '/list',
+            //   component: './ListTableList',
+            // },
             {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
+              name: '客服管理',
+              icon: 'table',
               routes: [
                 {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
+                  name: '全部对话列表',
                   icon: 'smile',
-                  component: './Welcome',
+                  path: '/CustomerServiceChatList',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '我的对话',
+                  icon: 'smile',
+                  path: '/MyChatList',
+                  component: './CustomerServiceList',
                   authority: ['admin'],
                 },
               ],
-            },
-            {
-              name: 'list.table-list',
-              icon: 'table',
-              path: '/list',
-              component: './ListTableList',
             },
             {
               component: './404',
@@ -142,9 +160,9 @@ export default {
   lessLoaderOptions: {
     javascriptEnabled: true,
   },
-  disableRedirectHoist: true,
+  disableRedirectHoist: false,
   cssLoaderOptions: {
-    modules: true,
+    modules: false,
     getLocalIdent: (context, _, localName) => {
       if (
         context.resourcePath.includes('node_modules') ||
@@ -173,4 +191,6 @@ export default {
   },
   proxy: proxy[REACT_APP_ENV || 'dev'],
   chainWebpack: webpackPlugin,
+  base: '/admin',
+  treeShaking: true,
 };

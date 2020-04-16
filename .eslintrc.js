@@ -11,5 +11,6 @@ module.exports = {
     'import/newline-after-import': 1,
     'consistent-return': 1,
     'no-unused-expressions': 1,
+    'react/self-closing-comp': 1,
   },
 };

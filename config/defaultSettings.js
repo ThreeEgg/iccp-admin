@@ -1,17 +1,16 @@
 export default {
-  navTheme: 'dark',
-  // 拂晓蓝
-  primaryColor: '#1890ff',
+  navTheme: 'light',
+  primaryColor: '#337AFF',
   layout: 'sidemenu',
   contentWidth: 'Fluid',
-  fixedHeader: false,
+  fixedHeader: true,
   autoHideHeader: false,
-  fixSiderbar: false,
+  fixSiderbar: true,
   colorWeak: false,
   menu: {
     locale: true,
   },
-  title: 'Ant Design Pro',
+  title: '国际风险平台',
   pwa: false,
   iconfontUrl: '',
 };

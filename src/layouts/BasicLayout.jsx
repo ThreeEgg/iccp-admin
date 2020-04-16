@@ -154,7 +154,7 @@ const BasicLayout = props => {
           <span>{route.breadcrumbName}</span>
         );
       }}
-      footerRender={footerRender}
+      footerRender={null}
       menuDataRender={menuDataRender}
       rightContentRender={() => <RightContent />}
       {...props}
@@ -168,6 +168,6 @@ const BasicLayout = props => {
 };
 
 export default connect(({ global, settings }) => ({
-  collapsed: global.collapsed,
+  // collapsed: global.collapsed,
   settings,
 }))(BasicLayout);
