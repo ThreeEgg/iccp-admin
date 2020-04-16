@@ -2,7 +2,7 @@ import { Alert } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'dva';
 import LoginFrom from './components/Login';
-import styles from './style.less';
+import './style.less';
 
 const { Tab, UserName, Password, Submit } = LoginFrom;
 
@@ -32,7 +32,7 @@ const Login = props => {
   };
 
   return (
-    <div className={styles.main}>
+    <div className="main">
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <Tab key="account" tab="账户密码登录">
           {status === 'error' && loginType === 'account' && !submitting && (

@@ -4,7 +4,6 @@ import omit from 'omit.js';
 import { getUserInfo } from '@/services/user';
 import ItemMap from './map';
 import LoginContext from './LoginContext';
-import styles from './index.less';
 const FormItem = Form.Item;
 
 const getFormItemOptions = ({ onChange, defaultValue, customProps = {}, rules }) => {
@@ -91,7 +90,7 @@ const LoginItem = props => {
             <Col span={8}>
               <Button
                 disabled={timing}
-                className={styles.getCaptcha}
+                className="getCaptcha"
                 size="large"
                 onClick={() => {
                   const value = getFieldValue('mobile');

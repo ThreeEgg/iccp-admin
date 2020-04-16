@@ -4,7 +4,6 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import { formatMessage } from 'umi-plugin-react/locale';
 import React, { useEffect } from 'react';
 import { Link } from 'umi';
 import { connect } from 'dva';
@@ -27,10 +26,10 @@ const noMatch = (
     }
   />
 );
-
 /**
  * use Authorized check all menu item
  */
+
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
@@ -63,27 +62,25 @@ const defaultFooterDom = (
   />
 );
 
-const footerRender = () => {
-  return (
-    <>
-      {defaultFooterDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
-  );
-};
+const footerRender = () => (
+  <>
+    {defaultFooterDom}
+    <div
+      style={{
+        padding: '0px 24px 24px',
+        textAlign: 'center',
+      }}
+    >
+      <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+        <img
+          src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
+          width="82px"
+          alt="netlify logo"
+        />
+      </a>
+    </div>
+  </>
+);
 
 const BasicLayout = props => {
   const {
@@ -124,7 +121,6 @@ const BasicLayout = props => {
   return (
     <ProLayout
       logo={logo}
-      formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
           {logoDom}
@@ -168,6 +164,6 @@ const BasicLayout = props => {
 };
 
 export default connect(({ global, settings }) => ({
-  // collapsed: global.collapsed,
+  collapsed: global.collapsed,
   settings,
 }))(BasicLayout);

@@ -12,5 +12,6 @@ module.exports = {
     'consistent-return': 1,
     'no-unused-expressions': 1,
     'react/self-closing-comp': 1,
+    'lines-between-class-members': 1,
   },
 };

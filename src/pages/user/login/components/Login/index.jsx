@@ -6,7 +6,7 @@ import LoginContext from './LoginContext';
 import LoginItem from './LoginItem';
 import LoginSubmit from './LoginSubmit';
 import LoginTab from './LoginTab';
-import styles from './index.less';
+import './index.less';
 
 const Login = props => {
   const { className } = props;
@@ -51,7 +51,7 @@ const Login = props => {
         },
       }}
     >
-      <div className={classNames(className, styles.login)}>
+      <div className={classNames(className, 'login')}>
         <Form
           form={props.from}
           onFinish={values => {
@@ -64,7 +64,7 @@ const Login = props => {
             <React.Fragment>
               <Tabs
                 animated={false}
-                className={styles.tabs}
+                className="tabs"
                 activeKey={type}
                 onChange={activeKey => {
                   setType(activeKey);

@@ -193,4 +193,5 @@ export default {
   chainWebpack: webpackPlugin,
   base: '/admin',
   treeShaking: true,
+  disableCSSModules: true,
 };

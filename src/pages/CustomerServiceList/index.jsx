@@ -6,7 +6,6 @@ import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import { queryRule, updateRule, addRule, removeRule } from './service';
-import './index.less';
 /**
  * 添加节点
  * @param fields
@@ -152,8 +151,7 @@ const TableList = () => {
     },
   ];
   return (
-    <PageHeaderWrapper>
-      <div className="test">123125</div>
+    <PageHeaderWrapper className="customer-service-list">
       <ProTable
         headerTitle="查询表格"
         actionRef={actionRef}

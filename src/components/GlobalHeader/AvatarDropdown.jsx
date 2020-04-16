@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { router } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
-import styles from './index.less';
+import './index.less';
 
 class AvatarDropdown extends React.Component {
   onMenuClick = event => {
@@ -34,7 +34,7 @@ class AvatarDropdown extends React.Component {
       // menu,
     } = this.props;
     const menuHeaderDropdown = (
-      <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
+      <Menu className="menu" selectedKeys={[]} onClick={this.onMenuClick}>
         {/* {menu && (
           <Menu.Item key="center">
             <UserOutlined />
@@ -57,9 +57,9 @@ class AvatarDropdown extends React.Component {
     );
     return userInfo && userInfo.name ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
-        <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={userInfo.image} alt="avatar" />
-          <span className={styles.name}>{userInfo.name}</span>
+        <span className="action account">
+          <Avatar size="small" className="avatar" src={userInfo.image} alt="avatar" />
+          <span className="name">{userInfo.name}</span>
         </span>
       </HeaderDropdown>
     ) : (
