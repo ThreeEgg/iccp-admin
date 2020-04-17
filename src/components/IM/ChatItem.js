@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Modal, message } from 'antd';
 import util from 'iccp-frontend-im/dist/utils'
-import PropTypes from 'react-prop-types';
+import PropTypes from 'prop-types';
 
 const { confirm } = Modal;
 const config = {

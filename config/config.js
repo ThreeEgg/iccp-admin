@@ -32,11 +32,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -141,16 +141,16 @@ export default {
               path: '/chat',
               routes: [
                 {
-                  name: '单独对话',
+                  name: '聊天记录',
                   icon: 'smile',
-                  path: '/chat/Chat',
+                  path: '/chat/history',
                   component: './IM',
                   // authority: ['admin'],
                 },
                 {
                   name: '全部对话',
                   icon: 'smile',
-                  path: '/chat/IM',
+                  path: '/chat/im',
                   component: './IM',
                   // authority: ['admin'],
                 },

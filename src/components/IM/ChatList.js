@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import { connect } from 'dva';
-import PropTypes from 'react-prop-types';
+import PropTypes from 'prop-types';
 import VirtualList from '@/components/VirtualList';
 import { v4 as uuidv4 } from 'uuid';
 import ChatItem from './ChatItem';

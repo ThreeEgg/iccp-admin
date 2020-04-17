@@ -35,8 +35,7 @@ class Index extends React.Component {
 
   // methods
   render() {
-    const { im } = this.props;
-    const { currSessionId } = im;
+    const { currSessionId } = this.props;
     return (
       <Layout style={{ height: '100%' }} className='nim'>
         <Sider

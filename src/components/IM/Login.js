@@ -11,7 +11,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Form, Input, Button, Modal } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import PropTypes from 'react-prop-types';
+import PropTypes from 'prop-types';
 
 function LoginButton(props) {
   const { isLogin, clickLogin, clickLogout } = props;

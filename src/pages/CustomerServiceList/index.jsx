@@ -1,6 +1,7 @@
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Dropdown, Menu, message } from 'antd';
 import React, { useState, useRef } from 'react';
+import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import router from 'umi/router';
@@ -73,7 +74,7 @@ const handleRemove = async selectedRows => {
   }
 };
 
-const TableList = () => {
+const TableList = (props) => {
   const [sorter, setSorter] = useState('');
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
@@ -81,8 +82,17 @@ const TableList = () => {
   const [total, setTotal] = useState(0);
   const actionRef = useRef();
 
-  const gotoChatDetail = chatItem => {
-    console.log(chatItem);
+  const gotoChat = chatItem => {
+    // 发起会话
+    props.dispatch({
+      type: 'im/initSession',
+      serviceAccid: props.imInfo.accid,
+      userAccid: chatItem.userImId,
+      to: chatItem.userImId,
+    });
+    router.push('/chat/im');
+  };
+  const gotoHistory = chatItem => {
     router.push('/chatDetail');
   };
 
@@ -130,7 +140,9 @@ const TableList = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a onClick={() => gotoChatDetail(record)}>查看聊天详情</a>
+          <a onClick={() => gotoChat(record)}>对话</a>
+          <Divider type="vertical" />
+          <a onClick={() => gotoHistory(record)}>查看聊天记录</a>
           <Divider type="vertical" />
           <a href="">更换客服</a>
         </>
@@ -254,5 +266,6 @@ const TableList = () => {
     </PageHeaderWrapper>
   );
 };
-
-export default TableList;
+export default connect(({ user }) => ({
+  imInfo: user.imInfo,
+}))(TableList);

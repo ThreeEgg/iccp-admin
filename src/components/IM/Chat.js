@@ -61,7 +61,7 @@ class Chat extends React.Component {
 
   // methods
   initSession = () => {
-    const { currSessionId } = this.props;
+    const { currSessionId, serviceInfo } = this.props;
     if (currSessionId) {
       const { scene, to } = util.parseSession(currSessionId)
       let userInfo = {};
@@ -77,8 +77,8 @@ class Chat extends React.Component {
           userInfo.accid = user
           userInfo.name = '我的手机'
           userInfo.image = ''
-        } else if (user === this.props.serviceInfo.accid) {
-          userInfo = this.props.serviceInfo
+        } else if (serviceInfo && user === serviceInfo.accid) {
+          userInfo = serviceInfo
         } else {
           userInfo = this.props.iccpUserInfos[user];
           if (userInfo.userType === 'expert') {

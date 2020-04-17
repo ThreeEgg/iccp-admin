@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'react-prop-types';
+import PropTypes from 'prop-types';
 import {
   AutoSizer, InfiniteLoader, List, CellMeasurer, CellMeasurerCache, Grid,
 } from 'react-virtualized';
@@ -237,6 +237,7 @@ VirtualList.propTypes = {
 };
 
 VirtualList.defaultProps = {
+  classes: {},
   response: false,
   responseRule: defaultResponseRule,
   itemLineStyle: {},

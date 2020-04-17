@@ -57,29 +57,13 @@ class Session extends React.Component {
     // 此时设置当前会话
     const session = this.props.sessionlist[key]
     if (session && session.id && session.id !== this.props.currSessionId) {
-      if (session.isService) {
-        // 重置当前会话
-        this.props.dispatch({ type: 'im/resetCurrSession' });
-        // 此时设置当前会话
-        this.props.dispatch({
-          type: 'im/setCurrSession',
-          sessionId: session.id,
-        });
-      } else {
-        let expertAccid = session.to;
-        let userAccid = this.props.userUID;
-        if (this.state.isExpert) {
-          expertAccid = this.props.userUID;
-          userAccid = session.dispatchto;
-        }
-        // 发起会话
-        this.props.dispatch({
-          type: 'im/initSession',
-          expertAccid,
-          userAccid,
-          to: session.to,
-        });
-      }
+      // 重置当前会话
+      this.props.dispatch({ type: 'im/resetCurrSession' });
+      // 此时设置当前会话
+      this.props.dispatch({
+        type: 'im/setCurrSession',
+        sessionId: session.id,
+      });
     }
   };
 
@@ -87,7 +71,7 @@ class Session extends React.Component {
     // 我的手机页面
     this.props.dispatch({ type: 'im/setCurrSession', sessionId: `p2p-${this.myPhoneId}` });
   };
-  
+
   initSession = () => {
     // 发起会话
     this.props.dispatch({ type: 'im/initSession', expertAccid: `4633e46abbef4c83bae2a3ab2713d7de` });

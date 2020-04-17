@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Layout, Form, Input, Button, message } from 'antd';
-import PropTypes from 'react-prop-types';
+import PropTypes from 'prop-types';
 
 const { TextArea } = Input;
 const { Sider } = Layout;
