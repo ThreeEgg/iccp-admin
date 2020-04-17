@@ -117,18 +117,19 @@ export default {
             {
               name: '客服管理',
               icon: 'table',
+              path: '/customService',
               routes: [
                 {
                   name: '全部对话列表',
                   icon: 'smile',
-                  path: '/CustomerServiceChatList',
+                  path: '/customService/list',
                   component: './CustomerServiceList',
                   authority: ['admin'],
                 },
                 {
                   name: '我的对话',
                   icon: 'smile',
-                  path: '/MyChatList',
+                  path: '/customService/myChatList',
                   component: './CustomerServiceList',
                   authority: ['admin'],
                 },
@@ -137,20 +138,21 @@ export default {
             {
               name: '聊天',
               icon: 'table',
+              path: '/chat',
               routes: [
                 {
                   name: '单独对话',
                   icon: 'smile',
-                  path: '/Chat',
+                  path: '/chat/Chat',
                   component: './IM',
-                  authority: ['admin'],
+                  // authority: ['admin'],
                 },
                 {
                   name: '全部对话',
                   icon: 'smile',
-                  path: '/IM',
+                  path: '/chat/IM',
                   component: './IM',
-                  authority: ['admin'],
+                  // authority: ['admin'],
                 },
               ],
             },
