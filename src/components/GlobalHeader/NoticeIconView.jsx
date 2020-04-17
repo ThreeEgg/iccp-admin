@@ -144,10 +144,10 @@ class GlobalHeaderRight extends Component {
   }
 }
 
-export default connect(({ user, global, loading }) => ({
+export default connect(({ user, app, loading }) => ({
   currentUser: user.currentUser,
-  collapsed: global.collapsed,
+  collapsed: app.collapsed,
   fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
   fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
+  notices: app.notices,
 }))(GlobalHeaderRight);

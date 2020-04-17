@@ -1,5 +1,5 @@
 const GlobalModel = {
-  namespace: 'global',
+  namespace: 'app',
   state: {
     collapsed: false,
     notices: [],

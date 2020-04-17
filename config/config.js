@@ -135,6 +135,26 @@ export default {
               ],
             },
             {
+              name: '聊天',
+              icon: 'table',
+              routes: [
+                {
+                  name: '单独对话',
+                  icon: 'smile',
+                  path: '/Chat',
+                  component: './IM',
+                  authority: ['admin'],
+                },
+                {
+                  name: '全部对话',
+                  icon: 'smile',
+                  path: '/IM',
+                  component: './IM',
+                  authority: ['admin'],
+                },
+              ],
+            },
+            {
               component: './404',
             },
           ],

@@ -62,7 +62,7 @@ if (pwa) {
       description: '请点击“刷新”按钮或者手动刷新页面',
       btn,
       key,
-      onClose: async () => {},
+      onClose: async () => { },
     });
   });
 } else if ('serviceWorker' in navigator) {
@@ -89,3 +89,29 @@ if (pwa) {
     });
   }
 }
+
+const setCurrSessionCallbackFunc = () => {
+  //TODO
+}
+const goToLogInPageFunc = () => {
+  //TODO
+}
+const showLoadingFunc = () => {
+  //TODO
+}
+const hideLoadingFunc = () => {
+  //TODO
+}
+
+export default {
+  dispatch: null,
+  nim: null,
+  // 设定当前会话后的回调函数
+  setCurrSessionCallbackFunc,
+  // 跳转到登陆页
+  goToLogInPageFunc,
+  // 显示加载
+  showLoadingFunc,
+  // 隐藏加载
+  hideLoadingFunc,
+};

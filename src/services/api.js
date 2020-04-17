@@ -38,15 +38,15 @@ export default {
   saveExpertSchedule: '/expert/schedule/update',
 
   //聊天管理
-  requestIMId: '/app/request-imid',
-  checkFirstChat: '/app/check-welcome',
-  checkFirstChatForCustomerService: '/app/check-welcome-service',
-  recentChatList: '/app/recent-chat',
-  receiveMsg: '/app/receiveMsg',
+  requestIMId: '/im/request-imid',
+  checkFirstChat: '/im/check-welcome',
+  checkFirstChatForCustomerService: '/im/check-welcome-service',
+  recentChatList: '/im/recent-chat',
+  receiveMsg: '/im/receiveMsg',
   getCaseInfo: '/case/get',
   saveCaseInfo: '/case/update',
   saveOrder: '/order/create',
-  historyChatMsg: '/app/chat-history',
+  historyChatMsg: '/im/chat-history',
   getTranslate: '/support/translate',
   downloadCaseBatch: '/support/downloadBatch',
 

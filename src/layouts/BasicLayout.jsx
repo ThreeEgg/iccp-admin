@@ -26,6 +26,7 @@ const noMatch = (
     }
   />
 );
+
 /**
  * use Authorized check all menu item
  */
@@ -81,7 +82,6 @@ const footerRender = () => (
     </div>
   </>
 );
-
 const BasicLayout = props => {
   const {
     dispatch,
@@ -118,6 +118,7 @@ const BasicLayout = props => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
+
   return (
     <ProLayout
       logo={logo}
@@ -147,8 +148,8 @@ const BasicLayout = props => {
         return first ? (
           <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
         ) : (
-          <span>{route.breadcrumbName}</span>
-        );
+            <span>{route.breadcrumbName}</span>
+          );
       }}
       footerRender={null}
       menuDataRender={menuDataRender}
@@ -163,7 +164,7 @@ const BasicLayout = props => {
   );
 };
 
-export default connect(({ global, settings }) => ({
-  collapsed: global.collapsed,
+export default connect(({ app, settings }) => ({
+  collapsed: app.collapsed,
   settings,
 }))(BasicLayout);
