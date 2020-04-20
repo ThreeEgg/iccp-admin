@@ -93,7 +93,14 @@ const TableList = (props) => {
     router.push('/chat/im');
   };
   const gotoHistory = chatItem => {
-    router.push('/chatDetail');
+    // 发起会话
+    props.dispatch({
+      type: 'im/initSession',
+      serviceAccid: props.imInfo.accid,
+      userAccid: chatItem.userImId,
+      to: chatItem.userImId,
+    });
+    router.push('/chat/history');
   };
 
   const columns = [

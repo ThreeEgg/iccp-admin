@@ -100,7 +100,7 @@ class ChatList extends React.Component {
   };
 
   renderItem = (msg, index, measure) => {
-    const { userInfo, myInfo, type, isHistory, msgTranslateMap, otherIsExpert } = this.props;
+    const { userInfo, myInfo, type, isHistory, msgTranslateMap, otherIsExpert, currSessionId } = this.props;
     return <ChatItem
       type={type}
       rawMsg={msg}
@@ -111,6 +111,7 @@ class ChatList extends React.Component {
       measure={measure}
       msgLoaded={this.msgLoaded}
       translate={msgTranslateMap[msg.idClient]}
+      currSessionId={currSessionId}
       otherIsExpert={otherIsExpert}
     />
   }

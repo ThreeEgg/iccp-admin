@@ -81,29 +81,31 @@ class Chat extends React.Component {
           userInfo = serviceInfo
         } else {
           userInfo = this.props.iccpUserInfos[user];
-          if (userInfo.userType === 'expert') {
-            otherIsExpert = true
-            if (this.props.myInfo.type === 'user' || this.props.myInfo.type === 'guest') {
-              hasEvaluation = true
-              hasCaseInfo = true
-              // 获取专家评价
-              this.props.dispatch({
-                type: 'im/getExpertUserRating', expertUserId: userInfo.userId,
-                callback: (res) => {
-                  if (res.code === '0') {
-                    evaluation.service = res.data.attitudeRating
-                    evaluation.professional = res.data.skillRating
-                  } else {
-                    message.error(res.msg)
-                  }
-                },
-              })
+          if (userInfo) {
+            if (userInfo.userType === 'expert') {
+              otherIsExpert = true
+              if (this.props.myInfo.type === 'user' || this.props.myInfo.type === 'guest') {
+                hasEvaluation = true
+                hasCaseInfo = true
+                // 获取专家评价
+                this.props.dispatch({
+                  type: 'im/getExpertUserRating', expertUserId: userInfo.userId,
+                  callback: (res) => {
+                    if (res.code === '0') {
+                      evaluation.service = res.data.attitudeRating
+                      evaluation.professional = res.data.skillRating
+                    } else {
+                      message.error(res.msg)
+                    }
+                  },
+                })
+              }
             }
-          }
-          else if (userInfo.userType === 'user' || userInfo.userType === 'guest') {
-            if (this.props.myInfo.type === 'expert') {
-              hasCaseInfo = true
-              canCaseInfoSave = true
+            else if (userInfo.userType === 'user' || userInfo.userType === 'guest') {
+              if (this.props.myInfo.type === 'expert') {
+                hasCaseInfo = true
+                canCaseInfoSave = true
+              }
             }
           }
         }

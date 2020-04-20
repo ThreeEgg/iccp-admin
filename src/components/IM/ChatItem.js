@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'dva';
 import { Modal, message } from 'antd';
 import util from 'iccp-frontend-im/dist/utils'
 import PropTypes from 'prop-types';
@@ -24,6 +23,7 @@ class ChatItem extends React.Component {
     isHistory: PropTypes.bool,
     otherIsExpert: PropTypes.bool,
     translate: PropTypes.string,
+    currSessionId: PropTypes.string,
   };
 
   // 如果没有传值，可以给一个默认值
@@ -34,6 +34,7 @@ class ChatItem extends React.Component {
     isHistory: false,
     otherIsExpert: false,
     translate: '',
+    currSessionId: '',
   };
 
   state = {
@@ -396,6 +397,4 @@ class ChatItem extends React.Component {
     );
   }
 }
-export default connect(({ im }) => ({
-  currSessionId: im.currSessionId,
-}))(ChatItem);
+export default ChatItem;

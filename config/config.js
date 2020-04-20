@@ -144,7 +144,7 @@ export default {
                   name: '聊天记录',
                   icon: 'smile',
                   path: '/chat/history',
-                  component: './IM',
+                  component: './History',
                   // authority: ['admin'],
                 },
                 {
