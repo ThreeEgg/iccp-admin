@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
-import styles from './index.less';
+import './index.less';
 const ENVTagColor = {
   dev: 'orange',
   test: 'green',
@@ -14,16 +14,16 @@ const ENVTagColor = {
 
 const GlobalHeaderRight = props => {
   const { theme, layout } = props;
-  let className = styles.right;
+  let className = 'right';
 
   if (theme === 'dark' && layout === 'topmenu') {
-    className = `${styles.right}  ${styles.dark}`;
+    className = `right dark`;
   }
 
   return (
     <div className={className}>
-      <HeaderSearch
-        className={`${styles.action} ${styles.search}`}
+      {/* <HeaderSearch
+        className={`action search`}
         placeholder="站内搜索"
         defaultValue="umi ui"
         options={[
@@ -52,18 +52,18 @@ const GlobalHeaderRight = props => {
           target="_blank"
           href="https://pro.ant.design/docs/getting-started"
           rel="noopener noreferrer"
-          className={styles.action}
+          className='action'
         >
           <QuestionCircleOutlined />
         </a>
-      </Tooltip>
+      </Tooltip> */}
       <Avatar />
       {REACT_APP_ENV && (
         <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
+      {/* <SelectLang className='action' /> */}
     </div>
   );
 };

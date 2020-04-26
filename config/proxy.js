@@ -8,29 +8,29 @@
 export default {
   dev: {
     '/api/': {
-      target: 'https://preview.pro.ant.design',
-      changeOrigin: true,
-      pathRewrite: {
-        '^': '',
-      },
+      target: 'http://221.215.57.110:9821',
+      changeOrigin: false,
+      // pathRewrite: {
+      //   '^': '',
+      // },
     },
   },
-  test: {
-    '/api/': {
-      target: 'https://preview.pro.ant.design',
-      changeOrigin: true,
-      pathRewrite: {
-        '^': '',
-      },
-    },
-  },
-  pre: {
-    '/api/': {
-      target: 'your pre url',
-      changeOrigin: true,
-      pathRewrite: {
-        '^': '',
-      },
-    },
-  },
+  // test: {
+  //   '/api/': {
+  //     target: 'https://preview.pro.ant.design',
+  //     changeOrigin: true,
+  //     pathRewrite: {
+  //       '^': '',
+  //     },
+  //   },
+  // },
+  // pre: {
+  //   '/api/': {
+  //     target: 'your pre url',
+  //     changeOrigin: true,
+  //     pathRewrite: {
+  //       '^': '',
+  //     },
+  //   },
+  // },
 };

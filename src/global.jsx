@@ -1,17 +1,13 @@
 import { Button, message, notification } from 'antd';
 import React from 'react';
-import { formatMessage } from 'umi-plugin-react/locale';
 import defaultSettings from '../config/defaultSettings';
+
 const { pwa } = defaultSettings; // if pwa is true
 
 if (pwa) {
   // Notify user if offline now
   window.addEventListener('sw.offline', () => {
-    message.warning(
-      formatMessage({
-        id: 'app.pwa.offline',
-      }),
-    );
+    message.warning('当前处于离线状态');
   }); // Pop up a prompt on the page asking the user if they want to use the latest version
 
   window.addEventListener('sw.updated', event => {
@@ -58,21 +54,15 @@ if (pwa) {
           reloadSW();
         }}
       >
-        {formatMessage({
-          id: 'app.pwa.serviceworker.updated.ok',
-        })}
+        刷新
       </Button>
     );
     notification.open({
-      message: formatMessage({
-        id: 'app.pwa.serviceworker.updated',
-      }),
-      description: formatMessage({
-        id: 'app.pwa.serviceworker.updated.hint',
-      }),
+      message: '有新内容',
+      description: '请点击“刷新”按钮或者手动刷新页面',
       btn,
       key,
-      onClose: async () => {},
+      onClose: async () => { },
     });
   });
 } else if ('serviceWorker' in navigator) {
@@ -99,3 +89,29 @@ if (pwa) {
     });
   }
 }
+
+const setCurrSessionCallbackFunc = () => {
+  //TODO
+}
+const goToLogInPageFunc = () => {
+  //TODO
+}
+const showLoadingFunc = () => {
+  //TODO
+}
+const hideLoadingFunc = () => {
+  //TODO
+}
+
+export default {
+  dispatch: null,
+  nim: null,
+  // 设定当前会话后的回调函数
+  setCurrSessionCallbackFunc,
+  // 跳转到登陆页
+  goToLogInPageFunc,
+  // 显示加载
+  showLoadingFunc,
+  // 隐藏加载
+  hideLoadingFunc,
+};

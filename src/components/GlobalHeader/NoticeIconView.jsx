@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import NoticeIcon from '../NoticeIcon';
-import styles from './index.less';
+import './index.less';
 
 class GlobalHeaderRight extends Component {
   componentDidMount() {
@@ -102,7 +102,7 @@ class GlobalHeaderRight extends Component {
     const unreadMsg = this.getUnreadData(noticeData);
     return (
       <NoticeIcon
-        className={styles.action}
+        className="action"
         count={currentUser && currentUser.unreadCount}
         onItemClick={item => {
           this.changeReadState(item);
@@ -144,10 +144,10 @@ class GlobalHeaderRight extends Component {
   }
 }
 
-export default connect(({ user, global, loading }) => ({
+export default connect(({ user, app, loading }) => ({
   currentUser: user.currentUser,
-  collapsed: global.collapsed,
+  collapsed: app.collapsed,
   fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
   fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
+  notices: app.notices,
 }))(GlobalHeaderRight);

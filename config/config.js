@@ -7,8 +7,7 @@ import webpackPlugin from './plugin.config';
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
-const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV } = process.env;
-const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
+const { REACT_APP_ENV } = process.env;
 const plugins = [
   ['umi-plugin-antd-icon-config', {}],
   [
@@ -33,11 +32,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -56,24 +55,6 @@ const plugins = [
     },
   ],
 ];
-
-if (isAntDesignProPreview) {
-  // 针对 preview.pro.ant.design 的 GA 统计代码
-  plugins.push([
-    'umi-plugin-ga',
-    {
-      code: 'UA-72788897-6',
-    },
-  ]);
-  plugins.push([
-    'umi-plugin-pro',
-    {
-      serverUrl: 'https://ant-design-pro.netlify.com',
-    },
-  ]);
-  plugins.push(['umi-plugin-antd-theme', themePluginConfig]);
-}
-
 export default {
   plugins,
   hash: false,
@@ -104,35 +85,76 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/dashboard',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
+              path: '/dashboard',
+              name: '数据总览',
               icon: 'smile',
-              component: './Welcome',
-            },
+              component: './Dashboard',
+            }, // {
+            //   path: '/admin',
+            //   name: 'admin',
+            //   icon: 'crown',
+            //   component: './Admin',
+            //   authority: ['admin'],
+            //   routes: [
+            //     {
+            //       path: '/admin/sub-page',
+            //       name: 'sub-page',
+            //       icon: 'smile',
+            //       component: './Welcome',
+            //       authority: ['admin'],
+            //     },
+            //   ],
+            // },
+            // {
+            //   name: 'list.table-list',
+            //   icon: 'table',
+            //   path: '/list',
+            //   component: './ListTableList',
+            // },
             {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
+              name: '客服管理',
+              icon: 'table',
+              path: '/customService',
               routes: [
                 {
-                  path: '/admin/sub-page',
-                  name: 'sub-page',
+                  name: '全部对话列表',
                   icon: 'smile',
-                  component: './Welcome',
+                  path: '/customService/list',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '我的对话',
+                  icon: 'smile',
+                  path: '/customService/myChatList',
+                  component: './CustomerServiceList',
                   authority: ['admin'],
                 },
               ],
             },
             {
-              name: 'list.table-list',
+              name: '聊天',
               icon: 'table',
-              path: '/list',
-              component: './ListTableList',
+              path: '/chat',
+              routes: [
+                {
+                  name: '聊天记录',
+                  icon: 'smile',
+                  path: '/chat/history',
+                  component: './History',
+                  // authority: ['admin'],
+                },
+                {
+                  name: '全部对话',
+                  icon: 'smile',
+                  path: '/chat/im',
+                  component: './IM',
+                  // authority: ['admin'],
+                },
+              ],
             },
             {
               component: './404',
@@ -155,16 +177,14 @@ export default {
   },
   define: {
     REACT_APP_ENV: REACT_APP_ENV || false,
-    ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:
-      ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
   },
   ignoreMomentLocale: true,
   lessLoaderOptions: {
     javascriptEnabled: true,
   },
-  disableRedirectHoist: true,
+  disableRedirectHoist: false,
   cssLoaderOptions: {
-    modules: true,
+    modules: false,
     getLocalIdent: (context, _, localName) => {
       if (
         context.resourcePath.includes('node_modules') ||
@@ -195,4 +215,7 @@ export default {
   publicPath: '/admin/',
   proxy: proxy[REACT_APP_ENV || 'dev'],
   chainWebpack: webpackPlugin,
+  base: '/admin',
+  treeShaking: true,
+  disableCSSModules: true,
 };

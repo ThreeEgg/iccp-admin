@@ -4,7 +4,6 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import { formatMessage } from 'umi-plugin-react/locale';
 import React, { useEffect } from 'react';
 import { Link } from 'umi';
 import { connect } from 'dva';
@@ -12,8 +11,9 @@ import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
+import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+
 const noMatch = (
   <Result
     status={403}
@@ -30,6 +30,7 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
+
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
@@ -62,32 +63,25 @@ const defaultFooterDom = (
   />
 );
 
-const footerRender = () => {
-  if (!isAntDesignPro()) {
-    return defaultFooterDom;
-  }
-
-  return (
-    <>
-      {defaultFooterDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
-  );
-};
-
+const footerRender = () => (
+  <>
+    {defaultFooterDom}
+    <div
+      style={{
+        padding: '0px 24px 24px',
+        textAlign: 'center',
+      }}
+    >
+      <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+        <img
+          src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
+          width="82px"
+          alt="netlify logo"
+        />
+      </a>
+    </div>
+  </>
+);
 const BasicLayout = props => {
   const {
     dispatch,
@@ -104,7 +98,7 @@ const BasicLayout = props => {
   useEffect(() => {
     if (dispatch) {
       dispatch({
-        type: 'user/fetchCurrent',
+        type: 'user/getUserInfo',
       });
     }
   }, []);
@@ -124,10 +118,10 @@ const BasicLayout = props => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
+
   return (
     <ProLayout
       logo={logo}
-      formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
           {logoDom}
@@ -154,10 +148,10 @@ const BasicLayout = props => {
         return first ? (
           <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
         ) : (
-          <span>{route.breadcrumbName}</span>
-        );
+            <span>{route.breadcrumbName}</span>
+          );
       }}
-      footerRender={footerRender}
+      footerRender={null}
       menuDataRender={menuDataRender}
       rightContentRender={() => <RightContent />}
       {...props}
@@ -170,7 +164,7 @@ const BasicLayout = props => {
   );
 };
 
-export default connect(({ global, settings }) => ({
-  collapsed: global.collapsed,
+export default connect(({ app, settings }) => ({
+  collapsed: app.collapsed,
   settings,
 }))(BasicLayout);
