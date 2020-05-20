@@ -123,12 +123,12 @@ export default {
             },
             {
               name: '用户管理',
-              path: '/user',
+              path: '/userManage',
               routes: [
                 {
                   name: '用户列表',
-                  path: '/user/list',
-                  component: './CustomerServiceList',
+                  path: '/userManage/list',
+                  component: './userManageList',
                   authority: ['admin'],
                 },
               ],
