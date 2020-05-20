@@ -1,9 +1,10 @@
+import slash from 'slash2';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
-import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
 import proxy from './proxy';
 import webpackPlugin from './plugin.config';
+
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
@@ -32,11 +33,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -85,13 +86,7 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/dashboard',
-            },
-            {
-              path: '/dashboard',
-              name: '数据总览',
-              icon: 'smile',
-              component: './Dashboard',
+              redirect: '/expert/list',
             }, // {
             //   path: '/admin',
             //   name: 'admin',
@@ -115,20 +110,59 @@ export default {
             //   component: './ListTableList',
             // },
             {
+              name: '专家管理',
+              path: '/expert',
+              routes: [
+                {
+                  name: '专家列表',
+                  path: '/expert/list',
+                  component: './expertList',
+                  authority: ['admin'],
+                },
+              ],
+            },
+            {
+              name: '用户管理',
+              path: '/user',
+              routes: [
+                {
+                  name: '用户列表',
+                  path: '/user/list',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+              ],
+            },
+            {
+              name: '聊天管理',
+              path: '/im',
+              routes: [
+                {
+                  name: '案件通知',
+                  path: '/im/case',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '聊天列表',
+                  path: '/im/list',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+              ],
+            },
+            {
               name: '客服管理',
-              icon: 'table',
               path: '/customService',
               routes: [
                 {
                   name: '全部对话列表',
-                  icon: 'smile',
                   path: '/customService/list',
                   component: './CustomerServiceList',
                   authority: ['admin'],
                 },
                 {
                   name: '我的对话',
-                  icon: 'smile',
                   path: '/customService/myChatList',
                   component: './CustomerServiceList',
                   authority: ['admin'],
@@ -137,21 +171,84 @@ export default {
             },
             {
               name: '聊天',
-              icon: 'table',
               path: '/chat',
               routes: [
                 {
                   name: '聊天记录',
-                  icon: 'smile',
                   path: '/chat/history',
                   component: './History',
                   // authority: ['admin'],
                 },
                 {
                   name: '全部对话',
-                  icon: 'smile',
                   path: '/chat/im',
                   component: './IM',
+                  // authority: ['admin'],
+                },
+              ],
+            },
+            {
+              name: '平台内容管理',
+              path: '/platform',
+              routes: [
+                {
+                  name: '平台介绍',
+                  path: '/platform/introduction',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '业务介绍',
+                  path: '/platform/business',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '常见问题',
+                  path: '/platform/problems',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '合作伙伴',
+                  path: '/platform/cooperation',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '条款规定',
+                  path: '/platform/regulation',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '经典案例',
+                  path: '/platform/case',
+                  component: './CustomerServiceList',
+                  authority: ['admin'],
+                },
+              ],
+            },
+            {
+              name: '系统管理',
+              path: '/system',
+              routes: [
+                {
+                  name: '角色管理',
+                  path: '/system/role',
+                  component: './History',
+                  // authority: ['admin'],
+                },
+                {
+                  name: '账号管理',
+                  path: '/system/account',
+                  component: './History',
+                  // authority: ['admin'],
+                },
+                {
+                  name: '数据统计',
+                  path: '/system/statistic',
+                  component: './History',
                   // authority: ['admin'],
                 },
               ],

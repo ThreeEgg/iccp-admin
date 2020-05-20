@@ -1,12 +1,3 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: 毛翔宇
- * @Date: 2020-03-27 17:29:30
- * @LastEditors: 毛翔宇
- * @LastEditTime: 2020-04-04 15:22:18
- * @FilePath: \PC端-前端\src\services\common.js
- */
 import api from './api';
 import request from './request';
 
@@ -36,6 +27,8 @@ export const fileUpload = async ({ clientUserId, expertUserId, file, fileName, t
   });
 };
 
-export const getServiceList = async () => {
-  return request(api.getServiceList);
-};
+export const getServiceList = async () => request(api.getServiceList);
+
+export const countryList = async () => request(api.countryList);
+
+export const continentList = async () => request(api.continentList);

@@ -42,8 +42,8 @@ const defaultFooterDom = (
     copyright="2019 蚂蚁金服体验技术部出品"
     links={[
       {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
+        key: 'ICCP Admin',
+        title: 'ICCP Admin',
         href: 'https://pro.ant.design',
         blankTarget: true,
       },
@@ -148,8 +148,8 @@ const BasicLayout = props => {
         return first ? (
           <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
         ) : (
-            <span>{route.breadcrumbName}</span>
-          );
+          <span>{route.breadcrumbName}</span>
+        );
       }}
       footerRender={null}
       menuDataRender={menuDataRender}

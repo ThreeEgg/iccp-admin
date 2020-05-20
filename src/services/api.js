@@ -2,7 +2,7 @@ import config from '../config';
 
 export default {
   baseUrl: config.baseUrl,
-  //用户管理
+  // 用户管理
   registry: '/user/registry',
   getRegistryAgreement: '/user/registry-agreement',
   login: '/user/login',
@@ -13,31 +13,7 @@ export default {
   resetPassword: '/user/reset-passwd',
   requestEmailForResetPassword: '/user/request-passwd-reset',
 
-  //专家管理
-  getExpertList: '/expert/list',
-  getExpertHomePage: '/expert/index',
-  getExpertRating: '/expert/rating',
-  getExpertUserRating: '/expert/user-rating/get',
-  saveExpertUserRating: '/expert/user-rating/update',
-  getExpertIndividualIntroduce: '/expert/introduction',
-  saveExpertIndividualIntroduce: '/expert/introduction/update',
-  getExpertActivityList: '/expert/activity/list',
-  getExpertActivityById: '/expert/activity/get',
-  saveExpertActivity: '/expert/activity/create',
-  deleteExpertActivity: '/expert/activity/delete',
-  getExpertArticleList: '/expert/article/list',
-  getExpertArticleById: '/expert/article/get',
-  saveExpertArticle: '/expert/article/update',
-  deleteExpertArticle: '/expert/article/delete',
-  getAllServiceTagList: '/expert/service/list',
-  getServiceTagList: '/expert/service/list',
-  saveServiceTagList: '/expert/service/update',
-  getExpertInformation: '/expert/information',
-  saveExpertInformation: '/expert/information/update',
-  getExpertScheduleByGreenwich: '/expert/schedule',
-  saveExpertSchedule: '/expert/schedule/update',
-
-  //聊天管理
+  // 聊天管理
   requestIMId: '/im/request-imid',
   checkFirstChat: '/im/check-welcome',
   checkFirstChatForCustomerService: '/im/check-welcome-service',
@@ -50,12 +26,6 @@ export default {
   getTranslate: '/support/translate',
   downloadCaseBatch: '/support/downloadBatch',
 
-  // 平台内容管理
-  getPlatformContent: '/platform/get',
-  deletePlatformContent: '/platform/delete',
-  listPlatformContent: '/platform/list',
-  updatePlatformContent: '/platform/update',
-
   // 其他
   getServiceList: '/service/list',
   fileUpload: '/support/upload',
@@ -63,5 +33,42 @@ export default {
   getCountryList: '/system/country/list',
 
   // 后台管理
-  getChatList: '/system/chatlist/list',
+  // 平台内容管理
+  platformGet: '/platform/get',
+  platformDelete: '/platform/delete',
+  platformList: '/platform/list',
+  platformUpdate: '/platform/update',
+
+  // 专家
+  expertGetList: '/system/expert/list',
+  expertCreate: '/system/expert/create',
+  expertBatchImport: '/system/expert/import',
+  expertBatchImportImage: '/system/expert/image/import',
+  expertNotify: '/system/expert/notify-schedule',
+  expertResetPassword: '/system/expert/reset-passwd',
+  expertUpdateStatus: '/system/expert/status',
+
+  // 用户
+  userList: '/system/user/list',
+  userResetPassword: '/system/user/reset-passwd',
+  userUpdateStatus: '/system/user/status',
+
+  // 地区
+  continentList: '/system/continent/list',
+  countryList: '/system/country/list',
+
+  // 角色
+  roleGet: '/system/role/get',
+  roleDelete: '/system/role/delete',
+  roleList: '/system/role/list',
+  roleUpdate: '/system/role/update',
+
+  // 案件
+  caseChangeCustomerService: '/system/change-customersrv',
+  // 客服与其他角色聊天列表
+  caseChatList: '/system/chatlist/list',
+  // 其他角色之间的聊天列表
+  caseUserChatList: '/system/chatlist-user-expert/list',
+  caseCustomerServiceList: '/system/customersrv/list',
+  caseNotifyList: '/system/order/list',
 };

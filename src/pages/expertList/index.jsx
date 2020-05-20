@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import router from 'umi/router';
-import { caseChatList } from '@/services/case';
+import { expertGetList } from '@/services/expert';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 
@@ -106,41 +106,85 @@ const TableList = props => {
 
   const columns = [
     {
-      title: '客户类型',
-      dataIndex: 'userTypeStr',
-      valueType: 'option',
-    },
-    {
-      title: '客户ID',
+      title: '专家ID',
       dataIndex: 'userId',
-      valueType: 'textarea',
     },
     {
-      title: '客户名称',
-      dataIndex: 'clientUserName',
+      title: '专家名称',
+      dataIndex: 'name',
+    },
+    {
+      title: '邮箱',
+      dataIndex: 'email',
+    },
+    {
+      title: '专家国籍',
+      dataIndex: 'countryCode',
+      formItemProps: {
+        placeholder: '请输入国家码，如CHN',
+      },
       hideInForm: true,
-      renderText: val => `${val} 万`,
+      render: (_, record) => `${record.cname}(${record.countryCode})`,
     },
     {
-      title: '聊天创建时间',
-      dataIndex: 'firstChatTime',
-      valueType: 'dateTimeRange',
+      title: '联系方式',
+      // dataIndex: 'email',
       hideInForm: true,
     },
     {
-      title: '最后聊天时间',
-      dataIndex: 'lastChatTime',
-      valueType: 'dateTimeRange',
-      hideInForm: true,
-    },
-    {
-      title: '当前客服ID',
+      title: '所属公司',
       dataIndex: 'serviceUserId',
       hideInSearch: true,
     },
     {
-      title: '当前客服',
+      title: '职务',
       dataIndex: 'serviceUserName',
+      hideInSearch: true,
+    },
+    {
+      title: '账号状态',
+      dataIndex: 'isValid',
+      valueEnum: {
+        0: {
+          text: '停用中',
+        },
+        1: {
+          text: '启用中',
+        },
+      },
+      render: val => (val > 0 ? '启用中' : '停用中'),
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      valueType: 'dateTimeRange',
+    },
+    {
+      title: '最近登录时间',
+      dataIndex: 'lastLoginTime',
+      hideInSearch: true,
+    },
+    {
+      title: '本周日程安排',
+      dataIndex: 'schdlupdtime',
+      valueEnum: {
+        0: { text: '未设置' },
+        1: { text: '已设置' },
+      },
+      render: text => {
+        if (!text) {
+          return '未设置';
+        }
+
+        if (Date.now() - Date.parse(new Date(text)) > 7 * 24 * 3600 * 1000) {
+          return '未设置';
+        }
+        return '已设置';
+      },
+    },
+    {
+      title: '已沟通用户数',
+      dataIndex: 'chatCount',
       hideInSearch: true,
     },
     {
@@ -148,11 +192,13 @@ const TableList = props => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a onClick={() => gotoChat(record)}>对话</a>
+          <a onClick={() => gotoChat(record)}>详细资料</a>
           <Divider type="vertical" />
-          <a onClick={() => gotoHistory(record)}>查看聊天记录</a>
+          <a onClick={() => gotoChat(record)}>日程提醒</a>
           <Divider type="vertical" />
-          <a href="">更换客服</a>
+          <a onClick={() => gotoHistory(record)}>{record.isValid > 0 ? '停用' : '启用'}</a>
+          <Divider type="vertical" />
+          <a>重置密码</a>
         </>
       ),
     },
@@ -161,8 +207,8 @@ const TableList = props => {
   return (
     <PageHeaderWrapper className="customer-service-list">
       <ProTable
-        rowKey="id"
-        headerTitle="客服对话查询"
+        rowKey="userId"
+        headerTitle="专家查询"
         actionRef={actionRef}
         onChange={(_, _filter, _sorter) => {
           const sorterResult = _sorter;
@@ -209,18 +255,13 @@ const TableList = props => {
           params.pageNum = params.current;
           delete params.current;
           delete params._timestamp;
-          if (params.firstChatTime) {
-            params.firstChatTimeBegin = params.firstChatTime[0];
-            params.firstChatTimeEnd = params.firstChatTime[1];
-            delete params.firstChatTime;
+          if (params.createTime) {
+            params.createDateFrom = params.createTime[0];
+            params.createDateTo = params.createTime[1];
+            delete params.createTime;
           }
 
-          if (params.lastChatTime) {
-            params.lastChatTimeBegin = params.lastChatTime[0];
-            params.lastChatTimeEnd = params.lastChatTime[1];
-            delete params.lastChatTime;
-          }
-          return caseChatList(params);
+          return expertGetList(params);
         }}
         postData={data => {
           setTotal(data.pageInfo.totalResults);
