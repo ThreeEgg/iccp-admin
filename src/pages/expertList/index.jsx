@@ -1,11 +1,16 @@
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message } from 'antd';
+import { Button, Divider, Dropdown, Menu, message, Modal } from 'antd';
 import React, { useState, useRef } from 'react';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import router from 'umi/router';
-import { expertGetList } from '@/services/expert';
+import {
+  expertGetList,
+  expertNotify,
+  expertResetPassword,
+  expertUpdateStatus,
+} from '@/services/expert';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 
@@ -104,6 +109,54 @@ const TableList = props => {
     router.push('/chat/history');
   };
 
+  const sendNotify = item => {
+    Modal.confirm({
+      content: '确认发送邮件提醒该专家即使更新日程表',
+      okText: '发送',
+      cancelText: '取消',
+      centered: true,
+      onOk: async () => {
+        const result = await expertNotify({ userId: item.userId });
+        if (result.code === '0') {
+          message.success('发送成功');
+        }
+      },
+    });
+  };
+
+  const resetPassword = item => {
+    Modal.confirm({
+      content: `确认将用户‘${item.userId}’的密码重置为USER123456`,
+      okText: '确认',
+      cancelText: '取消',
+      centered: true,
+      onOk: async () => {
+        const result = await expertResetPassword({ userId: item.userId });
+        if (result.code === '0') {
+          message.success('操作成功');
+        }
+      },
+    });
+  };
+
+  const updateStatus = item => {
+    // 置反
+    const isValid = item.isValid > 0 ? 0 : 1;
+    Modal.confirm({
+      content: `确认${isValid > 0 ? '启用' : '停用'}用户${item.userId}的账号`,
+      okText: '确认',
+      cancelText: '取消',
+      centered: true,
+      onOk: async () => {
+        const result = await expertUpdateStatus({ userId: item.userId, isValid });
+        if (result.code === '0') {
+          message.success('操作成功');
+          actionRef.current.reload();
+        }
+      },
+    });
+  };
+
   const columns = [
     {
       title: '专家ID',
@@ -152,7 +205,6 @@ const TableList = props => {
           text: '启用中',
         },
       },
-      render: val => (val > 0 ? '启用中' : '停用中'),
     },
     {
       title: '创建时间',
@@ -190,17 +242,12 @@ const TableList = props => {
     {
       title: '操作',
       valueType: 'option',
-      render: (_, record) => (
-        <>
-          <a onClick={() => gotoChat(record)}>详细资料</a>
-          <Divider type="vertical" />
-          <a onClick={() => gotoChat(record)}>日程提醒</a>
-          <Divider type="vertical" />
-          <a onClick={() => gotoHistory(record)}>{record.isValid > 0 ? '停用' : '启用'}</a>
-          <Divider type="vertical" />
-          <a>重置密码</a>
-        </>
-      ),
+      render: (_, record) => [
+        <a>详细资料</a>,
+        <a onClick={() => sendNotify(record)}>日程提醒</a>,
+        <a onClick={() => updateStatus(record)}>{record.isValid > 0 ? '停用' : '启用'}</a>,
+        <a onClick={() => resetPassword(record)}>重置密码</a>,
+      ],
     },
   ];
 
@@ -225,31 +272,15 @@ const TableList = props => {
           showSizeChanger: true,
         }}
         toolBarRender={(action, { selectedRows }) => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
+          <Button type="primary" onClick={() => message.warn('开发中')}>
+            <PlusOutlined /> 专家批量导入
           </Button>,
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              overlay={
-                <Menu
-                  onClick={async e => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                      action.reload();
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                  <Menu.Item key="approval">批量审批</Menu.Item>
-                </Menu>
-              }
-            >
-              <Button>
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          ),
+          <Button type="primary" onClick={() => message.warn('开发中')}>
+            <PlusOutlined /> 头像批量导入
+          </Button>,
+          //   <Button type="primary" onClick={() => handleModalVisible(true)}>
+          //     <PlusOutlined /> 新增
+          // </Button>,
         ]}
         request={params => {
           params.pageNum = params.current;

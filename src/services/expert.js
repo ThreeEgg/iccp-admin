@@ -28,6 +28,14 @@ export const expertGetList = async ({
     },
   });
 
+export const expertNotify = async ({ userId }) => request(api.expertNotify, { params: { userId } });
+
+export const expertResetPassword = async ({ userId }) =>
+  request(api.expertResetPassword, { params: { userId } });
+
+export const expertUpdateStatus = async ({ userId, isValid }) =>
+  request(api.expertUpdateStatus, { params: { userId, isValid } });
+
 export const getCountryList = async ({ id }) =>
   request(api.getCountryList, {
     params: { id },
