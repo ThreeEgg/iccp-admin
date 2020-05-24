@@ -58,6 +58,7 @@
     "@ant-design/pro-table": "^2.0.0",
     "@antv/data-set": "^0.11.1",
     "antd": "^4.0.0-rc.1",
+    "braft-editor": "^2.3.9",
     "classnames": "^2.2.6",
     "dva": "^2.6.0-beta.16",
     "iccp-frontend-im": "git+http://deploy:lwj6DAwLAPYtZqgw@172.16.1.165/source/iccp-frontend-im",
