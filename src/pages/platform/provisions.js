@@ -3,6 +3,8 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform'
+import {Row,Button} from "antd"
+import router from 'umi/router';
 
 export class Provisions extends Component {
 
@@ -73,14 +75,28 @@ export class Provisions extends Component {
     })
   }
 
+  gotoAdd = (type)=>{
+    console.log(type);
+    if(type === "clause"){
+      router.push(`/platform/regulation/add?type=${type}`)
+    }
+    
+  }
+
   render() {
     const {columns} = this;
     const {list} = this.state;
+    const type = "clause"
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
+          toolBarRender={() => [
+            <Row align='middle'>
+              <Button onClick={()=>this.gotoAdd(type)}>新建</Button>
+            </Row>
+          ]}
         />
       </PageHeaderWrapper>
     )

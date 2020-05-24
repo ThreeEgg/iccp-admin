@@ -224,6 +224,13 @@ export default {
                   authority: ['admin'],
                 },
                 {
+                  name: '',
+                  path: '/platform/problems/add',
+                  component: './platform/NewAdd',
+                  authority: ['admin'],
+                  hideInMenu:true,
+                },
+                {
                   name: '合作伙伴',
                   path: '/platform/cooperation',
                   component: './platform/partner',
@@ -234,6 +241,13 @@ export default {
                   path: '/platform/regulation',
                   component: './platform/provisions',
                   authority: ['admin'],
+                },
+                {
+                  name: '',
+                  path: '/platform/regulation/add',
+                  component: './platform/NewAdd',
+                  authority: ['admin'],
+                  hideInMenu:true,
                 },
                 {
                   name: '经典案例',
