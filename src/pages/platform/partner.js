@@ -3,12 +3,14 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform'
+import { Button,Row} from "antd"
+import PartnerModal from "./partnerModal"
 
 export class Partner extends Component {
 
   state = {
     list: [],
-    currentPage:1
+    currentPage:1,
   }
   
   columns = [
@@ -75,6 +77,10 @@ export class Partner extends Component {
     })
   }
 
+  modalShow = ()=>{
+    this.partnerModal.modalShow()
+  }
+
   render() {
     const {columns} = this;
     const {list} = this.state;
@@ -83,7 +89,13 @@ export class Partner extends Component {
         <ProTable
           columns={columns}
           dataSource={list}
+          toolBarRender={() => [
+            <Row align='middle'>
+              <Button onClick={this.modalShow}>新建</Button>
+            </Row>
+          ]}
         />
+        <PartnerModal ref={el=>{this.partnerModal = el}}/>
       </PageHeaderWrapper>
     )
   }
