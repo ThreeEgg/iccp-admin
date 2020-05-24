@@ -23,6 +23,7 @@ export default {
   saveCaseInfo: '/case/update',
   saveOrder: '/order/create',
   historyChatMsg: '/im/chat-history',
+  chatRecord: '/im/chat-history-vedio',
   getTranslate: '/support/translate',
   downloadCaseBatch: '/support/downloadBatch',
 
@@ -71,4 +72,10 @@ export default {
   caseUserChatList: '/system/chatlist-user-expert/list',
   caseCustomerServiceList: '/system/customersrv/list',
   caseNotifyList: '/system/order/list',
+
+  // 系统管理 账号管理
+  accountList: '/system/account/list',
+  
+  // 系统管理 数据统计
+  staticsInfo: '/system/statics'
 };

@@ -115,3 +115,20 @@ export const saveExpertUserRating = async ({ expertUserId, attitudeRating, skill
     },
   });
 };
+
+export const getChatList = async ({pageNum,pageSize,clientUserName,expertUserName,firstChatTimeBegin,firstChatTimeEnd,lastChatTimeBegin,lastChatTimeEnd}) =>{
+  return request(api.caseUserChatList, {
+    params: {
+      pageNum,pageSize,clientUserName,expertUserName,
+      firstChatTimeBegin,firstChatTimeEnd,lastChatTimeBegin,lastChatTimeEnd
+    }
+  })
+}
+
+export const getChatRecord = async ({chatId,pageNum,pageSize}) =>{
+  return request(api.chatRecord, {
+    params: {
+      chatId,pageNum,pageSize
+    }
+  })
+}
