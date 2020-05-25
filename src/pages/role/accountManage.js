@@ -3,13 +3,14 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/system'
-
+import {Row,Pagination} from "antd"
 
 export class AccountManage extends Component {
 
   state = {
     list: [],
-    currentPage:1
+    currentPage:1,
+    total:0
   }
 
   columns = [
@@ -57,24 +58,54 @@ export class AccountManage extends Component {
 
   getAccountList = async ()=>{
     const{currentPage} =this.state
-    const{data:{items}}=await imService.getAccountList({
+    const{data:{
+      items,
+      pageNumber,
+      pageInfo:{totalResults}
+    },code}=await imService.getAccountList({
       pageNum:currentPage,
       pageSize:10
     })
-    this.setState({
-      list:items
-    })
+    if(code === "0"){
+      this.setState({
+        list:items,
+        currentPage:pageNumber,
+        total:totalResults,
+      })
+    }
   }
+
+  handleTableChange = pagination => {
+    this.setState(
+      {
+        currentPage: pagination,
+      },
+      () => {
+        this.getAccountList();
+      },
+    );
+  };
 
   render() {
     const {columns} = this;
-    const {list} = this.state;
+    const {list,currentPage,total} = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
+          pagination={false}
         />
+        <div style={{ backgroundColor: '#FFF' }}>
+          <Row style={{ padding: '16px 16px' }} justify="end">
+            <Pagination
+              onChange={this.handleTableChange}
+              showSizeChanger={false}
+              total={total}
+              current={currentPage}
+            />
+          </Row>
+        </div>
       </PageHeaderWrapper>
     )
   }

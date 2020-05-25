@@ -39,7 +39,7 @@ export class ClassicCase extends Component {
     },
     {
       title: '创建人',
-      dataIndex: 'id',
+      dataIndex: 'createId',
     },
     {
       title: '最后修改时间',
@@ -48,7 +48,7 @@ export class ClassicCase extends Component {
     },
     {
       title: '最后修改人',
-      dataIndex: 'id',
+      dataIndex: 'updateId',
     },
     {
       title: '操作',
@@ -87,6 +87,7 @@ export class ClassicCase extends Component {
     } = await platService.listPlatformContent({
       pageNum: currentPage,
       pageSize: 10,
+      type:'classicCase'
     });
     if (code === '0') {
       this.setState({

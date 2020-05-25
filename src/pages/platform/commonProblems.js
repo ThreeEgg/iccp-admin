@@ -3,14 +3,15 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform'
-import {Row,Button} from "antd"
+import {Row,Button,Pagination} from "antd"
 import router from 'umi/router';
 
 export class CommonProblems extends Component {
 
   state = {
     list: [],
-    currentPage:1
+    currentPage:1,
+    total:0
   }
   
   columns = [
@@ -21,24 +22,26 @@ export class CommonProblems extends Component {
     },
     {
       title: '标题',
-      dataIndex: 'id',
+      dataIndex: 'title',
       hideInSearch:true
     },
     {
       title: '创建时间',
-      dataIndex: 'id',
+      dataIndex: 'createTime',
+      render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '创建人',
-      dataIndex: 'id',
+      dataIndex: 'createId',
     },
     {
       title: '最后修改时间',
-      dataIndex: 'id',
+      dataIndex: 'updateTime',
+      render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '最后修改人',
-      dataIndex: 'id',
+      dataIndex: 'updateId',
     },
     {
       title: '操作',
@@ -61,16 +64,35 @@ export class CommonProblems extends Component {
 
   getPtIntroduction = async ()=>{
     const{currentPage} =this.state
-    const{data:{items}}=await imService.listPlatformContent({
+    const{data:{
+      items,
+      pageNumber,
+      pageInfo:{totalResults}
+    },code}=await imService.listPlatformContent({
       pageNum:currentPage,
-      pageSize:50
+      pageSize:10,
+      type:'commonQuestion'
     })
-    this.setState({
-      list:items.filter(item=>{
-        return item.type === "commonQuestion"
+    if(code ==="0"){
+      this.setState({
+        list:items.filter(item=>item.type === "commonQuestion"),
+        currentPage:pageNumber,
+        total:totalResults,
       })
-    })
+    }
+    
   }
+
+  handleTableChange = pagination => {
+    this.setState(
+      {
+        currentPage: pagination,
+      },
+      () => {
+        this.getPtIntroduction();
+      },
+    );
+  };
 
   gotoAdd = (type)=>{
     if(type === "commonQuestion"){
@@ -81,19 +103,30 @@ export class CommonProblems extends Component {
 
   render() {
     const {columns} = this;
-    const {list} = this.state;
+    const {list,currentPage,total} = this.state;
     const type = "commonQuestion"
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
+          pagination={false}
           toolBarRender={() => [
             <Row align='middle'>
               <Button onClick={()=>this.gotoAdd(type)}>新建</Button>
             </Row>
           ]}
         />
+        <div style={{ backgroundColor: '#FFF' }}>
+          <Row style={{ padding: '16px 16px' }} justify="end">
+            <Pagination
+              onChange={this.handleTableChange}
+              showSizeChanger={false}
+              total={total}
+              current={currentPage}
+            />
+          </Row>
+        </div>
       </PageHeaderWrapper>
     )
   }
