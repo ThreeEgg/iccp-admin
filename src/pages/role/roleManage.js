@@ -3,7 +3,8 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/role'
-import {Row,Pagination} from "antd"
+import {Row,Pagination,Button, message,Modal} from "antd"
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 export class roleManage extends Component {
 
@@ -58,7 +59,7 @@ export class roleManage extends Component {
       render: item =>(
         <>
           <a style={{textDecoration:"underline",marginRight:"10px"}}>编辑</a>
-          <a style={{textDecoration:"underline"}}>刪除</a>
+          <a style={{textDecoration:"underline"}} onClick={()=>{this.handleDelete(item)}}>刪除</a>
         </>
       )
     },
@@ -66,6 +67,48 @@ export class roleManage extends Component {
 
   componentDidMount(){
     this.getRoleInfo()
+  }
+
+  handleDelete = item => {
+    const { confirm } = Modal;
+    const that = this
+    confirm({
+      title: '删除',
+      icon: <ExclamationCircleOutlined />,
+      content: '确认删除?',
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        that.deleteRole(item)
+      },
+      onCancel() {
+        message.warning('已经取消');
+      },
+    })
+  }
+
+  deleteRole = async (item)=>{
+    const {code,msg} = await imService.deleteRole({
+      id:item
+    })
+    if(code === "0"){
+      message.success(msg)
+      this.getRoleInfo()
+    }
+  }
+
+  addRole  = async ()=>{  // 添加新角色
+    message.warning('现在是写死的，写好表单后修改')
+    const {code,msg} = await imService.addRole({
+      description:'角色名称',
+      roleType:'service'
+    })
+    if(code === "0"){
+      message.success(msg)
+      this.getRoleInfo()
+    }
+
   }
 
   getRoleInfo = async ()=>{
@@ -108,6 +151,11 @@ export class roleManage extends Component {
           columns={columns}
           dataSource={list}
           pagination={false}
+          toolBarRender={() => [
+            <Row align='middle'>
+              <Button onClick={this.addRole}>新建</Button>
+            </Row>
+          ]}
         />
         <div style={{background:'#fff'}}>
           <Row style={{padding: '16px '}} justify="end">

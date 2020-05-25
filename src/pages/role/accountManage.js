@@ -3,19 +3,21 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/system'
-import {Row,Pagination} from "antd"
+import {Row,Pagination,Button,Modal} from "antd"
+import AccountModal from "./AccountModal"
 
 export class AccountManage extends Component {
 
   state = {
     list: [],
     currentPage:1,
-    total:0
+    total:0,
+    account:''
   }
 
   columns = [
     {
-      title: '角色ID',
+      title: '账号ID',
       dataIndex: 'userId',
       hideInSearch:true,
     },
@@ -39,12 +41,12 @@ export class AccountManage extends Component {
     },
     {
       title: '操作',
-      dataIndex: 'id',
+      dataIndex: 'userId',
       valueType: 'option',
       hideInSearch:true,
-      render: item =>(
+      render: (item,data) =>(
         <>
-          <a style={{textDecoration:"underline",marginRight:"10px"}}>编辑</a>
+          <a style={{textDecoration:"underline",marginRight:"10px"}} onClick={()=>this.modalShow('update',item,data)}>编辑</a>
           <a style={{textDecoration:"underline",marginRight:"10px"}}>重置密码</a>
           <a style={{textDecoration:"underline"}}>刪除</a>
         </>
@@ -71,6 +73,7 @@ export class AccountManage extends Component {
         list:items,
         currentPage:pageNumber,
         total:totalResults,
+        account:items[0].userId
       })
     }
   }
@@ -86,15 +89,24 @@ export class AccountManage extends Component {
     );
   };
 
+  modalShow = (type,account,data)=>{
+    this.accountManage.modalShow(type,account,data)
+  }
+
   render() {
     const {columns} = this;
-    const {list,currentPage,total} = this.state;
+    const {list,currentPage,total,account} = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
           pagination={false}
+          toolBarRender={() => [
+            <Row align='middle'>
+              <Button onClick={()=>this.modalShow('add',account)}>新建</Button>
+            </Row>
+          ]}
         />
         <div style={{ backgroundColor: '#FFF' }}>
           <Row style={{ padding: '16px 16px' }} justify="end">
@@ -106,6 +118,7 @@ export class AccountManage extends Component {
             />
           </Row>
         </div>
+        <AccountModal ref={ el=>{this.accountManage = el}}/>
       </PageHeaderWrapper>
     )
   }

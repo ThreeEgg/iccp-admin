@@ -111,9 +111,18 @@ export class ClassicCase extends Component {
 
   deleteCase = async () => {
     const { delId } = this.state;
-    const { code } = await platService.deletePlatformContent({});
-    if (code === 0) {
-      message.info('删除成功');
+    const { code,msg } = await platService.deleteCommonProblems({
+      id:delId
+    });
+    if (code === '0') {
+      this.setState({
+        delVisible: false,
+        delId: 0,
+        currentPage:1
+      });
+      message.success(msg);
+      
+      this.getPtIntroduction()
     }
   };
 
