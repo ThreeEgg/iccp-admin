@@ -140,7 +140,7 @@ export default {
                 {
                   name: '案件通知',
                   path: '/im/case',
-                  component: './CustomerServiceList',
+                  component: './IM/CaseNotice',
                   authority: ['admin'],
                 },
                 {

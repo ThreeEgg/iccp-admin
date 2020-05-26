@@ -132,3 +132,11 @@ export const getChatRecord = async ({chatId,pageNum,pageSize}) =>{
     }
   })
 }
+
+export const getNoticeList = async ({pageNum,pageSize,clientUserName,
+  createTimeBegin,createTimeEnd,expertUserName}) =>
+  request(api.caseList, {
+    params: {
+      pageNum,pageSize,clientUserName,createTimeBegin,createTimeEnd,expertUserName
+    }
+  })

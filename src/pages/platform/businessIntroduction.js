@@ -3,12 +3,14 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform'
+import {Row,Pagination} from "antd"
 
 export class BusinessIntroduction extends Component {
 
   state = {
     list: [],
-    currentPage:1
+    currentPage:1,
+    total:0
   }
   
   columns = [
@@ -19,11 +21,12 @@ export class BusinessIntroduction extends Component {
     },
     {
       title: '最后修改时间',
-      dataIndex: 'id',
+      dataIndex: 'updateTime',
+      render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '最后修改人',
-      dataIndex: 'id',
+      dataIndex: 'updateId',
     },
     {
       title: '操作',
@@ -45,26 +48,55 @@ export class BusinessIntroduction extends Component {
 
   getPtIntroduction = async ()=>{
     const{currentPage} =this.state
-    const{data:{items}}=await imService.listPlatformContent({
+    const{data:{
+      items,
+      pageNumber,
+      pageInfo:{totalResults}
+    },code}=await imService.listPlatformContent({
       pageNum:currentPage,
-      pageSize:10
+      pageSize:10,
+      type:'businessIntro'
     })
-    this.setState({
-      list:items.filter(item=>{
-        return item.type === "businessIntro"
+    if(code === "0"){
+      this.setState({
+        list:items.filter(item=> item.type === "businessIntro"),
+        currentPage:pageNumber,
+        total:totalResults,
       })
-    })
+    }
+  }
+
+  handleTableChange = pagination=>{
+    this.setState(
+      {
+        currentPage: pagination,
+      },
+      () => {
+        this.getPtIntroduction();
+      },
+    );
   }
 
   render() {
     const {columns} = this;
-    const {list} = this.state;
+    const {list,currentPage,total} = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
+          pagination={false}
         />
+        <div style={{ backgroundColor: '#FFF' }}>
+          <Row style={{ padding: '16px 16px' }} justify="end">
+            <Pagination
+              onChange={this.handleTableChange}
+              showSizeChanger={false}
+              total={total}
+              current={currentPage}
+            />
+          </Row>
+        </div>
       </PageHeaderWrapper>
     )
   }

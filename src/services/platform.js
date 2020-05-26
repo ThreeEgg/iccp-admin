@@ -15,6 +15,14 @@ export const deletePlatformContent = async ({ id }) =>
     },
   });
 
+export const deleteCommonProblems = async ({id})=>  // 删除常见问题
+  request.post(api.platformDelete,{
+    params:{
+      id
+    }
+  })
+
+
 export const listPlatformContent = async ({ languageId, type, pageNum, pageSize }) =>
   request(api.platformList, {
     params: {

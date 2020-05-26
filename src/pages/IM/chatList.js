@@ -4,11 +4,13 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/im'
 import router from 'umi/router';
+import {Row,Pagination, message} from "antd"
 
 export class chatList extends Component {
   state = {
     list: [],
-    currentPage:1
+    currentPage:1,
+    total:0,
   }
 
   columns = [
@@ -48,13 +50,13 @@ export class chatList extends Component {
       render: item =>(
         <div style={{display:"flex"}}>
           <div style={{marginRight:"5px" }}>
-            <a>查看聊天详情</a>
+            <a onClick={()=>{this.gotoChatDetail(item)}}>查看聊天详情</a>
           </div>
           <div style={{marginRight:"5px" }}>
-            <a>查看案件信息表</a>
+            <a  onClick={()=>{this.checkCaseInfo(item)}}>查看案件信息表</a>
           </div>
           <div style={{marginRight:"5px" }}>  
-            <a style={{textDecoration:"underline"}} onClick={()=>{this.gotoChatDetail(item)}}>查看通话记录</a>
+            <a style={{textDecoration:"underline"}} onClick={()=>{this.checkChatRecord(item)}}>查看通话记录</a>
           </div>
         </div>
       )
@@ -67,32 +69,71 @@ export class chatList extends Component {
     this.getChatList()
   }
 
-  gotoChatDetail = (item)=>{
+  gotoChatDetail = (item)=>{    // 跳转到聊天详情
     // console.log(item)
+    router.push(`/im/list/chatDetail?chatId=${item}`)
+  }
+
+  checkCaseInfo = item =>{  // 查看案件信息表
+    message.warning('查看案件信息表')
+  }
+
+  checkChatRecord = item => {   // 跳转通话记录
     router.push(`/im/list/record?chatId=${item}`)
   }
 
   getChatList = async ()=>{
     const{currentPage} =this.state
-    const{data:{items}}=await imService.getChatList({
+    const{data:{
+      items,
+      pageNumber,
+      pageInfo:{totalResults}
+    },code}=await imService.getChatList({
       pageNum:currentPage,
       pageSize:10
     })
-    this.setState({
-      list:items
-    })
+    if(code === "0"){
+      this.setState({
+        list:items,
+        currentPage:pageNumber,
+        total:totalResults,
+      })
+    }
+    
   }
+
+  handleTableChange = pagination => {
+    this.setState(
+      {
+        currentPage: pagination,
+      },
+      () => {
+        this.getChatList();
+      },
+    );
+  };
 
   render() {
     const {columns} = this;
-    const {list} = this.state;
+    const {list,currentPage,total} = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           // headerTitle="聊天列表"
           dataSource={list}
+          pagination={false}
         />
+        <div style={{ backgroundColor: '#FFF' }}>
+          <Row style={{ padding: '16px 16px' }} justify="end">
+            <Pagination
+              onChange={this.handleTableChange}
+              showSizeChanger={false}
+              total={total}
+              current={currentPage}
+            />
+          </Row>
+        </div>
       </PageHeaderWrapper>
       
     )

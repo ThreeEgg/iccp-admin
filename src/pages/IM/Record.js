@@ -4,12 +4,14 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/im'
 import {getParameter} from "@/utils/const.js"
+import {Row,Pagination} from "antd"
 
 export class Record extends Component {
 
   state = {
     list:[],
-    currentPage:1
+    currentPage:1,
+    total:0,
   }
 
   columns = [
@@ -76,7 +78,11 @@ export class Record extends Component {
     // console.log("props",this.props)
 
     const{currentPage} =this.state
-    const{data:{items}}=await imService.getChatRecord({
+    const{data:{
+      items,
+      pageNumber,
+      pageInfo:{totalResults}
+    },code}=await imService.getChatRecord({
       chatId:getParameter('chatId'),
       pageNum:currentPage,
       pageSize:10
@@ -84,18 +90,47 @@ export class Record extends Component {
     this.setState({
       list:items
     })
+    if(code === "0"){
+      this.setState({
+        list:items,
+        currentPage:pageNumber,
+        total:totalResults,
+      })
+    }
   }
+
+  handleTableChange = pagination => {
+    this.setState(
+      {
+        currentPage: pagination,
+      },
+      () => {
+        this.getChatRecord();
+      },
+    );
+  };
 
   render() {
     const {columns} = this
-    const {list} = this.state
+    const {list,currentPage,total} = this.state
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
           search={false}
+          pagination={false}
         />
+        <div style={{ backgroundColor: '#FFF' }}>
+          <Row style={{ padding: '16px 16px' }} justify="end">
+            <Pagination
+              onChange={this.handleTableChange}
+              showSizeChanger={false}
+              total={total}
+              current={currentPage}
+            />
+          </Row>
+        </div>
       </PageHeaderWrapper>
     )
   }

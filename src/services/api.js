@@ -75,7 +75,12 @@ export default {
 
   // 系统管理 账号管理
   accountList: '/system/account/list',
+  accountRoleList: '/system/account/get',
+  accountUpdate: '/system/account/create' ,
   
   // 系统管理 数据统计
-  staticsInfo: '/system/statics'
+  staticsInfo: '/system/statics',
+
+  // 聊天管理 案件通知
+  caseList: '/system/order/list',
 };

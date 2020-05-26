@@ -10,3 +10,17 @@ export const getRoleInfo = async ({pageNum,pageSize,createTimeBegin,createTimeEn
     }
   })
 }
+
+export const addRole = async ({ id, description,permissionIds,roleType }) =>
+  request.post(api.roleUpdate, {
+    params: {
+      id,description,permissionIds,roleType
+    },
+  });
+
+export const deleteRole = async ({id})=>
+  request(api.roleDelete,{
+    params:{
+      id
+    }
+  })
