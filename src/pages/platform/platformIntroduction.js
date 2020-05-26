@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'; 
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform'
-import {Row,Pagination} from "antd"
+import { Row, Pagination } from "antd"
 
 export class PlatformIntroduction extends Component {
 
   state = {
     list: [],
-    currentPage:1,
-    total:0
+    currentPage: 1,
+    total: 0
   }
-  
+
   columns = [
     {
       title: '语言',
@@ -32,39 +32,39 @@ export class PlatformIntroduction extends Component {
       title: '操作',
       dataIndex: 'id',
       valueType: 'option',
-      hideInSearch:true,
-      render: item =>(
+      hideInSearch: true,
+      render: item => (
         <>
-          <a style={{textDecoration:"underline"}}>编辑</a>
+          <a style={{ textDecoration: "underline" }}>编辑</a>
         </>
       )
     },
   ]
 
-  componentDidMount(){
+  componentDidMount() {
     this.getPtIntroduction()
   }
 
 
-  getPtIntroduction = async ()=>{
-    const{currentPage} =this.state
-    const{data:{
+  getPtIntroduction = async () => {
+    const { currentPage } = this.state
+    const { data: {
       items,
       pageNumber,
-      pageInfo:{totalResults}
-    },code}=await imService.listPlatformContent({
-      pageNum:currentPage,
-      pageSize:10,
-      type:'platformIntro'
+      pageInfo: { totalResults }
+    }, code } = await imService.listPlatformContent({
+      pageNum: currentPage,
+      pageSize: 10,
+      type: 'platformIntro'
     })
-    if(code === "0"){
+    if (code === "0") {
       this.setState({
-        list:items.filter(item=>item.type === "platformIntro"),
-        currentPage:pageNumber,
-        total:totalResults,
+        list: items.filter(item => item.type === "platformIntro"),
+        currentPage: pageNumber,
+        total: totalResults,
       })
     }
-    
+
   }
 
   handleTableChange = pagination => {
@@ -79,14 +79,15 @@ export class PlatformIntroduction extends Component {
   };
 
   render() {
-    const {columns} = this;
-    const {list,currentPage,total} = this.state;
+    const { columns } = this;
+    const { list, currentPage, total } = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
           pagination={false}
+          rowKey="id"
         />
         <div style={{ backgroundColor: '#FFF' }}>
           <Row style={{ padding: '16px 16px' }} justify="end">

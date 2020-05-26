@@ -28,11 +28,24 @@ export const getRoleList = async (userId) =>
     }
   })
 
-export const addAccount = async (name,roleName,userId)=>{
+export const addAccount = async ({name,roleName,userId})=>{
   return request.post(api.accountUpdate,{
     params:{
       name,roleName,userId
     }
   })
 }
+export const resetAccountPassword = async ({userId})=>
+  request(api.resetAccountPassword,{
+    params:{
+      userId
+    }
+  })
+
+export const deleteAccount = async ({userId})=>
+request(api.deleteAccount,{
+  params:{
+    userId
+  }
+})
   

@@ -2,35 +2,30 @@ import React, { Component } from 'react'
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
-import * as imService from '@/services/im'
+import * as imService from '@/services/customer'
 import router from 'umi/router';
 import { Row, Pagination, message } from "antd"
 
-export class chatList extends Component {
+export class DialogList extends Component {
+
   state = {
     list: [],
     currentPage: 1,
-    total: 0,
+    total: 0
   }
 
   columns = [
     {
-      title: '用户ID',
-      dataIndex: 'clientUserId',
-      hideInSearch: true,
+      title: '客户类型',
+      dataIndex: 'userType',
     },
     {
-      title: '用户昵称',
+      title: '客户ID',
+      dataIndex: 'userId',
+    },
+    {
+      title: '客户名称',
       dataIndex: 'clientUserName',
-    },
-    {
-      title: '专家ID',
-      dataIndex: 'expertUserId',
-      hideInSearch: true,
-    },
-    {
-      title: '专家名称',
-      dataIndex: 'expertUserName',
     },
     {
       title: '聊天创建时间',
@@ -43,8 +38,18 @@ export class chatList extends Component {
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
+      title: '当前客服ID',
+      dataIndex: 'serviceUserId',
+      hideInSearch: true,
+    },
+    {
+      title: '当前客服',
+      dataIndex: 'serviceUserName',
+      hideInSearch: true,
+    },
+    {
       title: '操作',
-      dataIndex: 'chatId',
+      dataIndex: 'userId',
       valueType: 'option',
       hideInSearch: true,
       render: item => (
@@ -53,42 +58,24 @@ export class chatList extends Component {
             <a onClick={() => { this.gotoChatDetail(item) }}>查看聊天详情</a>
           </div>
           <div style={{ marginRight: "5px" }}>
-            <a onClick={() => { this.checkCaseInfo(item) }}>查看案件信息表</a>
-          </div>
-          <div style={{ marginRight: "5px" }}>
-            <a style={{ textDecoration: "underline" }} onClick={() => { this.checkChatRecord(item) }}>查看通话记录</a>
+            <a onClick={() => { this.changeCustom(item) }}>更换客服</a>
           </div>
         </div>
       )
     },
   ]
 
-
-
   componentDidMount() {
-    this.getChatList()
+    this.getDialogList()
   }
 
-  gotoChatDetail = (item) => {    // 跳转到聊天详情
-    // console.log(item)
-    router.push(`/im/list/chatDetail?chatId=${item}`)
-  }
-
-  checkCaseInfo = item => {  // 查看案件信息表
-    message.warning('查看案件信息表')
-  }
-
-  checkChatRecord = item => {   // 跳转通话记录
-    router.push(`/im/list/record?chatId=${item}`)
-  }
-
-  getChatList = async () => {
-    const { currentPage } = this.state
+  getDialogList = async () => {
+    const { currentPage } = this.state;
     const { data: {
       items,
       pageNumber,
       pageInfo: { totalResults }
-    }, code } = await imService.getChatList({
+    }, code } = await imService.getDialogList({
       pageNum: currentPage,
       pageSize: 10
     })
@@ -99,7 +86,14 @@ export class chatList extends Component {
         total: totalResults,
       })
     }
+  }
 
+  gotoChatDetail = item => {
+    message.warning("查看聊天详情")
+  }
+
+  changeCustom = item => {
+    message.warning("更换客服")
   }
 
   handleTableChange = pagination => {
@@ -108,7 +102,7 @@ export class chatList extends Component {
         currentPage: pagination,
       },
       () => {
-        this.getChatList();
+        this.getDialogList();
       },
     );
   };
@@ -136,9 +130,8 @@ export class chatList extends Component {
           </Row>
         </div>
       </PageHeaderWrapper>
-
     )
   }
 }
 
-export default chatList
+export default DialogList

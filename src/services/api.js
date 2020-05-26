@@ -76,8 +76,10 @@ export default {
   // 系统管理 账号管理
   accountList: '/system/account/list',
   accountRoleList: '/system/account/get',
-  accountUpdate: '/system/account/create' ,
-  
+  accountUpdate: '/system/account/create',
+  resetAccountPassword: '/system/reset-passwd-admin',
+  deleteAccount: '/system/account/delete',
+
   // 系统管理 数据统计
   staticsInfo: '/system/statics',
 

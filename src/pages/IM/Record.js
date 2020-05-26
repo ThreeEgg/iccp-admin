@@ -1,67 +1,67 @@
 import React, { Component } from 'react'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'; 
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/im'
-import {getParameter} from "@/utils/const.js"
-import {Row,Pagination} from "antd"
+import { getParameter } from "@/utils/const.js"
+import { Row, Pagination } from "antd"
 
 export class Record extends Component {
 
   state = {
-    list:[],
-    currentPage:1,
-    total:0,
+    list: [],
+    currentPage: 1,
+    total: 0,
   }
 
   columns = [
     {
       title: '通话类型',
       dataIndex: 'eventType',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '用户ID',
       dataIndex: 'userIdTo',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '用户昵称',
       dataIndex: 'uToName',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '专家ID',
       dataIndex: 'userIdFrom',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '专家名称',
       dataIndex: 'uToName',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '通话状态',
       dataIndex: 'type',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '通话时间',
       dataIndex: 'clientUserId',
-      hideInSearch:true,
+      hideInSearch: true,
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '通话时长',
       dataIndex: 'duration',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '操作',
       dataIndex: 'id',
-      hideInSearch:true,
+      hideInSearch: true,
       valueType: 'option',
-      render: item =>(
+      render: item => (
         <div>
           下载
         </div>
@@ -69,32 +69,32 @@ export class Record extends Component {
     },
   ]
 
-  componentDidMount(){
+  componentDidMount() {
     this.getChatRecord()
   }
 
-  getChatRecord = async ()=>{
-    
+  getChatRecord = async () => {
+
     // console.log("props",this.props)
 
-    const{currentPage} =this.state
-    const{data:{
+    const { currentPage } = this.state
+    const { data: {
       items,
       pageNumber,
-      pageInfo:{totalResults}
-    },code}=await imService.getChatRecord({
-      chatId:getParameter('chatId'),
-      pageNum:currentPage,
-      pageSize:10
+      pageInfo: { totalResults }
+    }, code } = await imService.getChatRecord({
+      chatId: getParameter('chatId'),
+      pageNum: currentPage,
+      pageSize: 10
     })
     this.setState({
-      list:items
+      list: items
     })
-    if(code === "0"){
+    if (code === "0") {
       this.setState({
-        list:items,
-        currentPage:pageNumber,
-        total:totalResults,
+        list: items,
+        currentPage: pageNumber,
+        total: totalResults,
       })
     }
   }
@@ -111,11 +111,12 @@ export class Record extends Component {
   };
 
   render() {
-    const {columns} = this
-    const {list,currentPage,total} = this.state
+    const { columns } = this
+    const { list, currentPage, total } = this.state
     return (
       <PageHeaderWrapper>
         <ProTable
+          rowKey="id"
           columns={columns}
           dataSource={list}
           search={false}

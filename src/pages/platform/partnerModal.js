@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Modal,Form, Input, Button, Upload, message} from "antd"
+import { Modal, Form, Input, Button, Upload, message } from "antd"
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import * as imService from '@/services/platform'
 import api from "../../services/api"
@@ -9,7 +9,7 @@ export class partnerModal extends Component {
   state = {
     visible: false,
     loading: false,
-    imageUrl:''
+    imageUrl: ''
   }
 
 
@@ -34,8 +34,8 @@ export class partnerModal extends Component {
       );
     }
   };
-  
-  modalShow = ()=>{
+
+  modalShow = () => {
     this.setState({
       visible: true,
     });
@@ -47,22 +47,22 @@ export class partnerModal extends Component {
     });
   };
 
-  onFinish = (params)=>{
-    const {imageUrl} = this.state;
-    if(!imageUrl){
+  onFinish = (params) => {
+    const { imageUrl } = this.state;
+    if (!imageUrl) {
       message.warning('请上传头像');
       return;
     }
     this.addPartner(params)
   }
 
-  addPartner = async (params)=>{
-    const {imageUrl} = this.state;
-    const{data}=await imService.addPartner({
-      type:'partner',
-      language:'zh-CN',
+  addPartner = async (params) => {
+    const { imageUrl } = this.state;
+    const { data } = await imService.addPartner({
+      type: 'partner',
+      language: 'zh-CN',
       ...params,
-      image:''
+      image: ''
     })
     console.log(data)
     /* this.setState({
@@ -71,7 +71,7 @@ export class partnerModal extends Component {
   }
 
   render() {
-    const uploadUrl =  api.fileUpload;
+    const uploadUrl = `/api${api.fileUpload}`;
     const uploadButton = (
       <div>
         {this.state.loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -79,7 +79,7 @@ export class partnerModal extends Component {
       </div>
     );
     const { imageUrl } = this.state;
-    const {visible} = this.state;
+    const { visible } = this.state;
     // const {layout} = this;
     return (
       <Modal
@@ -105,26 +105,34 @@ export class partnerModal extends Component {
           </Form.Item>
           <Form.Item>
             <Upload
-              name="avatar"
+              name="file"
               listType="picture-card"
               className="avatar-uploader"
               showUploadList={false}
               action={uploadUrl}
-
+              headers={
+                { 'x-auth-token': localStorage.accessToken }
+              }
+              data={
+                {
+                  uploadUserId: 'admin',
+                  type: 0
+                }
+              }
               beforeUpload={beforeUpload}
               onChange={this.handleChange}
             >
               {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
             </Upload>
-          
-            </Form.Item>
-            <Button key="submit" type="primary" htmlType="submit">
-              保存
+
+          </Form.Item>
+          <Button key="submit" type="primary" htmlType="submit">
+            保存
             </Button>,
             <Button key="back" onClick={this.handleCancel}>
-              取消
+            取消
             </Button>
-          </Form>
+        </Form>
       </Modal>
     )
   }

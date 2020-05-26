@@ -1,37 +1,38 @@
 import React, { Component } from 'react'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'; 
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/role'
-import {Row,Pagination,Button, message,Modal} from "antd"
+import { Row, Pagination, Button, message, Modal } from "antd"
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import RoleAddUpdate from "./RoleAddUpdate"
 
 export class roleManage extends Component {
 
   state = {
     list: [],
-    currentPage:1,
-    total:0
+    currentPage: 1,
+    total: 0
   }
 
   columns = [
     {
       title: '角色ID',
       dataIndex: 'id',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '角色类型',
       dataIndex: 'roleTypeStr',
     },
     {
-      title :'角色名',
-      dataIndex :'description'
+      title: '角色名',
+      dataIndex: 'description'
     },
     {
       title: '关联账号数',
       dataIndex: 'useCount',
-      hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '创建时间',
@@ -55,17 +56,17 @@ export class roleManage extends Component {
       title: '操作',
       dataIndex: 'id',
       valueType: 'option',
-      hideInSearch:true,
-      render: item =>(
+      hideInSearch: true,
+      render: (item, data) => (
         <>
-          <a style={{textDecoration:"underline",marginRight:"10px"}}>编辑</a>
-          <a style={{textDecoration:"underline"}} onClick={()=>{this.handleDelete(item)}}>刪除</a>
+          <a style={{ textDecoration: "underline", marginRight: "10px" }} onClick={() => { this.roleModalShow('update', data) }}>编辑</a>
+          <a style={{ textDecoration: "underline" }} onClick={() => { this.handleDelete(item) }}>刪除</a>
         </>
       )
     },
   ]
 
-  componentDidMount(){
+  componentDidMount() {
     this.getRoleInfo()
   }
 
@@ -88,47 +89,46 @@ export class roleManage extends Component {
     })
   }
 
-  deleteRole = async (item)=>{
-    const {code,msg} = await imService.deleteRole({
-      id:item
+  deleteRole = async (item) => {
+    const { code, msg } = await imService.deleteRole({
+      id: item
     })
-    if(code === "0"){
+    if (code === "0") {
       message.success(msg)
       this.getRoleInfo()
     }
   }
 
-  addRole  = async ()=>{  // 添加新角色
+  /* addRole = async () => {  // 添加新角色
     message.warning('现在是写死的，写好表单后修改')
-    const {code,msg} = await imService.addRole({
-      description:'角色名称',
-      roleType:'service'
+    const { code, msg } = await imService.addRole({
+      description: '角色名称',
+      roleType: 'service'
     })
-    if(code === "0"){
+    if (code === "0") {
       message.success(msg)
       this.getRoleInfo()
     }
+  } */
 
-  }
-
-  getRoleInfo = async ()=>{
-    const{currentPage} =this.state
-    const{data:{
+  getRoleInfo = async () => {
+    const { currentPage } = this.state
+    const { data: {
       items,
       pageNumber,
-      pageInfo:{totalResults}
-    },code}=await imService.getRoleInfo({
-      pageNum:currentPage,
-      pageSize:10
+      pageInfo: { totalResults }
+    }, code } = await imService.getRoleInfo({
+      pageNum: currentPage,
+      pageSize: 10
     })
-    if(code === "0"){
+    if (code === "0") {
       this.setState({
-        list:items,
-        currentPage:pageNumber,
-        total:totalResults,
+        list: items,
+        currentPage: pageNumber,
+        total: totalResults,
       })
     }
-    
+
   }
 
   handleTableChange = pagination => {
@@ -142,23 +142,29 @@ export class roleManage extends Component {
     );
   };
 
+  roleModalShow = (type, data) => {
+    this.roleAddUpdate.modalShow(type, data)
+  }
+
   render() {
-    const {columns} = this;
-    const {list,currentPage,total} = this.state;
+    const { columns } = this;
+    const { list, currentPage, total } = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
+          rowKey="id"
           columns={columns}
           dataSource={list}
           pagination={false}
+          rowKey="id"
           toolBarRender={() => [
             <Row align='middle'>
-              <Button onClick={this.addRole}>新建</Button>
+              <Button onClick={() => this.roleModalShow("add")}>新建</Button>
             </Row>
           ]}
         />
-        <div style={{background:'#fff'}}>
-          <Row style={{padding: '16px '}} justify="end">
+        <div style={{ background: '#fff' }}>
+          <Row style={{ padding: '16px ' }} justify="end">
             <Pagination
               onChange={this.handleTableChange}
               showSizeChanger={false}
@@ -167,6 +173,7 @@ export class roleManage extends Component {
             />
           </Row>
         </div>
+        <RoleAddUpdate ref={el => { this.roleAddUpdate = el }} getRoleInfo={this.getRoleInfo} />
       </PageHeaderWrapper>
     )
   }

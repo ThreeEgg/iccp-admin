@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'; 
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform'
-import {Row,Button,Pagination, message,Modal } from "antd"
+import { Row, Button, Pagination, message, Modal } from "antd"
 import router from 'umi/router';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
@@ -11,10 +11,10 @@ export class Provisions extends Component {
 
   state = {
     list: [],
-    currentPage:1,
-    total:0
+    currentPage: 1,
+    total: 0
   }
-  
+
   columns = [
     {
       title: '语言',
@@ -26,7 +26,7 @@ export class Provisions extends Component {
       dataIndex: 'title',
       // hideInSearch:true,
     },
-    
+
     {
       title: '创建时间',
       dataIndex: 'createTime',
@@ -49,21 +49,21 @@ export class Provisions extends Component {
       title: '操作',
       dataIndex: 'id',
       valueType: 'option',
-      hideInSearch:true,
-      render: item =>(
+      hideInSearch: true,
+      render: item => (
         <>
-          <a style={{textDecoration:"underline",marginRight:"10px"}}>编辑</a>
-          <a style={{textDecoration:"underline"}} onClick={()=>{this.handleDelete(item)}}>刪除</a>
+          <a style={{ textDecoration: "underline", marginRight: "10px" }}>编辑</a>
+          <a style={{ textDecoration: "underline" }} onClick={() => { this.handleDelete(item) }}>刪除</a>
         </>
       )
     },
   ]
 
-  componentDidMount(){
+  componentDidMount() {
     this.getPtIntroduction()
   }
 
-  handleDelete = item=>{
+  handleDelete = item => {
     const { confirm } = Modal;
     const that = this
     confirm({
@@ -82,44 +82,44 @@ export class Provisions extends Component {
     })
   }
 
-  deleteProblems = async (item)=>{
-    const {code,msg} = await imService.deleteCommonProblems({
-      id:item
+  deleteProblems = async (item) => {
+    const { code, msg } = await imService.deleteCommonProblems({
+      id: item
     })
-    if(code === "0"){
+    if (code === "0") {
       message.success(msg)
       this.setState({
-        currentPage:1
+        currentPage: 1
       })
       this.getPtIntroduction()
     }
   }
-  
-  getPtIntroduction = async ()=>{
-    const{currentPage} =this.state
-    const{data:{
+
+  getPtIntroduction = async () => {
+    const { currentPage } = this.state
+    const { data: {
       items,
       pageNumber,
-      pageInfo:{totalResults}
-    },code}=await imService.listPlatformContent({
-      pageNum:currentPage,
-      pageSize:10,
-      type:'clause'
+      pageInfo: { totalResults }
+    }, code } = await imService.listPlatformContent({
+      pageNum: currentPage,
+      pageSize: 10,
+      type: 'clause'
     })
-    if(code ==="0"){
+    if (code === "0") {
       this.setState({
-        list:items.filter(item=>item.type === "clause"),
-        currentPage:pageNumber,
-        total:totalResults,
+        list: items.filter(item => item.type === "clause"),
+        currentPage: pageNumber,
+        total: totalResults,
       })
     }
   }
 
-  gotoAdd = (type)=>{
-    if(type === "clause"){
+  gotoAdd = (type) => {
+    if (type === "clause") {
       router.push(`/platform/regulation/add?type=${type}`)
     }
-    
+
   }
 
   handleTableChange = pagination => {
@@ -134,18 +134,19 @@ export class Provisions extends Component {
   };
 
   render() {
-    const {columns} = this;
-    const {list,currentPage,total} = this.state;
+    const { columns } = this;
+    const { list, currentPage, total } = this.state;
     const type = "clause"
     return (
       <PageHeaderWrapper>
         <ProTable
           columns={columns}
           dataSource={list}
+          rowKey="id"
           pagination={false}
           toolBarRender={() => [
             <Row align='middle'>
-              <Button onClick={()=>this.gotoAdd(type)}>新建</Button>
+              <Button onClick={() => this.gotoAdd(type)}>新建</Button>
             </Row>
           ]}
         />

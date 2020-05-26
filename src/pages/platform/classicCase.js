@@ -87,7 +87,7 @@ export class ClassicCase extends Component {
     } = await platService.listPlatformContent({
       pageNum: currentPage,
       pageSize: 10,
-      type:'classicCase'
+      type: 'classicCase'
     });
     if (code === '0') {
       this.setState({
@@ -111,17 +111,17 @@ export class ClassicCase extends Component {
 
   deleteCase = async () => {
     const { delId } = this.state;
-    const { code,msg } = await platService.deleteCommonProblems({
-      id:delId
+    const { code, msg } = await platService.deleteCommonProblems({
+      id: delId
     });
     if (code === '0') {
       this.setState({
         delVisible: false,
         delId: 0,
-        currentPage:1
+        currentPage: 1
       });
       message.success(msg);
-      
+
       this.getPtIntroduction()
     }
   };
@@ -157,6 +157,7 @@ export class ClassicCase extends Component {
           headerTitle="经典案例"
           columns={columns}
           dataSource={list}
+          rowKey="id"
           toolBarRender={() => [
             <Row align="middle">
               <Button key="1" shape="round" onClick={() => this.goToEdit(0)}>

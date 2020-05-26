@@ -172,13 +172,13 @@ export default {
                 {
                   name: '全部对话列表',
                   path: '/customService/list',
-                  component: './CustomerServiceList',
+                  component: './CustomManage/DialogList',
                   authority: ['admin'],
                 },
                 {
                   name: '我的对话',
                   path: '/customService/myChatList',
-                  component: './CustomerServiceList',
+                  component: './CustomManage/MyChatList',
                   authority: ['admin'],
                 },
               ],
