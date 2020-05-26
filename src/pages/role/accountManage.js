@@ -1,20 +1,19 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
-import * as imService from '@/services/system'
-import { Row, Pagination, Button, Modal, message } from "antd"
+import * as imService from '@/services/system';
+import { Row, Pagination, Button, Modal, message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import AccountModal from "./AccountModal"
+import AccountModal from './AccountModal';
 
 export class AccountManage extends Component {
-
   state = {
     list: [],
     currentPage: 1,
     total: 0,
-    account: ''
-  }
+    account: '',
+  };
 
   columns = [
     {
@@ -47,34 +46,46 @@ export class AccountManage extends Component {
       hideInSearch: true,
       render: (item, data) => (
         <>
-          <a style={{ textDecoration: "underline", marginRight: "10px" }} onClick={() => this.modalShow('update', item, data)}>编辑</a>
-          <a style={{ textDecoration: "underline", marginRight: "10px" }} onClick={() => this.modalConfirm(item)}>重置密码</a>
-          <a style={{ textDecoration: "underline" }} onClick={() => this.deleteConfirm(item)}>刪除</a>
+          <a
+            style={{ textDecoration: 'underline', marginRight: '10px' }}
+            onClick={() => this.modalShow('update', item, data)}
+          >
+            编辑
+          </a>
+          <a
+            style={{ textDecoration: 'underline', marginRight: '10px' }}
+            onClick={() => this.modalConfirm(item)}
+          >
+            重置密码
+          </a>
+          <a style={{ textDecoration: 'underline' }} onClick={() => this.deleteConfirm(item)}>
+            刪除
+          </a>
         </>
-      )
+      ),
     },
-  ]
+  ];
 
   componentDidMount() {
-    this.getAccountList()
+    this.getAccountList();
   }
 
   resetCurrentPage = () => {
     this.setState({
-      currentPage: 1
-    })
-  }
+      currentPage: 1,
+    });
+  };
 
   resetPassword = async userId => {
     const { code, msg } = await imService.resetAccountPassword({
-      userId
-    })
-    if (code === "0") {
-      message.success(msg)
+      userId,
+    });
+    if (code === '0') {
+      message.success(msg);
     }
-  }
+  };
 
-  modalConfirm = (userId) => {
+  modalConfirm = userId => {
     const { confirm } = Modal;
     const that = this;
     confirm({
@@ -82,13 +93,13 @@ export class AccountManage extends Component {
       icon: <ExclamationCircleOutlined />,
       content: `确认将用户 '${userId}' 密码重置为 'CRM123456' `,
       onOk() {
-        that.resetPassword(userId)
+        that.resetPassword(userId);
       },
       onCancel() {
-        message.warning("已取消")
+        message.warning('已取消');
       },
     });
-  }
+  };
 
   deleteConfirm = userId => {
     const { confirm } = Modal;
@@ -98,46 +109,49 @@ export class AccountManage extends Component {
       icon: <ExclamationCircleOutlined />,
       content: `确认将用户 '${userId}' 删除？ `,
       onOk() {
-        that.deleteAccount(userId)
+        that.deleteAccount(userId);
       },
       onCancel() {
-        message.warning("已取消")
+        message.warning('已取消');
       },
     });
-  }
+  };
 
   deleteAccount = async userId => {
     const { code, msg } = await imService.deleteAccount({
-      userId
-    })
-    if (code === "0") {
-      message.success(msg)
+      userId,
+    });
+    if (code === '0') {
+      message.success(msg);
       this.setState({
-        currentPage: 1
-      })
-      this.getAccountList()
+        currentPage: 1,
+      });
+      this.getAccountList();
     }
-  }
+  };
 
   getAccountList = async () => {
-    const { currentPage } = this.state
-    const { data: {
-      items,
-      pageNumber,
-      pageInfo: { totalResults }
-    }, code } = await imService.getAccountList({
+    const { currentPage } = this.state;
+    const {
+      data: {
+        items,
+        pageNumber,
+        pageInfo: { totalResults },
+      },
+      code,
+    } = await imService.getAccountList({
       pageNum: currentPage,
-      pageSize: 10
-    })
-    if (code === "0") {
+      pageSize: 10,
+    });
+    if (code === '0') {
       this.setState({
         list: items,
         currentPage: pageNumber,
         total: totalResults,
-        account: items[0].userId
-      })
+        account: items[0].userId,
+      });
     }
-  }
+  };
 
   handleTableChange = pagination => {
     this.setState(
@@ -151,8 +165,8 @@ export class AccountManage extends Component {
   };
 
   modalShow = (type, account, data) => {
-    this.accountManage.modalShow(type, account, data)
-  }
+    this.accountManage.modalShow(type, account, data);
+  };
 
   render() {
     const { columns } = this;
@@ -164,11 +178,10 @@ export class AccountManage extends Component {
           columns={columns}
           dataSource={list}
           pagination={false}
-          rowKey="id"
           toolBarRender={() => [
-            <Row align='middle'>
+            <Row align="middle">
               <Button onClick={() => this.modalShow('add', account)}>新建</Button>
-            </Row>
+            </Row>,
           ]}
         />
         <div style={{ backgroundColor: '#FFF' }}>
@@ -181,10 +194,16 @@ export class AccountManage extends Component {
             />
           </Row>
         </div>
-        <AccountModal ref={el => { this.accountManage = el }} getAccountList={this.getAccountList} resetCurrentPage={this.resetCurrentPage} />
+        <AccountModal
+          ref={el => {
+            this.accountManage = el;
+          }}
+          getAccountList={this.getAccountList}
+          resetCurrentPage={this.resetCurrentPage}
+        />
       </PageHeaderWrapper>
-    )
+    );
   }
 }
 
-export default AccountManage
+export default AccountManage;
