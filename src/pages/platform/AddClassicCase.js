@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Card, Button, Form, Input } from 'antd';
-import { controls, myUploadFn, validateFn } from '@/utils/const';
+import { controls, myUploadFn, validateFn, getParameter } from '@/utils/const';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
 import { SearchOutlined, RollbackOutlined } from '@ant-design/icons';
 import router from 'umi/router';
-import { getParameter } from '@/utils/const';
 
 export class AddClassicCase extends Component {
   state = {};
