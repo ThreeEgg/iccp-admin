@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
@@ -10,16 +10,20 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 export class CommonProblems extends Component {
 
   state = {
-    list: [],
-    currentPage: 1,
     total: 0
   }
+
+  actionRef = createRef();
 
   columns = [
     {
       title: '语言',
       dataIndex: 'language',
       // hideInSearch:true,
+      valueEnum: {
+        en: { text: '英文' },
+        'zh-CN': { text: '中文' },
+      },
     },
     {
       title: '标题',
@@ -29,6 +33,7 @@ export class CommonProblems extends Component {
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -38,6 +43,7 @@ export class CommonProblems extends Component {
     {
       title: '最后修改时间',
       dataIndex: 'updateTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -49,19 +55,14 @@ export class CommonProblems extends Component {
       dataIndex: 'id',
       valueType: 'option',
       hideInSearch: true,
-      render: item => (
+      render: (item, data) => (
         <>
-          <a style={{ textDecoration: "underline", marginRight: "10px" }}>编辑</a>
+          <a style={{ textDecoration: "underline", marginRight: "10px" }} onClick={() => this.gotoAdd('commonQuestion', data)}>编辑</a>
           <a style={{ textDecoration: "underline" }} onClick={() => { this.handleDelete(item) }}>刪除</a>
         </>
       )
     },
   ]
-
-
-  componentDidMount() {
-    this.getPtIntroduction()
-  }
 
   handleDelete = item => {
     const { confirm } = Modal;
@@ -88,14 +89,11 @@ export class CommonProblems extends Component {
     })
     if (code === "0") {
       message.success(msg)
-      this.setState({
-        currentPage: 1
-      })
-      this.getPtIntroduction()
+      this.actionRef.current.reload();
     }
   }
 
-  getPtIntroduction = async () => {
+  /* getPtIntroduction = async () => {
     const { currentPage } = this.state
     const { data: {
       items,
@@ -113,23 +111,17 @@ export class CommonProblems extends Component {
         total: totalResults,
       })
     }
+  } */
 
-  }
 
-  handleTableChange = pagination => {
-    this.setState(
-      {
-        currentPage: pagination,
-      },
-      () => {
-        this.getPtIntroduction();
-      },
-    );
-  };
-
-  gotoAdd = (type) => {
+  gotoAdd = (type, data) => {
     if (type === "commonQuestion") {
-      router.push(`/platform/problems/add?type=${type}`)
+      router.push({
+        pathname: `/platform/problems/add`,
+        query: {
+          data, type
+        }
+      })
     }
 
   }
@@ -143,24 +135,42 @@ export class CommonProblems extends Component {
         <ProTable
           rowKey="id"
           columns={columns}
-          dataSource={list}
-          pagination={false}
+          actionRef={this.actionRef}
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.createTime) {
+              params.createDateFrom = params.createTime[0];
+              params.createDateTo = params.createTime[1];
+              delete params.createTime;
+            }
+            if (params.updateTime) {
+              params.updateDateFrom = params.updateTime[0];
+              params.updateDateTo = params.updateTime[1];
+              delete params.updateTime;
+            }
+            params.type = 'commonQuestion'
+            return imService.listPlatformContent(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
           toolBarRender={() => [
             <Row align='middle'>
               <Button onClick={() => this.gotoAdd(type)}>新建</Button>
             </Row>
           ]}
         />
-        <div style={{ backgroundColor: '#FFF' }}>
-          <Row style={{ padding: '16px 16px' }} justify="end">
-            <Pagination
-              onChange={this.handleTableChange}
-              showSizeChanger={false}
-              total={total}
-              current={currentPage}
-            />
-          </Row>
-        </div>
       </PageHeaderWrapper>
     )
   }

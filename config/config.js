@@ -33,11 +33,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -218,9 +218,23 @@ export default {
                   authority: ['admin'],
                 },
                 {
+                  name: '平台介绍编辑',
+                  path: '/platform/introduction/edit',
+                  component: './platform/introductionEdit',
+                  authority: ['admin'],
+                  hideInMenu: true,
+                },
+                {
+                  name: '业务介绍编辑',
+                  path: '/platform/business/edit',
+                  component: './platform/introductionEdit',
+                  authority: ['admin'],
+                  hideInMenu: true,
+                },
+                {
                   name: '常见问题',
                   path: '/platform/problems',
-                  component: './platform/commonProblems',
+                  component: './platform/commonProblems/index',
                   authority: ['admin'],
                 },
                 {
@@ -228,7 +242,7 @@ export default {
                   path: '/platform/problems/add',
                   component: './platform/NewAdd',
                   authority: ['admin'],
-                  hideInMenu:true,
+                  hideInMenu: true,
                 },
                 {
                   name: '合作伙伴',
@@ -247,7 +261,7 @@ export default {
                   path: '/platform/regulation/add',
                   component: './platform/NewAdd',
                   authority: ['admin'],
-                  hideInMenu:true,
+                  hideInMenu: true,
                 },
                 {
                   name: '经典案例',

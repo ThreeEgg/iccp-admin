@@ -315,7 +315,7 @@ const TableList = props => {
               }
             }
           }}
-          rowKey="key"
+          rowKey="userId"
           type="form"
           columns={columns}
           rowSelection={{}}

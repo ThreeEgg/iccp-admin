@@ -4,12 +4,10 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/im'
 import router from 'umi/router';
-import { Row, Pagination, message } from "antd"
+import { message } from "antd"
 
 export class chatList extends Component {
   state = {
-    list: [],
-    currentPage: 1,
     total: 0,
   }
 
@@ -35,11 +33,13 @@ export class chatList extends Component {
     {
       title: '聊天创建时间',
       dataIndex: 'firstChatTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '最后聊天时间',
       dataIndex: 'lastChatTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -65,10 +65,6 @@ export class chatList extends Component {
 
 
 
-  componentDidMount() {
-    this.getChatList()
-  }
-
   gotoChatDetail = (item) => {    // 跳转到聊天详情
     // console.log(item)
     router.push(`/im/list/chatDetail?chatId=${item}`)
@@ -82,7 +78,7 @@ export class chatList extends Component {
     router.push(`/im/list/record?chatId=${item}`)
   }
 
-  getChatList = async () => {
+  /* getChatList = async () => {
     const { currentPage } = this.state
     const { data: {
       items,
@@ -99,42 +95,47 @@ export class chatList extends Component {
         total: totalResults,
       })
     }
-
-  }
-
-  handleTableChange = pagination => {
-    this.setState(
-      {
-        currentPage: pagination,
-      },
-      () => {
-        this.getChatList();
-      },
-    );
-  };
+  } */
 
   render() {
     const { columns } = this;
-    const { list, currentPage, total } = this.state;
+    const { total } = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           rowKey="id"
           columns={columns}
           // headerTitle="聊天列表"
-          dataSource={list}
-          pagination={false}
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.firstChatTime) {
+              params.firstChatTimeBegin = params.firstChatTime[0];
+              params.firstChatTimeEnd = params.firstChatTime[1];
+              delete params.firstChatTime;
+            }
+            if (params.lastChatTime) {
+              params.lastChatTimeBegin = params.lastChatTime[0];
+              params.lastChatTimeEnd = params.lastChatTime[1];
+              delete params.lastChatTime;
+            }
+            return imService.getChatList(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
+
         />
-        <div style={{ backgroundColor: '#FFF' }}>
-          <Row style={{ padding: '16px 16px' }} justify="end">
-            <Pagination
-              onChange={this.handleTableChange}
-              showSizeChanger={false}
-              total={total}
-              current={currentPage}
-            />
-          </Row>
-        </div>
       </PageHeaderWrapper>
 
     )

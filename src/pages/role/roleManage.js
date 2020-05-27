@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
@@ -10,10 +10,10 @@ import RoleAddUpdate from "./RoleAddUpdate"
 export class roleManage extends Component {
 
   state = {
-    list: [],
-    currentPage: 1,
     total: 0
   }
+
+  actionRef = createRef();
 
   columns = [
     {
@@ -23,7 +23,11 @@ export class roleManage extends Component {
     },
     {
       title: '角色类型',
-      dataIndex: 'roleTypeStr',
+      dataIndex: 'roleType',
+      valueEnum: {
+        service: { text: '客服' },
+        admin: { text: '管理员' },
+      },
     },
     {
       title: '角色名',
@@ -37,6 +41,7 @@ export class roleManage extends Component {
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -46,6 +51,7 @@ export class roleManage extends Component {
     {
       title: '最后修改时间',
       dataIndex: 'updateTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -65,10 +71,6 @@ export class roleManage extends Component {
       )
     },
   ]
-
-  componentDidMount() {
-    this.getRoleInfo()
-  }
 
   handleDelete = item => {
     const { confirm } = Modal;
@@ -95,7 +97,7 @@ export class roleManage extends Component {
     })
     if (code === "0") {
       message.success(msg)
-      this.getRoleInfo()
+      this.actionRef.current.reload();
     }
   }
 
@@ -111,7 +113,7 @@ export class roleManage extends Component {
     }
   } */
 
-  getRoleInfo = async () => {
+  /* getRoleInfo = async () => {
     const { currentPage } = this.state
     const { data: {
       items,
@@ -128,19 +130,7 @@ export class roleManage extends Component {
         total: totalResults,
       })
     }
-
-  }
-
-  handleTableChange = pagination => {
-    this.setState(
-      {
-        currentPage: pagination,
-      },
-      () => {
-        this.getRoleInfo();
-      },
-    );
-  };
+  } */
 
   roleModalShow = (type, data) => {
     this.roleAddUpdate.modalShow(type, data)
@@ -153,27 +143,43 @@ export class roleManage extends Component {
       <PageHeaderWrapper>
         <ProTable
           rowKey="id"
+          actionRef={this.actionRef}
           columns={columns}
-          dataSource={list}
-          pagination={false}
-          rowKey="id"
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.createTime) {
+              params.createTimeBegin = params.createTime[0];
+              params.createTimeEnd = params.createTime[1];
+              delete params.createTime;
+            }
+            if (params.updateTime) {
+              params.updateTimeBegin = params.updateTime[0];
+              params.updateTimeEnd = params.updateTime[1];
+              delete params.updateTime;
+            }
+            return imService.getRoleInfo(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
           toolBarRender={() => [
             <Row align='middle'>
               <Button onClick={() => this.roleModalShow("add")}>新建</Button>
             </Row>
           ]}
         />
-        <div style={{ background: '#fff' }}>
-          <Row style={{ padding: '16px ' }} justify="end">
-            <Pagination
-              onChange={this.handleTableChange}
-              showSizeChanger={false}
-              total={total}
-              current={currentPage}
-            />
-          </Row>
-        </div>
-        <RoleAddUpdate ref={el => { this.roleAddUpdate = el }} getRoleInfo={this.getRoleInfo} />
+        <RoleAddUpdate ref={el => { this.roleAddUpdate = el }} getRoleInfo={this.actionRef} />
       </PageHeaderWrapper>
     )
   }

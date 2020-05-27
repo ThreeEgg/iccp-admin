@@ -35,7 +35,7 @@ export class RoleAddUpdate extends Component {
     })
     if (code === "0") {
       message.success(msg);
-      this.props.getRoleInfo()
+      this.props.getRoleInfo.current.reload();
       this.handleCancel()
     }
   }

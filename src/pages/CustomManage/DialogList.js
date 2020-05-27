@@ -4,13 +4,11 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/customer'
 import router from 'umi/router';
-import { Row, Pagination, message } from "antd"
+import { message } from "antd"
 
 export class DialogList extends Component {
 
   state = {
-    list: [],
-    currentPage: 1,
     total: 0
   }
 
@@ -18,6 +16,11 @@ export class DialogList extends Component {
     {
       title: '客户类型',
       dataIndex: 'userType',
+      valueEnum: {
+        user: { text: '用户' },
+        expert: { text: '专家' },
+        guest: { text: '游客' },
+      },
     },
     {
       title: '客户ID',
@@ -30,11 +33,13 @@ export class DialogList extends Component {
     {
       title: '聊天创建时间',
       dataIndex: 'firstChatTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '最后聊天时间',
       dataIndex: 'lastChatTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -65,11 +70,8 @@ export class DialogList extends Component {
     },
   ]
 
-  componentDidMount() {
-    this.getDialogList()
-  }
 
-  getDialogList = async () => {
+  /* getDialogList = async () => {
     const { currentPage } = this.state;
     const { data: {
       items,
@@ -86,7 +88,7 @@ export class DialogList extends Component {
         total: totalResults,
       })
     }
-  }
+  } */
 
   gotoChatDetail = item => {
     message.warning("查看聊天详情")
@@ -96,7 +98,7 @@ export class DialogList extends Component {
     message.warning("更换客服")
   }
 
-  handleTableChange = pagination => {
+  /* handleTableChange = pagination => {
     this.setState(
       {
         currentPage: pagination,
@@ -105,7 +107,7 @@ export class DialogList extends Component {
         this.getDialogList();
       },
     );
-  };
+  }; */
 
   render() {
     const { columns } = this;
@@ -116,19 +118,36 @@ export class DialogList extends Component {
           rowKey="id"
           columns={columns}
           // headerTitle="聊天列表"
-          dataSource={list}
-          pagination={false}
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.firstChatTime) {
+              params.firstChatTimeBegin = params.firstChatTime[0];
+              params.firstChatTimeEnd = params.firstChatTime[1];
+              delete params.firstChatTime;
+            }
+            if (params.lastChatTime) {
+              params.lastChatTimeBegin = params.lastChatTime[0];
+              params.lastChatTimeEnd = params.lastChatTime[1];
+              delete params.lastChatTime;
+            }
+            return imService.getDialogList(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
+
         />
-        <div style={{ backgroundColor: '#FFF' }}>
-          <Row style={{ padding: '16px 16px' }} justify="end">
-            <Pagination
-              onChange={this.handleTableChange}
-              showSizeChanger={false}
-              total={total}
-              current={currentPage}
-            />
-          </Row>
-        </div>
       </PageHeaderWrapper>
     )
   }

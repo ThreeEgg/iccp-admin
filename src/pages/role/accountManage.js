@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
@@ -9,11 +9,10 @@ import AccountModal from './AccountModal';
 
 export class AccountManage extends Component {
   state = {
-    list: [],
-    currentPage: 1,
     total: 0,
-    account: '',
   };
+
+  actionRef = createRef();
 
   columns = [
     {
@@ -28,6 +27,7 @@ export class AccountManage extends Component {
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -35,8 +35,14 @@ export class AccountManage extends Component {
       dataIndex: 'createdId',
     },
     {
+      title: '最后修改人',
+      dataIndex: 'updateUserName',
+      hideInTable: true,
+    },
+    {
       title: '最后登录时间',
       dataIndex: 'updateTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -48,7 +54,7 @@ export class AccountManage extends Component {
         <>
           <a
             style={{ textDecoration: 'underline', marginRight: '10px' }}
-            onClick={() => this.modalShow('update', item, data)}
+            onClick={() => this.modalShow('update', data)}
           >
             编辑
           </a>
@@ -66,15 +72,7 @@ export class AccountManage extends Component {
     },
   ];
 
-  componentDidMount() {
-    this.getAccountList();
-  }
 
-  resetCurrentPage = () => {
-    this.setState({
-      currentPage: 1,
-    });
-  };
 
   resetPassword = async userId => {
     const { code, msg } = await imService.resetAccountPassword({
@@ -82,6 +80,7 @@ export class AccountManage extends Component {
     });
     if (code === '0') {
       message.success(msg);
+      this.actionRef.current.reload();
     }
   };
 
@@ -123,14 +122,11 @@ export class AccountManage extends Component {
     });
     if (code === '0') {
       message.success(msg);
-      this.setState({
-        currentPage: 1,
-      });
-      this.getAccountList();
+      this.actionRef.current.reload();
     }
   };
 
-  getAccountList = async () => {
+  /* getAccountList = async () => {
     const { currentPage } = this.state;
     const {
       data: {
@@ -151,55 +147,62 @@ export class AccountManage extends Component {
         account: items[0].userId,
       });
     }
-  };
+  }; */
 
-  handleTableChange = pagination => {
-    this.setState(
-      {
-        currentPage: pagination,
-      },
-      () => {
-        this.getAccountList();
-      },
-    );
-  };
 
-  modalShow = (type, account, data) => {
-    this.accountManage.modalShow(type, account, data);
+
+  modalShow = (type, data) => {
+    this.accountManage.modalShow(type, data);
   };
 
   render() {
     const { columns } = this;
-    const { list, currentPage, total, account } = this.state;
+    const { list, currentPage, total } = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           rowKey="id"
           columns={columns}
-          dataSource={list}
-          pagination={false}
+          actionRef={this.actionRef}
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.createTime) {
+              params.createTimeBegin = params.createTime[0];
+              params.createTimeEnd = params.createTime[1];
+              delete params.createTime;
+            }
+            if (params.updateTime) {
+              params.updateTimeBegin = params.updateTime[0];
+              params.updateTimeEnd = params.updateTime[1];
+              delete params.updateTime;
+            }
+            return imService.getAccountList(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
           toolBarRender={() => [
             <Row align="middle">
-              <Button onClick={() => this.modalShow('add', account)}>新建</Button>
+              <Button onClick={() => this.modalShow('add')}>新建</Button>
             </Row>,
           ]}
         />
-        <div style={{ backgroundColor: '#FFF' }}>
-          <Row style={{ padding: '16px 16px' }} justify="end">
-            <Pagination
-              onChange={this.handleTableChange}
-              showSizeChanger={false}
-              total={total}
-              current={currentPage}
-            />
-          </Row>
-        </div>
         <AccountModal
           ref={el => {
             this.accountManage = el;
           }}
-          getAccountList={this.getAccountList}
-          resetCurrentPage={this.resetCurrentPage}
+          getAccountList={this.actionRef}
         />
       </PageHeaderWrapper>
     );

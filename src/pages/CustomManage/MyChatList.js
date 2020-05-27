@@ -10,8 +10,6 @@ import { Row, Pagination, message } from "antd"
 export class MyChatList extends Component {
 
   state = {
-    list: [],
-    currentPage: 1,
     total: 0
   }
 
@@ -19,6 +17,11 @@ export class MyChatList extends Component {
     {
       title: '客户类型',
       dataIndex: 'userType',
+      valueEnum: {
+        user: { text: '用户' },
+        expert: { text: '专家' },
+        guest: { text: '游客' },
+      },
     },
     {
       title: '客户ID',
@@ -31,11 +34,13 @@ export class MyChatList extends Component {
     {
       title: '聊天创建时间',
       dataIndex: 'firstChatTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '最后聊天时间',
       dataIndex: 'lastChatTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -61,11 +66,8 @@ export class MyChatList extends Component {
     },
   ]
 
-  componentDidMount() {
-    this.getMyChatList()
-  }
 
-  getMyChatList = async () => {
+  /* getMyChatList = async () => {
     const { currentPage } = this.state
     const { data: {
       items,
@@ -84,29 +86,46 @@ export class MyChatList extends Component {
       })
     }
   }
-
+ */
   render() {
     const { columns } = this;
-    const { list, currentPage, total } = this.state;
+    const { total } = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
           rowKey="id"
           columns={columns}
           // headerTitle="聊天列表"
-          dataSource={list}
-          pagination={false}
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.firstChatTime) {
+              params.firstChatTimeBegin = params.firstChatTime[0];
+              params.firstChatTimeEnd = params.firstChatTime[1];
+              delete params.firstChatTime;
+            }
+            if (params.lastChatTime) {
+              params.lastChatTimeBegin = params.lastChatTime[0];
+              params.lastChatTimeEnd = params.lastChatTime[1];
+              delete params.lastChatTime;
+            }
+            params.serviceUserId = localStorage.userId
+            return imService.getDialogList(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
         />
-        <div style={{ backgroundColor: '#FFF' }}>
-          <Row style={{ padding: '16px 16px' }} justify="end">
-            <Pagination
-              onChange={this.handleTableChange}
-              showSizeChanger={false}
-              total={total}
-              current={currentPage}
-            />
-          </Row>
-        </div>
       </PageHeaderWrapper>
     )
   }

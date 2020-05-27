@@ -6,7 +6,6 @@ export default class AccountModal extends Component {
   state = {
     visible: false,
     title: '',
-    account: '',
     isAdd: true,
     roleList: [],
     data: '',
@@ -28,7 +27,7 @@ export default class AccountModal extends Component {
     }
   };
 
-  modalShow = (type, account, data) => {
+  modalShow = (type, data) => {
     if (type === 'add') {
       this.setState({
         visible: true,
@@ -39,7 +38,6 @@ export default class AccountModal extends Component {
       this.setState({
         visible: true,
         title: '编辑账号',
-        account,
         isAdd: false,
         data,
       });
@@ -49,7 +47,6 @@ export default class AccountModal extends Component {
   modalHidden = () => {
     this.setState({
       visible: false,
-      account: '',
       data: '',
     });
   };
@@ -60,16 +57,15 @@ export default class AccountModal extends Component {
 
   addAccount = async params => {
     // 新增和更新账户
-    const { account } = this.state;
-    const userId = account;
+    const { data, isAdd } = this.state;
+    const userId = isAdd ? "" : data.userId;
     const { code, msg } = await imService.addAccount({
       ...params,
       userId,
     });
     if (code === '0') {
       message.success(msg);
-      this.props.resetCurrentPage();
-      this.props.getAccountList();
+      this.props.getAccountList.current.reload();
       this.modalHidden();
     }
   };

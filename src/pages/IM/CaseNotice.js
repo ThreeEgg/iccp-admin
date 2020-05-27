@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable from "@ant-design/pro-table";
 import moment from "moment"
@@ -7,6 +7,7 @@ import router from "umi/router";
 import { Row, Pagination, message } from "antd"
 
 export class CaseNotice extends Component {
+
 
   state = {
     list: [],
@@ -19,6 +20,7 @@ export class CaseNotice extends Component {
       title: '通知时间',
       dataIndex: 'createTime',
       // hideInSearch:true,
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -60,9 +62,9 @@ export class CaseNotice extends Component {
 
 
 
-  componentDidMount() {
+  /* componentDidMount() {
     this.getNoticeList()
-  }
+  } */
 
   checkExportNotes = item => {
     message.warning('查看详情')
@@ -84,7 +86,8 @@ export class CaseNotice extends Component {
       pageInfo: { totalResults }
     }, code } = await imService.getNoticeList({
       pageNum: currentPage,
-      pageSize: 10
+      pageSize: 10,
+
     })
     if (code === "0") {
       this.setState({
@@ -106,6 +109,7 @@ export class CaseNotice extends Component {
     );
   };
 
+
   render() {
     const { columns } = this;
     const { list, currentPage, total } = this.state;
@@ -115,10 +119,32 @@ export class CaseNotice extends Component {
           rowKey="id"
           columns={columns}
           // headerTitle="聊天列表"
-          dataSource={list}
-          pagination={false}
+          // dataSource={list}
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.createTime) {
+              params.createTimeBegin = params.createTime[0];
+              params.createTimeEnd = params.createTime[1];
+              delete params.createTime;
+            }
+            return imService.getNoticeList(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
         />
-        <div style={{ backgroundColor: '#FFF' }}>
+        {/* <div style={{ backgroundColor: '#FFF' }}>
           <Row style={{ padding: '16px 16px' }} justify="end">
             <Pagination
               onChange={this.handleTableChange}
@@ -127,7 +153,7 @@ export class CaseNotice extends Component {
               current={currentPage}
             />
           </Row>
-        </div>
+        </div> */}
       </PageHeaderWrapper>
 
     )
