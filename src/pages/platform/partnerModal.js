@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Form, Input, Button, Upload, message } from "antd"
+import { Modal, Form, Input, Button, Upload, message, Select } from "antd"
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import * as imService from '@/services/platform'
 import api from "../../services/api"
@@ -9,7 +9,9 @@ export class partnerModal extends Component {
   state = {
     visible: false,
     loading: false,
-    imageUrl: ''
+    imageUrl: '',
+    data: '',
+    title: ''
   }
 
 
@@ -26,43 +28,63 @@ export class partnerModal extends Component {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
+      /* getBase64(info.file.originFileObj, imageUrl =>
         this.setState({
           imageUrl,
           loading: false,
         }),
-      );
+      ); */
+      console.log('info', info)
+      const { file: { response: { code, data: { webUrl } } } } = info;
+      if (code === "0") {
+        this.setState({
+          imageUrl: webUrl
+        })
+      }
     }
   };
 
-  modalShow = () => {
-    this.setState({
-      visible: true,
-    });
+  modalShow = (type, data) => {
+    if (type === "add") {
+      this.setState({
+        visible: true,
+        title: '新增'
+      });
+    } else if (type === "update") {
+      this.setState({
+        visible: true,
+        title: '编辑',
+        data,
+        imageUrl: data.image
+      });
+    }
+
   }
 
   handleCancel = () => {
     this.setState({
       visible: false,
+      imageUrl: ''
     });
   };
 
   onFinish = (params) => {
     const { imageUrl } = this.state;
     if (!imageUrl) {
-      message.warning('请上传头像');
+      message.warning('请上传logo');
       return;
     }
     this.addPartner(params)
   }
 
   addPartner = async (params) => {
-    const { imageUrl } = this.state;
-    const { data } = await imService.addPartner({
+    const { imageUrl, data } = this.state;
+    const { code, msg } = await imService.addPartner({
       type: 'partner',
-      language: 'zh-CN',
+      // language: 'zh-CN',
       ...params,
-      image: ''
+      image: imageUrl,
+      id: data.id
     })
     console.log(data)
     /* this.setState({
@@ -78,14 +100,15 @@ export class partnerModal extends Component {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
-    const { imageUrl } = this.state;
-    const { visible } = this.state;
+    const { imageUrl, title, visible, data } = this.state;
+    const { Option } = Select
     // const {layout} = this;
     return (
       <Modal
-        title="合作伙伴"
+        title={`${title}合作伙伴`}
         visible={visible}
         ref={this.formRef}
+        destroyOnClose
         footer={
           null
         }
@@ -95,13 +118,29 @@ export class partnerModal extends Component {
           // {...layout}
           name="basic"
           onFinish={this.onFinish}
+          initialValues={data}
         >
           <Form.Item
             label="合作方"
             name="title"
-            rules={[{ required: true, message: '请输入专家名称' }]}
+            rules={[{ required: true, message: '请输入合作方名称' },
+            { type: 'string', max: 50, message: `最多输入50个字符` }]}
           >
-            <Input />
+            <Input placeholder="请输入合作方名称" maxLength={50} />
+          </Form.Item>
+          <Form.Item
+            label="语言"
+            name="language"
+            rules={[{ required: true, message: '请选择语言' }]}
+          >
+            <Select
+              style={{
+                width: '100%',
+              }}
+            >
+              <Option value="en">英文</Option>
+              <Option value="zh-CN">中文</Option>
+            </Select>
           </Form.Item>
           <Form.Item>
             <Upload
@@ -115,7 +154,7 @@ export class partnerModal extends Component {
               }
               data={
                 {
-                  uploadUserId: 'admin',
+                  uploadUserId: localStorage.userId,
                   type: 0
                 }
               }
@@ -136,12 +175,6 @@ export class partnerModal extends Component {
       </Modal>
     )
   }
-}
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
 }
 
 function beforeUpload(file) {

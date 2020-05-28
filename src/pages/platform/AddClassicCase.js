@@ -1,18 +1,57 @@
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Button, Form, Input } from 'antd';
-import { controls, myUploadFn, validateFn } from '@/utils/const';
+import { Card, Button, Form, Input, message, Select } from 'antd';
+import { controls, myUploadFn, validateFn, getParameter } from '@/utils/const';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
 import { SearchOutlined, RollbackOutlined } from '@ant-design/icons';
 import router from 'umi/router';
-import { getParameter } from '@/utils/const';
+import * as imService from '@/services/platform'
+
 
 export class AddClassicCase extends Component {
-  state = {};
+  state = {
+    title: "",
+    editorState: BraftEditor.createEditorState(null),
+    id: ''
+  };
 
-  componentDidMount() {
+  componentWillMount() {
     // getParameter('type')  1是编辑,0是新增
+    const { data, type } = this.props.location.query;
+    if (type === 0) {
+      this.setState({
+        data,
+        title: '新增案例',
+        id: ''
+      })
+    } else if (type === 1) {
+      this.setState({
+        data,
+        title: '编辑案例',
+        id: data.id,
+        editorState: BraftEditor.createEditorState(data.content)
+      })
+    }
+  }
+
+  onFinish = params => {
+    params.content = params.content.toHTML()
+    this.updateCase(params);
+  }
+
+  updateCase = async (params) => {
+    const { id } = this.state;
+    console.log(params);
+    const { code, msg } = await imService.addPartner({
+      id,
+      // type,
+      ...params
+    })
+    if (code === "0") {
+      message.success(msg)
+      this.back()
+    }
   }
 
   back = () => {
@@ -20,17 +59,10 @@ export class AddClassicCase extends Component {
   };
 
   render() {
-    const title = Number(getParameter('type')) === 1 ? '编辑案例' : '新增案例';
+    const { title, data, editorState } = this.state;
+    const { Option } = Select
 
-    const formProps = {
-      layout: 'vertical',
-      initialValues: {
-        assign: 1,
-        type: 1,
-      },
-    };
-
-    const { TextArea } = Input;
+    // const { TextArea } = Input;
 
     return (
       <PageHeaderWrapper
@@ -42,11 +74,10 @@ export class AddClassicCase extends Component {
         ]}
       >
         <Card style={{ padding: ' 8px 10%' }}>
-          <Form {...formProps} ref={this.formRef} name="classicCase" onFinish={this.onFinish}>
+          <Form initialValues={data} ref={this.formRef} name="classicCase" onFinish={this.onFinish}>
             <Form.Item
               name="title"
               label="标题"
-              validateFirst="true"
               rules={[
                 { required: true, message: '这是必填项～' },
                 { type: 'string', min: 1, max: 50, message: '最多输入50个字符' },
@@ -55,6 +86,20 @@ export class AddClassicCase extends Component {
               <Input placeholder="请输入文章标题" />
             </Form.Item>
             <Form.Item
+              label="语言"
+              name="language"
+              rules={[{ required: true, message: '请选择语言' }]}
+            >
+              <Select
+                style={{
+                  width: '100%',
+                }}
+              >
+                <Option value="en">英文</Option>
+                <Option value="zh-CN">中文</Option>
+              </Select>
+            </Form.Item>
+            {/* <Form.Item
               name="brief"
               label="简介"
               validateFirst="true"
@@ -64,20 +109,19 @@ export class AddClassicCase extends Component {
               ]}
             >
               <TextArea placeholder="请输入文章简介" />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               name="content"
               label="文章详情"
-              validateFirst="true"
               rules={[
                 { required: true, message: '这是必填项～' },
-                { type: 'string', min: 1, max: 400, message: '最多输入400个字符' },
               ]}
             >
               <BraftEditor
                 className="my-editor"
                 controls={controls}
                 placeholder="请输入文章详情"
+                defaultValue={editorState}
                 media={{
                   uploadFn: myUploadFn,
                   validateFn,

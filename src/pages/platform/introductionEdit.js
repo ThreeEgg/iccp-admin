@@ -14,11 +14,11 @@ export default class introduction extends Component {
     type: '',
     data: '',
     title: '',
-    id: ''
+    id: '',
+    editorState: BraftEditor.createEditorState(null)
   }
 
   componentWillMount() {
-    console.log(this.props.location.query)
 
     const { data, type } = this.props.location.query;
     message.success(`传过来了${data.content}`)
@@ -34,8 +34,10 @@ export default class introduction extends Component {
         title: '业务介绍编辑',
         id: data.id
       })
-
     }
+    this.setState({
+      editorState: BraftEditor.createEditorState(data.content)
+    })
   }
 
   back = () => {
@@ -43,12 +45,11 @@ export default class introduction extends Component {
   };
 
   onFinish = params => {
-    console.log(params.content.toHTML());
     this.updateIntroduction({ content: params.content.toHTML() });
   }
 
   updateIntroduction = async (params) => {
-    const { data, type, id } = this.state;
+    const { id } = this.state;
     const { code, msg } = await imService.addPartner({
       id,
       // type,
@@ -61,7 +62,7 @@ export default class introduction extends Component {
   }
 
   render() {
-    const { title, data: { content }, data } = this.state;
+    const { title, data, editorState } = this.state;
     return (
       <PageHeaderWrapper
         title={title}
@@ -85,6 +86,7 @@ export default class introduction extends Component {
               <BraftEditor
                 ref={this.braftEditor}
                 className="my-editor"
+                defaultValue={editorState}
                 controls={controls}
                 placeholder="请输入文章详情"
               />

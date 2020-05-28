@@ -4,15 +4,15 @@ import ProTable from "@ant-design/pro-table";
 import moment from "moment"
 import * as imService from "@/services/im"
 import router from "umi/router";
-import { Row, Pagination, message } from "antd"
+import { Row, Pagination, message, Modal, } from "antd"
+import NoticeModal from "./NoticeModal"
 
 export class CaseNotice extends Component {
-
 
   state = {
     list: [],
     currentPage: 1,
-    total: 0
+    total: 0,
   }
 
   columns = [
@@ -33,7 +33,7 @@ export class CaseNotice extends Component {
     },
     {
       title: '专家说明',
-      dataIndex: 'id',
+      dataIndex: 'expertExplain',
       hideInSearch: true,
       valueType: 'option',
       render: (item) => (
@@ -44,10 +44,10 @@ export class CaseNotice extends Component {
     },
     {
       title: '操作',
-      dataIndex: 'id',
+      dataIndex: 'caseId',
       hideInSearch: true,
       valueType: 'option',
-      render: item => (
+      render: (item) => (
         <div style={{ display: "flex" }}>
           <div style={{ marginRight: "5px" }}>
             <a style={{ textDecoration: 'underline' }} onClick={() => { this.gotoChatDetail(item) }}>查看聊天详情</a>
@@ -60,22 +60,38 @@ export class CaseNotice extends Component {
     }
   ]
 
-
-
   /* componentDidMount() {
     this.getNoticeList()
   } */
 
   checkExportNotes = item => {
-    message.warning('查看详情')
+    Modal.info({
+      title: '专家详情',
+      content: (
+        <div>
+          <p>{item}</p>
+        </div>
+      ),
+      onOk() { },
+    });
   }
 
   gotoChatDetail = (item) => {
     router.push(`/im/list/chatDetail?chatId=${item}`)
   }
 
-  checkCaseInfo = item => {
-    message.warning('查看案件信息表')
+  checkCaseInfo = caseId => {
+    // message.warning('查看案件信息表')
+    this.getCaseInfo(caseId)
+  }
+
+  getCaseInfo = async (caseId) => {
+    const { data, code } = await imService.getCaseInfo({
+      caseId
+    })
+    if (code === "0") {
+      this.noticeModalInfo.modalShow(data)
+    }
   }
 
   getNoticeList = async () => {
@@ -97,17 +113,6 @@ export class CaseNotice extends Component {
       })
     }
   }
-
-  handleTableChange = pagination => {
-    this.setState(
-      {
-        currentPage: pagination,
-      },
-      () => {
-        this.getNoticeList();
-      },
-    );
-  };
 
 
   render() {
@@ -154,6 +159,7 @@ export class CaseNotice extends Component {
             />
           </Row>
         </div> */}
+        <NoticeModal ref={el => { this.noticeModalInfo = el }} />
       </PageHeaderWrapper>
 
     )

@@ -1,40 +1,45 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Modal, message, Row, Button, Pagination } from 'antd';
+import { Modal, message, Row, Button } from 'antd';
 import { SearchOutlined, RetweetOutlined, PlusOutlined, FireOutlined } from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import router from 'umi/router';
-import * as platService from '@/services/platform';
+import * as imService from '@/services/platform';
 
 export class ClassicCase extends Component {
   state = {
-    list: [],
-    currentPage: 1,
     total: 0,
     delVisible: false,
     delId: 0,
   };
+
+  actionRef = createRef()
 
   columns = [
     {
       title: '语言',
       dataIndex: 'language',
       // hideInSearch:true,
+      valueEnum: {
+        en: { text: '英文' },
+        'zh-CN': { text: '中文' },
+      },
     },
     {
       title: '标题',
       dataIndex: 'title',
-      // hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '简介',
       dataIndex: 'content',
-      // hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -44,6 +49,7 @@ export class ClassicCase extends Component {
     {
       title: '最后修改时间',
       dataIndex: 'updateTime',
+      valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -55,11 +61,11 @@ export class ClassicCase extends Component {
       dataIndex: 'id',
       valueType: 'option',
       hideInSearch: true,
-      render: (id, record) => (
+      render: (id, data) => (
         <>
           <a
             style={{ textDecoration: 'underline', marginRight: '10px' }}
-            onClick={() => this.goToEdit(1, id)}
+            onClick={() => this.goToEdit(1, data)}
           >
             编辑
           </a>
@@ -71,11 +77,8 @@ export class ClassicCase extends Component {
     },
   ];
 
-  componentDidMount() {
-    this.getPtIntroduction();
-  }
 
-  getPtIntroduction = async () => {
+  /* getPtIntroduction = async () => {
     const { currentPage } = this.state;
     const {
       code,
@@ -84,7 +87,7 @@ export class ClassicCase extends Component {
         pageNumber,
         pageInfo: { totalResults },
       },
-    } = await platService.listPlatformContent({
+    } = await imService.listPlatformContent({
       pageNum: currentPage,
       pageSize: 10,
       type: 'classicCase'
@@ -96,10 +99,15 @@ export class ClassicCase extends Component {
         total: totalResults,
       });
     }
-  };
+  }; */
 
-  goToEdit = (type, id) => {
-    router.push(`/platform/case/add?type=${type}&id=${id}`);
+  goToEdit = (type, data) => {
+    router.push({
+      pathname: '/platform/case/add',
+      query: {
+        type, data
+      }
+    });
   };
 
   showDelModal = id => {
@@ -111,18 +119,17 @@ export class ClassicCase extends Component {
 
   deleteCase = async () => {
     const { delId } = this.state;
-    const { code, msg } = await platService.deleteCommonProblems({
+    const { code, msg } = await imService.deleteCommonProblems({
       id: delId
     });
     if (code === '0') {
       this.setState({
         delVisible: false,
         delId: 0,
-        currentPage: 1
       });
       message.success(msg);
 
-      this.getPtIntroduction()
+      this.actionRef.current.reload();
     }
   };
 
@@ -133,20 +140,9 @@ export class ClassicCase extends Component {
     });
   };
 
-  handleTableChange = pagination => {
-    this.setState(
-      {
-        currentPage: pagination,
-      },
-      () => {
-        this.getPtIntroduction();
-      },
-    );
-  };
-
   render() {
     const { columns } = this;
-    const { list, delVisible, currentPage, total } = this.state;
+    const { delVisible, total } = this.state;
 
     return (
       <PageHeaderWrapper>
@@ -154,10 +150,38 @@ export class ClassicCase extends Component {
           确定删除此案例？
         </Modal>
         <ProTable
-          headerTitle="经典案例"
           columns={columns}
-          dataSource={list}
           rowKey="id"
+          actionRef={this.actionRef}
+          pagination={{
+            defaultCurrent: 1,
+            total,
+            showQuickJumper: true,
+            showLessItems: true,
+            showSizeChanger: true,
+          }}
+          request={params => {
+            params.pageNum = params.current;
+            delete params.current;
+            if (params.createTime) {
+              params.createDateFrom = params.createTime[0];
+              params.createDateTo = params.createTime[1];
+              delete params.createTime;
+            }
+            if (params.updateTime) {
+              params.updateDateFrom = params.updateTime[0];
+              params.updateDateTo = params.updateTime[1];
+              delete params.updateTime;
+            }
+            params.type = 'classicCase'
+            return imService.listPlatformContent(params)
+          }}
+          postData={data => {
+            this.setState({
+              total: data.pageInfo.totalResults,
+            })
+            return data.items;
+          }}
           toolBarRender={() => [
             <Row align="middle">
               <Button key="1" shape="round" onClick={() => this.goToEdit(0)}>
@@ -166,18 +190,7 @@ export class ClassicCase extends Component {
               </Button>
             </Row>,
           ]}
-          pagination={false}
         />
-        <div style={{ backgroundColor: '#FFF' }}>
-          <Row style={{ padding: '16px 16px' }} justify="end">
-            <Pagination
-              onChange={this.handleTableChange}
-              showSizeChanger={false}
-              total={total}
-              current={currentPage}
-            />
-          </Row>
-        </div>
       </PageHeaderWrapper>
     );
   }
