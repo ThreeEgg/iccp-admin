@@ -5,7 +5,7 @@ import moment from 'moment';
 import * as imService from '@/services/customer'
 import router from 'umi/router';
 import { Row, Pagination, message } from "antd"
-
+import { connect } from "dva"
 
 export class MyChatList extends Component {
 
@@ -55,17 +55,28 @@ export class MyChatList extends Component {
     },
     {
       title: '操作',
-      dataIndex: 'chatId',
+      dataIndex: 'userImId',
       valueType: 'option',
       hideInSearch: true,
-      render: item => (
+      render: (item, data) => (
         <>
-          <a style={{ textDecoration: 'underline' }}>聊天</a>
+          <a style={{ textDecoration: 'underline' }} onClick={() => this.gotoChat(item, data)}>聊天</a>
         </>
       )
     },
   ]
 
+  gotoChat = (item, chatItem) => {
+    // 发起会话
+    console.log(chatItem, this.props)
+    this.props.dispatch({
+      type: 'im/initSession',
+      serviceAccid: this.props.im.userUID,
+      userAccid: chatItem.userImId,
+      to: chatItem.userImId,
+    });
+    router.push('/chat/im');
+  };
 
   /* getMyChatList = async () => {
     const { currentPage } = this.state
@@ -131,4 +142,6 @@ export class MyChatList extends Component {
   }
 }
 
-export default MyChatList
+export default connect(({ im }) => ({
+  im
+}))(MyChatList)

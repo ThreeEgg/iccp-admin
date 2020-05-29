@@ -85,4 +85,7 @@ export default {
 
   // 聊天管理 案件通知
   caseList: '/system/order/list',
+
+  // 客服管理 客服账号
+  customerAccount: '/system/customersrv/list',
 };

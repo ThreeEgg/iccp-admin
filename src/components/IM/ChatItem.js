@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, message } from 'antd';
 import util from 'iccp-frontend-im/dist/utils'
 import PropTypes from 'prop-types';
+import { connect } from 'dva'
 
 const { confirm } = Modal;
 const config = {
@@ -261,7 +262,7 @@ class ChatItem extends React.Component {
     // 在会话聊天页
     if (this.props.currSessionId) {
       if (vNode && vNode.data && vNode.data.attrs) {
-        const attrs = vNode.data.attrs
+        const { attrs } = vNode.data
         if (attrs.type === 'robot') {
           return
         }
@@ -397,4 +398,4 @@ class ChatItem extends React.Component {
     );
   }
 }
-export default ChatItem;
+export default connect(({ }) => ({}))(ChatItem);

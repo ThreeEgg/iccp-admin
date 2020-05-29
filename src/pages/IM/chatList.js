@@ -47,14 +47,14 @@ export class chatList extends Component {
       dataIndex: 'chatId',
       valueType: 'option',
       hideInSearch: true,
-      render: item => (
+      render: (item, data) => (
         <div style={{ display: "flex" }}>
           <div style={{ marginRight: "5px" }}>
             <a onClick={() => { this.gotoChatDetail(item) }}>查看聊天详情</a>
           </div>
-          <div style={{ marginRight: "5px" }}>
-            <a onClick={() => { this.checkCaseInfo(item) }}>查看案件信息表</a>
-          </div>
+          {/* <div style={{ marginRight: "5px" }}>
+            <a onClick={() => { this.checkCaseInfo(item, data) }}>查看案件信息表</a>
+          </div> */}
           <div style={{ marginRight: "5px" }}>
             <a style={{ textDecoration: "underline" }} onClick={() => { this.checkChatRecord(item) }}>查看通话记录</a>
           </div>
@@ -70,8 +70,22 @@ export class chatList extends Component {
     router.push(`/im/list/chatDetail?chatId=${item}`)
   }
 
-  checkCaseInfo = item => {  // 查看案件信息表
+  checkCaseInfo = (item, data) => {  // 查看案件信息表
     message.warning('查看案件信息表')
+    console.log("data", data)
+    this.getCaseInfo(item)
+  }
+
+  getCaseInfo = async (caseId) => {
+    const { data, code } = await imService.getCaseInfo({
+      caseId
+    })
+    if (code === "0") {
+      this.setState({
+        visible: true,
+        data
+      })
+    }
   }
 
   checkChatRecord = item => {   // 跳转通话记录

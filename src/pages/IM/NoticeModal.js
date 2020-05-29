@@ -1,42 +1,44 @@
 import React, { Component } from 'react'
 import { Modal, Descriptions, Form, Input } from "antd"
-
+import * as imService from "@/services/im"
+import { connect } from "dva"
 
 class NoticeModal extends Component {
 
-  state = {
-    visible: false,
-    data: ''
-  }
-
-  modalShow = (data) => {
-    this.setState({
-      visible: true,
-      data
-    })
-  }
-
-  modalHide = () => {
-    this.setState({
-      visible: false,
-    })
-  }
 
   download = webUrl => {
     window.location.href = webUrl
   }
 
-  downloadAll = iccpCaseEnclosureList => {
+  downloadAll = caseId => {
+    this.props.dispatch({
+      type: 'im/downloadCaseBatch',
+      caseId,
+      callback: (res) => {
+        if (res instanceof Blob) {
+          const blobUrl = window.URL.createObjectURL(res);
+          const eleLink = document.createElement('a');
+          eleLink.download = '案件附件.zip';
+          eleLink.style.display = 'none';
+          eleLink.href = blobUrl;
+          // 触发点击
+          document.body.appendChild(eleLink);
+          eleLink.click();
+          // 然后移除
+          document.body.removeChild(eleLink);
+        }
+      },
+    });
 
   }
 
   render() {
-    const { visible, data } = this.state;
+    const { visible, data } = this.props;
     return (
       <Modal
         // title="案件信息表"
         visible={visible}
-        onCancel={this.modalHide}
+        onCancel={this.props.modalHide}
         footer={null}
       >
         {/* <Form initialValues={data}>
@@ -65,7 +67,7 @@ class NoticeModal extends Component {
             <div>
               <p>
                 <span style={{ marginRight: '20px' }}>材料名称</span>
-                <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => this.downloadAll(data.iccpCaseEnclosureList)}>全部下载</span>
+                <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => this.downloadAll(data.caseId)}>全部下载</span>
               </p>
               {
                 data && data.iccpCaseEnclosureList.map(item => (
@@ -85,4 +87,4 @@ class NoticeModal extends Component {
   }
 }
 
-export default NoticeModal
+export default connect(({ }) => ({}))(NoticeModal)

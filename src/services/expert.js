@@ -159,11 +159,12 @@ export const saveExpertSchedule = async ({ schedule, startTime, timeZone, userId
     },
   });
 
-export const addExpert = async ({ countryCode, email, image, name, userId, companyName, position }) => request.post(api.expertCreate, {
-  data: {
-    countryCode, email, image, name, userId, companyName, position
-  }
-})
+export const addExpert = async ({ countryCode, email, image, name, userId, companyName, position }) =>
+  request.post(api.expertCreate, {
+    params: {
+      countryCode, email, image, name, userId, companyName, position
+    },
+  });
 
 export const getContinentList = async () => request(api.getContinentList)
 

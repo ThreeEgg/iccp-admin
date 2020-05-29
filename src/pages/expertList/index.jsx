@@ -14,6 +14,7 @@ import {
 } from '@/services/expert';
 import api from "@/services/api"
 
+import moment from 'moment';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import EditForm from './components/EditForm'
@@ -215,30 +216,14 @@ const TableList = props => {
   }
 
   const gotoDetail = record => {         // 跳转到详细资料
-    message.warning("不知道具体地址")
-    // router.push("")
+    window.open(`http://221.215.57.110:9821/professor?id=${record.userId}`);
   }
 
   const columns = [
     {
       title: '专家ID',
       dataIndex: 'userId',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            validator: (_, value, callback) => {
-              if (value.isEmpty()) {
-                callback('请输入内容');
-              } else {
-                callback()
-              }
-            }
-          }],
-        label: '专家ID',
-        name: 'userId',
-        placeholder: "dsadadasda"
-      },
+
 
     },
     {
@@ -255,6 +240,7 @@ const TableList = props => {
       valueType: 'text',
       hideInTable: true,
       hideInForm: false,
+      hideInSearch: true,
       renderFormItem: item => (
         <Upload {...imageUploadProps} onChange={imageChange} beforeUpload={beforeUpload}>
           {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
@@ -303,12 +289,14 @@ const TableList = props => {
       dataIndex: 'createTime',
       valueType: 'dateTimeRange',
       hideInForm: true,
+      render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '最近登录时间',
       dataIndex: 'lastLoginTime',
       hideInSearch: true,
       hideInForm: true,
+      render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '本周日程安排',

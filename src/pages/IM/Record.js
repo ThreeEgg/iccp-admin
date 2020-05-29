@@ -58,19 +58,23 @@ export class Record extends Component {
     },
     {
       title: '操作',
-      dataIndex: 'id',
+      dataIndex: 'url',
       hideInSearch: true,
       valueType: 'option',
       render: item => (
-        <div>
-          下载
-        </div>
+        <>
+          <a style={{ textDecoration: 'underline' }} onClick={() => this.download(item)}>下载</a>
+        </>
       )
     },
   ]
 
   componentDidMount() {
     this.getChatRecord()
+  }
+
+  download = url => {
+    window.location.href = url
   }
 
   getChatRecord = async () => {

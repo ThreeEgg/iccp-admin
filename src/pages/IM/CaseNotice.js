@@ -4,6 +4,7 @@ import ProTable from "@ant-design/pro-table";
 import moment from "moment"
 import * as imService from "@/services/im"
 import router from "umi/router";
+import { connect } from 'dva';
 import { Row, Pagination, message, Modal, } from "antd"
 import NoticeModal from "./NoticeModal"
 
@@ -13,6 +14,8 @@ export class CaseNotice extends Component {
     list: [],
     currentPage: 1,
     total: 0,
+    visible: false,
+    data: ''
   }
 
   columns = [
@@ -47,10 +50,10 @@ export class CaseNotice extends Component {
       dataIndex: 'caseId',
       hideInSearch: true,
       valueType: 'option',
-      render: (item) => (
+      render: (item, data) => (
         <div style={{ display: "flex" }}>
           <div style={{ marginRight: "5px" }}>
-            <a style={{ textDecoration: 'underline' }} onClick={() => { this.gotoChatDetail(item) }}>查看聊天详情</a>
+            <a style={{ textDecoration: 'underline' }} onClick={() => { this.gotoChatDetail(item, data) }}>查看聊天详情</a>
           </div>
           <div style={{ marginRight: "5px" }}>
             <a style={{ textDecoration: 'underline' }} onClick={() => { this.checkCaseInfo(item) }}>查看案件信息表</a>
@@ -80,6 +83,19 @@ export class CaseNotice extends Component {
     router.push(`/im/list/chatDetail?chatId=${item}`)
   }
 
+  /* gotoChat = (item, chatItem) => {
+    // 发起会话
+    console.log("chatItem", chatItem, this.props)
+    return;
+    props.dispatch({
+      type: 'im/initSession',
+      serviceAccid: props.imInfo.accid,
+      userAccid: chatItem.userImId,
+      to: chatItem.userImId,
+    });
+    router.push('/chat/im');
+  }; */
+
   checkCaseInfo = caseId => {
     // message.warning('查看案件信息表')
     this.getCaseInfo(caseId)
@@ -90,8 +106,17 @@ export class CaseNotice extends Component {
       caseId
     })
     if (code === "0") {
-      this.noticeModalInfo.modalShow(data)
+      this.setState({
+        visible: true,
+        data
+      })
     }
+  }
+
+  modalHide = () => {
+    this.setState({
+      visible: false
+    })
   }
 
   getNoticeList = async () => {
@@ -117,7 +142,7 @@ export class CaseNotice extends Component {
 
   render() {
     const { columns } = this;
-    const { list, currentPage, total } = this.state;
+    const { data, visible, total } = this.state;
     return (
       <PageHeaderWrapper>
         <ProTable
@@ -159,11 +184,14 @@ export class CaseNotice extends Component {
             />
           </Row>
         </div> */}
-        <NoticeModal ref={el => { this.noticeModalInfo = el }} />
+        <NoticeModal visible={visible} data={data} modalHide={this.modalHide} />
       </PageHeaderWrapper>
 
     )
   }
 }
 
-export default CaseNotice
+export default connect(({ im, imInfo }) => (
+  { im, imInfo }
+))(CaseNotice)
+// export default CaseNotice;

@@ -4,12 +4,15 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/customer'
 import router from 'umi/router';
-import { message } from "antd"
+import { message, Modal, Form, Select, Button } from "antd"
 
 export class DialogList extends Component {
 
   state = {
-    total: 0
+    total: 0,
+    customerList: '',
+    visible: false,
+    userId: ''
   }
 
   columns = [
@@ -90,12 +93,28 @@ export class DialogList extends Component {
     }
   } */
 
+  componentDidMount() {
+    this.getCustomerList()
+  }
+
+  getCustomerList = async () => {
+    const { code, data } = await imService.getCustomerAccount()
+    if (code === "0") {
+      this.setState({
+        customerList: data
+      })
+    }
+  }
+
   gotoChatDetail = item => {
     message.warning("查看聊天详情")
   }
 
-  changeCustom = item => {
-    message.warning("更换客服")
+  changeCustom = userId => {
+    this.setState({
+      visible: true,
+      userId
+    })
   }
 
   /* handleTableChange = pagination => {
@@ -109,9 +128,25 @@ export class DialogList extends Component {
     );
   }; */
 
+  handleCancel = () => {
+    this.setState({ visible: false })
+  }
+
+  onFinish = async params => {
+    const { userId } = this.state;
+    const { code, msg } = await imService.changeCustomer({
+      ...params, userId
+    })
+    if (code === "0") {
+      message.success(msg)
+      this.handleCancel()
+    }
+  }
+
   render() {
     const { columns } = this;
-    const { list, currentPage, total } = this.state;
+    const { customerList, total, visible } = this.state;
+    const { Option } = Select;
     return (
       <PageHeaderWrapper>
         <ProTable
@@ -148,7 +183,36 @@ export class DialogList extends Component {
           }}
 
         />
-      </PageHeaderWrapper>
+        <Modal
+          title="更换客服"
+          visible={visible}
+          onCancel={this.handleCancel}
+          footer={null}
+          destroyOnClose
+        >
+          <Form
+            onFinish={this.onFinish}
+            name="basic"
+          >
+            <Form.Item
+              label="更换客服"
+              name="serviceUserId"
+              rules={[{ required: true, message: '请选择客服' }]}
+            >
+              <Select style={{ width: '100%', }}>
+                {
+                  customerList && customerList.map(item => (
+                    <Option key={item.userId} value={item.userId}>{item.name}</Option>
+                  ))
+                }
+              </Select>
+            </Form.Item>
+            <Button key="submit" type="primary" htmlType="submit">
+              保存
+            </Button>
+          </Form>
+        </Modal>
+      </PageHeaderWrapper >
     )
   }
 }

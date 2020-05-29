@@ -13,8 +13,7 @@ class EditForm extends Component {
     loading: false,
     continentList: '',
     countryList: '',
-    id: '',
-    currentData: ''
+    id: ''
   }
 
   componentDidMount() {
@@ -27,11 +26,10 @@ class EditForm extends Component {
       data.map(item => {
         item.label = item.cn_name
         item.value = item.id
-        item.isLeaf = false
       })
-      /* data.forEach(item => {
+      data.forEach(item => {
         this.getCountryList(item.id)
-      }) */
+      })
       this.setState({
         continentList: data
       })
@@ -39,8 +37,8 @@ class EditForm extends Component {
     }
   }
 
-  getCountryList = async () => {
-    const { continentList, id } = this.state;
+  getCountryList = async (id) => {
+    const { continentList } = this.state;
     const { data, code } = await imService.getCountryList({
       id
     })
@@ -49,36 +47,17 @@ class EditForm extends Component {
         item.label = item.fullCname
         item.value = item.countryCode
       })
-      this.setState({
-        currentData: data
-      })
+      continentList[id - 1].children = data
     }
   }
 
-  loadData = async selectedOptions => {
-    const targetOption = selectedOptions[selectedOptions.length - 1];
-    targetOption.loading = true;
-
-    // load options lazily
-
-
-    await this.getCountryList()
-    targetOption.loading = false;
-    const { currentData } = this.state;
-    targetOption.children = currentData;
-    this.setState({
-      continentList: [...this.state.continentList],
-    });
-
-  };
-
   onChange = (value, selectedOptions) => {
     console.log(value, selectedOptions);
-    this.setState({
+    /* this.setState({
       id: value[0],
     }, () => {
       this.getCountryList()
-    })
+    }) */
 
   };
 
@@ -93,8 +72,7 @@ class EditForm extends Component {
   modalHide = () => {
     this.setState({
       visible: false,
-      data: '',
-      imageUrl: ''
+      data: ''
     })
   }
 
@@ -104,20 +82,15 @@ class EditForm extends Component {
       message.warning('请上传头像');
       return;
     }
-    console.log(1222, localStorage.getItem('userId'))
     this.addExpert(params)
   }
 
   addExpert = async (params) => {
     const { imageUrl } = this.state;
-    console.log("params", params);
-    const countryCode = params.countryCode[1]
-    delete params.countryCode
     const { code, msg } = await imService.addExpert({
-
-      image: imageUrl,
-      countryCode,
+      // language: 'zh-CN',
       ...params,
+      image: imageUrl,
     })
     if (code === "0") {
       message.success(msg)
@@ -169,7 +142,6 @@ class EditForm extends Component {
         visible={visible}
         onCancel={this.modalHide}
         footer={null}
-        destroyOnClose
       >
         <Form
           name="basic"
@@ -250,7 +222,7 @@ class EditForm extends Component {
               options={continentList}
               loadData={this.loadData}
               onChange={this.onChange}
-            // changeOnSelect
+
             />
           </Form.Item>
 
