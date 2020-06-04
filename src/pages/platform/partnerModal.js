@@ -1,25 +1,22 @@
-import React, { Component } from 'react'
-import { Modal, Form, Input, Button, Upload, message, Select } from "antd"
+import React, { Component } from 'react';
+import { Modal, Form, Input, Button, Upload, message, Select } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import * as imService from '@/services/platform'
-import api from "../../services/api"
+import * as imService from '@/services/platform';
+import api from '../../services/api';
 
 export class partnerModal extends Component {
-
   state = {
     visible: false,
     loading: false,
     imageUrl: '',
     data: '',
-    title: ''
-  }
-
+    title: '',
+  };
 
   layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
   };
-
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
@@ -34,63 +31,77 @@ export class partnerModal extends Component {
           loading: false,
         }),
       ); */
-      console.log('info', info)
-      const { file: { response: { code, data: { webUrl } } } } = info;
-      if (code === "0") {
+      console.log('info', info);
+      const {
+        file: {
+          response: {
+            code,
+            data: { webUrl },
+          },
+        },
+      } = info;
+      if (code === '0') {
         this.setState({
-          imageUrl: webUrl
-        })
+          imageUrl: webUrl,
+        });
       }
     }
   };
 
   modalShow = (type, data) => {
-    if (type === "add") {
+    if (type === 'add') {
       this.setState({
         visible: true,
-        title: '新增'
+        title: '新增',
       });
-    } else if (type === "update") {
+    } else if (type === 'update') {
       this.setState({
         visible: true,
         title: '编辑',
         data,
-        imageUrl: data.image
+        imageUrl: data.image,
       });
     }
-
-  }
+  };
 
   handleCancel = () => {
     this.setState({
       visible: false,
-      imageUrl: ''
+      imageUrl: '',
+      data: '',
+      loading: false,
     });
   };
 
-  onFinish = (params) => {
+  onFinish = params => {
     const { imageUrl } = this.state;
     if (!imageUrl) {
       message.warning('请上传logo');
       return;
     }
-    this.addPartner(params)
-  }
+    this.addPartner(params);
+  };
 
-  addPartner = async (params) => {
+  addPartner = async params => {
     const { imageUrl, data } = this.state;
+    if (!data) {
+      params.type = 'partner';
+      params.id = '';
+    } else {
+      delete params.language;
+      params.id = data.id;
+    }
     const { code, msg } = await imService.addPartner({
-      type: 'partner',
       // language: 'zh-CN',
       ...params,
       image: imageUrl,
-      id: data.id
-    })
-    console.log(data)
-    /* this.setState({
-      list:items
-    }) */
-  }
+    });
+    if (code === '0') {
+      message.success(msg);
+      this.handleCancel();
+      this.props.getList();
+    }
+  };
 
   render() {
     const uploadUrl = `/api${api.fileUpload}`;
@@ -101,7 +112,7 @@ export class partnerModal extends Component {
       </div>
     );
     const { imageUrl, title, visible, data } = this.state;
-    const { Option } = Select
+    const { Option } = Select;
     // const {layout} = this;
     return (
       <Modal
@@ -109,9 +120,7 @@ export class partnerModal extends Component {
         visible={visible}
         ref={this.formRef}
         destroyOnClose
-        footer={
-          null
-        }
+        footer={null}
         closable={false}
       >
         <Form
@@ -123,8 +132,10 @@ export class partnerModal extends Component {
           <Form.Item
             label="合作方"
             name="title"
-            rules={[{ required: true, message: '请输入合作方名称' },
-            { type: 'string', max: 50, message: `最多输入50个字符` }]}
+            rules={[
+              { required: true, message: '请输入合作方名称' },
+              { type: 'string', max: 50, message: `最多输入50个字符` },
+            ]}
           >
             <Input placeholder="请输入合作方名称" maxLength={50} />
           </Form.Item>
@@ -137,43 +148,49 @@ export class partnerModal extends Component {
               style={{
                 width: '100%',
               }}
+              disabled={data ? true : false}
             >
               <Option value="en">英文</Option>
               <Option value="zh-CN">中文</Option>
             </Select>
           </Form.Item>
-          <Form.Item>
+          <Form.Item
+            label="logo"
+            name="image"
+            rules={[{ required: true, message: '' }]}
+            help="logo宽高比例建议2:1"
+          >
             <Upload
               name="file"
               listType="picture-card"
               className="avatar-uploader"
               showUploadList={false}
               action={uploadUrl}
-              headers={
-                { 'x-auth-token': localStorage.accessToken }
-              }
-              data={
-                {
-                  uploadUserId: localStorage.userId,
-                  type: 0
-                }
-              }
+              headers={{ 'x-auth-token': localStorage.accessToken }}
+              data={{
+                uploadUserId: localStorage.userId,
+                type: 0,
+              }}
               beforeUpload={beforeUpload}
               onChange={this.handleChange}
             >
-              {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              {imageUrl ? (
+                <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+              ) : (
+                uploadButton
+              )}
             </Upload>
-
           </Form.Item>
           <Button key="submit" type="primary" htmlType="submit">
             保存
-            </Button>,
-            <Button key="back" onClick={this.handleCancel}>
+          </Button>
+          ,
+          <Button key="back" onClick={this.handleCancel}>
             取消
-            </Button>
+          </Button>
         </Form>
       </Modal>
-    )
+    );
   }
 }
 
@@ -189,4 +206,4 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 
-export default partnerModal
+export default partnerModal;

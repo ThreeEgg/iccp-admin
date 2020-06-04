@@ -6,14 +6,13 @@ import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
 import { SearchOutlined, RollbackOutlined } from '@ant-design/icons';
 import router from 'umi/router';
-import * as imService from '@/services/platform'
-
+import * as imService from '@/services/platform';
 
 export class AddClassicCase extends Component {
   state = {
-    title: "",
+    title: '',
     editorState: BraftEditor.createEditorState(null),
-    id: ''
+    id: '',
   };
 
   componentWillMount() {
@@ -23,44 +22,52 @@ export class AddClassicCase extends Component {
       this.setState({
         data,
         title: '新增案例',
-        id: ''
-      })
+        id: '',
+      });
     } else if (type === 1) {
       this.setState({
         data,
         title: '编辑案例',
         id: data.id,
-        editorState: BraftEditor.createEditorState(data.content)
-      })
+        editorState: BraftEditor.createEditorState(data.content),
+      });
     }
   }
 
   onFinish = params => {
-    params.content = params.content.toHTML()
+    params.content = params.content.toHTML();
     this.updateCase(params);
-  }
+  };
 
-  updateCase = async (params) => {
+  updateCase = async params => {
     const { id } = this.state;
+    console.log(id, params);
+    if (id) {
+      delete params.language;
+    } else {
+      params.type = 'classicCase';
+    }
     console.log(params);
     const { code, msg } = await imService.addPartner({
       id,
-      // type,
-      ...params
-    })
-    if (code === "0") {
-      message.success(msg)
-      this.back()
+      ...params,
+    });
+    if (code === '0') {
+      message.success(msg);
+      this.back();
+      this.setState({
+        id: '',
+      });
     }
-  }
+  };
 
   back = () => {
     router.goBack();
   };
 
   render() {
-    const { title, data, editorState } = this.state;
-    const { Option } = Select
+    const { title, data, editorState, id } = this.state;
+    const { Option } = Select;
 
     // const { TextArea } = Input;
 
@@ -94,6 +101,7 @@ export class AddClassicCase extends Component {
                 style={{
                   width: '100%',
                 }}
+                disabled={id ? true : false}
               >
                 <Option value="en">英文</Option>
                 <Option value="zh-CN">中文</Option>
@@ -113,9 +121,7 @@ export class AddClassicCase extends Component {
             <Form.Item
               name="content"
               label="文章详情"
-              rules={[
-                { required: true, message: '这是必填项～' },
-              ]}
+              rules={[{ required: true, message: '这是必填项～' }]}
             >
               <BraftEditor
                 className="my-editor"

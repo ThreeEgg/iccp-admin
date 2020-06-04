@@ -1,17 +1,16 @@
-import React, { Component, createRef } from 'react'
+import React, { Component, createRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
-import * as imService from '@/services/platform'
-import { Button, Row, Pagination, message, Modal } from "antd"
+import * as imService from '@/services/platform';
+import { Button, Row, Pagination, message, Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import PartnerModal from "./partnerModal"
+import PartnerModal from './partnerModal';
 
 export class Partner extends Component {
-
   state = {
-    total: 0
-  }
+    total: 0,
+  };
 
   actionRef = createRef();
 
@@ -28,7 +27,7 @@ export class Partner extends Component {
     {
       title: '合作方名称',
       dataIndex: 'title',
-      hideInSearch: true
+      hideInSearch: true,
     },
     {
       title: '合作方logo',
@@ -37,9 +36,9 @@ export class Partner extends Component {
       valueType: 'option',
       render: item => (
         <>
-          <img src={item} alt="合作方logo" />
+          <img src={item} alt="合作方logo" height="58" />
         </>
-      )
+      ),
     },
     {
       title: '创建时间',
@@ -68,16 +67,30 @@ export class Partner extends Component {
       hideInSearch: true,
       render: (item, data) => (
         <>
-          <a style={{ textDecoration: "underline", marginRight: "10px" }} onClick={() => { this.modalShow('update', data) }}>编辑</a>
-          <a style={{ textDecoration: "underline" }} onClick={() => { this.handleDelete(item) }}>刪除</a>
+          <a
+            style={{ textDecoration: 'underline', marginRight: '10px' }}
+            onClick={() => {
+              this.modalShow('update', data);
+            }}
+          >
+            编辑
+          </a>
+          <a
+            style={{ textDecoration: 'underline' }}
+            onClick={() => {
+              this.handleDelete(item);
+            }}
+          >
+            刪除
+          </a>
         </>
-      )
+      ),
     },
-  ]
+  ];
 
   handleDelete = item => {
     const { confirm } = Modal;
-    const that = this
+    const that = this;
     confirm({
       title: '删除',
       icon: <ExclamationCircleOutlined />,
@@ -86,23 +99,23 @@ export class Partner extends Component {
       okType: 'danger',
       cancelText: '取消',
       onOk() {
-        that.deleteProblems(item)
+        that.deleteProblems(item);
       },
       onCancel() {
         message.warning('已经取消');
       },
-    })
-  }
+    });
+  };
 
-  deleteProblems = async (item) => {
+  deleteProblems = async item => {
     const { code, msg } = await imService.deleteCommonProblems({
-      id: item
-    })
-    if (code === "0") {
-      message.success(msg)
+      id: item,
+    });
+    if (code === '0') {
+      message.success(msg);
       this.actionRef.current.reload();
     }
-  }
+  };
 
   /* getPtIntroduction = async () => {
     const { currentPage } = this.state
@@ -124,11 +137,9 @@ export class Partner extends Component {
     }
   } */
 
-
   modalShow = (type, data) => {
-
-    this.partnerModal.modalShow(type, data)
-  }
+    this.partnerModal.modalShow(type, data);
+  };
 
   render() {
     const { columns } = this;
@@ -159,25 +170,30 @@ export class Partner extends Component {
               params.updateDateTo = params.updateTime[1];
               delete params.updateTime;
             }
-            params.type = 'partner'
-            return imService.listPlatformContent(params)
+            params.type = 'partner';
+            return imService.listPlatformContent(params);
           }}
           postData={data => {
             this.setState({
               total: data.pageInfo.totalResults,
-            })
+            });
             return data.items;
           }}
           toolBarRender={() => [
-            <Row align='middle'>
-              <Button onClick={() => this.modalShow("add")}>新建</Button>
-            </Row>
+            <Row align="middle">
+              <Button onClick={() => this.modalShow('add')}>新建</Button>
+            </Row>,
           ]}
         />
-        <PartnerModal ref={el => { this.partnerModal = el }} />
+        <PartnerModal
+          ref={el => {
+            this.partnerModal = el;
+          }}
+          getList={() => this.actionRef.current.reload()}
+        />
       </PageHeaderWrapper>
-    )
+    );
   }
 }
 
-export default Partner
+export default Partner;

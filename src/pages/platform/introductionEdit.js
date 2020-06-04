@@ -1,43 +1,42 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import router from 'umi/router';
-import { message, Card, Button, Form, Input } from "antd"
+import { message, Card, Button, Form, Input } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
 import { controls, myUploadFn, validateFn } from '@/utils/const';
 import { SearchOutlined, RollbackOutlined } from '@ant-design/icons';
-import * as imService from '@/services/platform'
+import * as imService from '@/services/platform';
 
 export default class introduction extends Component {
-
   state = {
     type: '',
     data: '',
     title: '',
     id: '',
-    editorState: BraftEditor.createEditorState(null)
-  }
+    editorState: BraftEditor.createEditorState(null),
+  };
 
   componentWillMount() {
-
     const { data, type } = this.props.location.query;
-    message.success(`传过来了${data.content}`)
-    if (type === "platformIntro") {
+    if (type === 'platformIntro') {
       this.setState({
-        type, data,
+        type,
+        data,
         title: '平台介绍编辑',
-        id: data.id
-      })
-    } else if (type === "businessIntro") {
+        id: data.id,
+      });
+    } else if (type === 'businessIntro') {
       this.setState({
-        type, data,
+        type,
+        data,
         title: '业务介绍编辑',
-        id: data.id
-      })
+        id: data.id,
+      });
     }
     this.setState({
-      editorState: BraftEditor.createEditorState(data.content)
-    })
+      editorState: BraftEditor.createEditorState(data.content),
+    });
   }
 
   back = () => {
@@ -46,20 +45,20 @@ export default class introduction extends Component {
 
   onFinish = params => {
     this.updateIntroduction({ content: params.content.toHTML() });
-  }
+  };
 
-  updateIntroduction = async (params) => {
+  updateIntroduction = async params => {
     const { id } = this.state;
     const { code, msg } = await imService.addPartner({
       id,
       // type,
-      ...params
-    })
-    if (code === "0") {
-      message.success(msg)
-      this.back()
+      ...params,
+    });
+    if (code === '0') {
+      message.success(msg);
+      this.back();
     }
-  }
+  };
 
   render() {
     const { title, data, editorState } = this.state;
@@ -73,7 +72,7 @@ export default class introduction extends Component {
         ]}
       >
         <Card style={{ padding: ' 8px 10%' }}>
-          <Form ref={this.formRef} name="classicCase" initialValues={data} onFinish={this.onFinish} >
+          <Form ref={this.formRef} name="classicCase" initialValues={data} onFinish={this.onFinish}>
             <Form.Item
               name="content"
               label="文章详情"
@@ -99,8 +98,6 @@ export default class introduction extends Component {
           </Form>
         </Card>
       </PageHeaderWrapper>
-    )
+    );
   }
 }
-
-

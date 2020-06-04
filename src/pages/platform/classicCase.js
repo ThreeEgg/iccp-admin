@@ -14,7 +14,7 @@ export class ClassicCase extends Component {
     delId: 0,
   };
 
-  actionRef = createRef()
+  actionRef = createRef();
 
   columns = [
     {
@@ -33,7 +33,7 @@ export class ClassicCase extends Component {
     },
     {
       title: '简介',
-      dataIndex: 'content',
+      dataIndex: 'brief',
       hideInSearch: true,
     },
     {
@@ -77,7 +77,6 @@ export class ClassicCase extends Component {
     },
   ];
 
-
   /* getPtIntroduction = async () => {
     const { currentPage } = this.state;
     const {
@@ -105,8 +104,9 @@ export class ClassicCase extends Component {
     router.push({
       pathname: '/platform/case/add',
       query: {
-        type, data
-      }
+        type,
+        data,
+      },
     });
   };
 
@@ -120,7 +120,7 @@ export class ClassicCase extends Component {
   deleteCase = async () => {
     const { delId } = this.state;
     const { code, msg } = await imService.deleteCommonProblems({
-      id: delId
+      id: delId,
     });
     if (code === '0') {
       this.setState({
@@ -173,13 +173,13 @@ export class ClassicCase extends Component {
               params.updateDateTo = params.updateTime[1];
               delete params.updateTime;
             }
-            params.type = 'classicCase'
-            return imService.listPlatformContent(params)
+            params.type = 'classicCase';
+            return imService.listPlatformContent(params);
           }}
           postData={data => {
             this.setState({
               total: data.pageInfo.totalResults,
-            })
+            });
             return data.items;
           }}
           toolBarRender={() => [

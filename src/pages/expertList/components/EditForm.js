@@ -1,11 +1,11 @@
-import React, { Component, useState } from 'react'
-import { Modal, Cascader, Form, Input, Select, Upload, Button, message } from "antd"
+import React, { Component, useState } from 'react';
+import { Modal, Cascader, Form, Input, Select, Upload, Button, message } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import api from "@/services/api"
-import * as imService from '@/services/expert'
+import api from '@/services/api';
+import * as imService from '@/services/expert';
+import moment from 'moment';
 
 class EditForm extends Component {
-
   state = {
     visible: false,
     data: '',
@@ -14,46 +14,45 @@ class EditForm extends Component {
     continentList: '',
     countryList: '',
     id: '',
-    currentData: ''
-  }
+    currentData: '',
+  };
 
   componentDidMount() {
-    this.getContinentList()
+    this.getContinentList();
   }
 
   getContinentList = async () => {
-    const { data, code } = await imService.getContinentList()
-    if (code === "0") {
+    const { data, code } = await imService.getContinentList();
+    if (code === '0') {
       data.map(item => {
-        item.label = item.cn_name
-        item.value = item.id
-        item.isLeaf = false
-      })
+        item.label = item.cn_name;
+        item.value = item.id;
+        item.isLeaf = false;
+      });
       /* data.forEach(item => {
         this.getCountryList(item.id)
       }) */
       this.setState({
-        continentList: data
-      })
-
+        continentList: data,
+      });
     }
-  }
+  };
 
   getCountryList = async () => {
     const { continentList, id } = this.state;
     const { data, code } = await imService.getCountryList({
-      id
-    })
-    if (code === "0") {
+      id,
+    });
+    if (code === '0') {
       data.forEach(item => {
-        item.label = item.fullCname
-        item.value = item.countryCode
-      })
+        item.label = item.fullCname;
+        item.value = item.countryCode;
+      });
       this.setState({
-        currentData: data
-      })
+        currentData: data,
+      });
     }
-  }
+  };
 
   loadData = async selectedOptions => {
     const targetOption = selectedOptions[selectedOptions.length - 1];
@@ -61,69 +60,68 @@ class EditForm extends Component {
 
     // load options lazily
 
-
-    await this.getCountryList()
+    await this.getCountryList();
     targetOption.loading = false;
     const { currentData } = this.state;
     targetOption.children = currentData;
     this.setState({
       continentList: [...this.state.continentList],
     });
-
   };
 
   onChange = (value, selectedOptions) => {
     console.log(value, selectedOptions);
-    this.setState({
-      id: value[0],
-    }, () => {
-      this.getCountryList()
-    })
-
+    this.setState(
+      {
+        id: value[0],
+      },
+      () => {
+        this.getCountryList();
+      },
+    );
   };
 
-
-  modalShow = (data) => {
+  modalShow = data => {
     this.setState({
       visible: true,
-      data
-    })
-  }
+      data,
+    });
+  };
 
   modalHide = () => {
     this.setState({
       visible: false,
       data: '',
-      imageUrl: ''
-    })
-  }
+      imageUrl: '',
+    });
+  };
 
+  // FIXME:
   onFinish = params => {
     const { imageUrl } = this.state;
     if (!imageUrl) {
       message.warning('请上传头像');
       return;
     }
-    console.log(1222, localStorage.getItem('userId'))
-    this.addExpert(params)
-  }
+    console.log(1222, localStorage.getItem('userId'));
+    this.addExpert(params);
+  };
 
-  addExpert = async (params) => {
+  addExpert = async params => {
     const { imageUrl } = this.state;
-    console.log("params", params);
-    const countryCode = params.countryCode[1]
-    delete params.countryCode
+    console.log('params', params);
+    const countryCode = params.countryCode[1];
+    delete params.countryCode;
     const { code, msg } = await imService.addExpert({
-
       image: imageUrl,
       countryCode,
       ...params,
-    })
-    if (code === "0") {
-      message.success(msg)
-      this.modalHide()
+    });
+    if (code === '0') {
+      message.success(msg);
+      this.modalHide();
     }
-  }
+  };
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
@@ -131,11 +129,19 @@ class EditForm extends Component {
       return;
     }
     if (info.file.status === 'done') {
-      const { file: { response: { code, data: { webUrl } } } } = info;
-      if (code === "0") {
+      const {
+        file: {
+          response: {
+            code,
+            data: { webUrl },
+          },
+        },
+      } = info;
+      if (code === '0') {
         this.setState({
-          imageUrl: webUrl
-        })
+          imageUrl: webUrl,
+          loading: false,
+        });
       }
     }
   };
@@ -150,7 +156,7 @@ class EditForm extends Component {
       message.error('Image must smaller than 2MB!');
     }
     return isJpgOrPng && isLt2M;
-  }
+  };
 
   render() {
     const uploadUrl = `/api${api.fileUpload}`;
@@ -161,78 +167,74 @@ class EditForm extends Component {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
-    const { Option } = Select
+    const { Option } = Select;
     const { visible, continentList, data, imageUrl, countryList, options } = this.state;
     return (
-      <Modal
-        title="新建"
-        visible={visible}
-        onCancel={this.modalHide}
-        footer={null}
-        destroyOnClose
-      >
-        <Form
-          name="basic"
-          onFinish={this.onFinish}
-          initialValues={data}
-        >
+      <Modal title="新建" visible={visible} onCancel={this.modalHide} footer={null} destroyOnClose>
+        <Form name="basic" onFinish={this.onFinish} initialValues={data}>
           <Form.Item
             label="专家ID"
             name="userId"
-            rules={[{ required: true, message: '请输入专家ID' },
-            { type: 'string', max: 50, message: `最多输入50个字符` }]}
+            rules={[
+              { required: true, message: '请输入专家ID' },
+              { type: 'string', max: 50, message: `最多输入50个字符` },
+            ]}
           >
             <Input placeholder="请输入专家ID" maxLength={50} />
           </Form.Item>
-
           <Form.Item
             label="专家姓名"
             name="name"
-            rules={[{ required: true, message: '请输入专家名称' },
-            { type: 'string', max: 50, message: `最多输入50个字符` }]}
+            rules={[
+              { required: true, message: '请输入专家名称' },
+              { type: 'string', max: 50, message: `最多输入50个字符` },
+            ]}
           >
             <Input placeholder="请输入专家名称" maxLength={50} />
           </Form.Item>
-
           <Form.Item
             label="专家邮箱"
             name="email"
-            rules={[{ required: true, message: '请输入邮箱' },
-            { type: 'string', max: 50, message: `最多输入50个字符` },
-            { pattern: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, message: '请输入正确的邮箱' }
+            rules={[
+              { required: true, message: '请输入邮箱' },
+              { type: 'string', max: 50, message: `最多输入50个字符` },
+              {
+                pattern: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
+                message: '请输入正确的邮箱',
+              },
             ]}
           >
             <Input placeholder="请输入邮箱" maxLength={50} />
           </Form.Item>
-
-          <Form.Item label="专家头像">
+          <Form.Item label="专家头像" name="image" rules={[{ required: true, message: '' }]}>
             <Upload
               name="file"
               listType="picture-card"
               className="avatar-uploader"
               showUploadList={false}
               action={uploadUrl}
-              headers={
-                { 'x-auth-token': localStorage.accessToken }
-              }
-              data={
-                {
-                  uploadUserId: localStorage.userId,
-                  type: 0
-                }
-              }
+              headers={{ 'x-auth-token': localStorage.accessToken }}
+              data={{
+                uploadUserId: localStorage.userId,
+                type: 0,
+              }}
               beforeUpload={this.beforeUpload}
               onChange={this.handleChange}
             >
-              {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              {imageUrl ? (
+                <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+              ) : (
+                uploadButton
+              )}
             </Upload>
-
           </Form.Item>
-
           <Form.Item
             label="专家国籍"
             name="countryCode"
-            rules={[{ required: true, message: '请选择国籍' }]}
+            rules={[
+              { required: true, message: '请选择国籍' },
+              { pattern: /[A-Za-z]/, message: '请选择到国籍' },
+            ]}
           >
             {/* <Select
               style={{
@@ -250,10 +252,10 @@ class EditForm extends Component {
               options={continentList}
               loadData={this.loadData}
               onChange={this.onChange}
-            // changeOnSelect
+              showSearch
+              changeOnSelect
             />
           </Form.Item>
-
           <Form.Item
             label="所属公司"
             name="companyName"
@@ -261,7 +263,6 @@ class EditForm extends Component {
           >
             <Input placeholder="请输入所属公司" maxLength={50} />
           </Form.Item>
-
           <Form.Item
             label="职务"
             name="position"
@@ -269,17 +270,17 @@ class EditForm extends Component {
           >
             <Input placeholder="请输入职务" maxLength={50} />
           </Form.Item>
-
           <Button key="submit" type="primary" htmlType="submit">
             保存
-            </Button>,
-        <Button key="back" onClick={this.modalHide}>
+          </Button>
+          ,
+          <Button key="back" onClick={this.modalHide}>
             取消
-            </Button>
+          </Button>
         </Form>
-      </Modal >
-    )
+      </Modal>
+    );
   }
 }
 
-export default EditForm
+export default EditForm;
