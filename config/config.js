@@ -186,6 +186,7 @@ export default {
             {
               name: '聊天',
               path: '/chat',
+              hideInMenu: true,
               routes: [
                 {
                   name: '聊天记录',
