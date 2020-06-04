@@ -33,11 +33,11 @@ const plugins = [
       },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -146,13 +146,13 @@ export default {
                 {
                   name: '聊天列表',
                   path: '/im/chatList',
-                  component: './IM/chatList',
+                  component: './IM/ChatList',
                   authority: ['admin'],
                 },
                 {
                   name: '通话记录',
                   path: '/im/list/record',
-                  component: './IM/record',
+                  component: './IM/Record',
                   authority: ['admin'],
                   hideInMenu: true,
                 },
@@ -368,7 +368,6 @@ export default {
   publicPath: '/admin/',
   proxy: proxy[REACT_APP_ENV || 'dev'],
   chainWebpack: webpackPlugin,
-  base: '/admin',
   treeShaking: true,
   disableCSSModules: true,
 };
