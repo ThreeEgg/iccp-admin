@@ -228,6 +228,20 @@ const TableList = props => {
     return isZip;
   };
 
+  const beforeImgUpload = file => {
+    console.log(file.type);
+
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 5;
+    if (!isLt2M) {
+      message.error('Image must smaller than 5MB!');
+    }
+    return isZip;
+  };
+
   const gotoDetail = record => {
     // 跳转到详细资料
     window.open(`http://221.215.57.110:9821/professor?id=${record.userId}`);
@@ -254,7 +268,7 @@ const TableList = props => {
       hideInForm: false,
       hideInSearch: true,
       renderFormItem: item => (
-        <Upload {...imageUploadProps} onChange={imageChange} beforeUpload={beforeUpload}>
+        <Upload {...imageUploadProps} onChange={imageChange} beforeUpload={beforeImgUpload}>
           {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
         </Upload>
       ),
