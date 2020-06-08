@@ -38,10 +38,11 @@ class EditForm extends Component {
     }
   };
 
-  getCountryList = async () => {
+  getCountryList = async acceptId => {
     const { continentList, id } = this.state;
+    // if(!id) return;
     const { data, code } = await imService.getCountryList({
-      id,
+      id: acceptId,
     });
     if (code === '0') {
       data.forEach(item => {
@@ -59,8 +60,8 @@ class EditForm extends Component {
     targetOption.loading = true;
 
     // load options lazily
-
-    await this.getCountryList();
+    console.log('selectedOptions', selectedOptions);
+    await this.getCountryList(selectedOptions[0].id);
     targetOption.loading = false;
     const { currentData } = this.state;
     targetOption.children = currentData;
@@ -71,14 +72,15 @@ class EditForm extends Component {
 
   onChange = (value, selectedOptions) => {
     console.log(value, selectedOptions);
-    this.setState(
+    this.getCountryList(value[0]);
+    /* this.setState(
       {
         id: value[0],
       },
       () => {
-        this.getCountryList();
+
       },
-    );
+    ); */
   };
 
   modalShow = data => {
@@ -103,15 +105,15 @@ class EditForm extends Component {
       message.warning('请上传头像');
       return;
     }
-    console.log(1222, localStorage.getItem('userId'));
     this.addExpert(params);
   };
 
   addExpert = async params => {
     const { imageUrl } = this.state;
-    console.log('params', params);
+    console.log('params', params, imageUrl);
     const countryCode = params.countryCode[1];
     delete params.countryCode;
+    delete params.image;
     const { code, msg } = await imService.addExpert({
       image: imageUrl,
       countryCode,
