@@ -3,12 +3,12 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { notification, message } from 'antd';
+import { message, notification } from 'antd';
 
 export const getCommonHeader = () => {
   const header = {
-    platform: 'pcweb',
-    language: 'zh-CN',
+    platform: 'others',
+    'x-language-id': 'zh_CN',
     ua: window.navigator.userAgent,
     timezone: new Date().getTimezoneOffset() / 60,
   };
@@ -113,8 +113,6 @@ request.interceptors.response.use(async (response, options) => {
     // 12000 需要人机验证
     if (data.code === '16000') {
       message.error('登录失效');
-    } else if (data.code === '13000') {
-      message.error('查无此案件');
     } else {
       notification.error({
         description: data.errorInfo,
