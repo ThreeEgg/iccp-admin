@@ -1,6 +1,12 @@
-import { DownOutlined, PlusOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message, Modal, Upload } from 'antd';
-import React, { useState, useRef } from 'react';
+import {
+  DownloadOutlined,
+  DownOutlined,
+  LoadingOutlined,
+  PlusOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
+import { Button, Dropdown, Menu, message, Modal, Upload } from 'antd';
+import React, { useRef, useState } from 'react';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -10,7 +16,6 @@ import {
   expertNotify,
   expertResetPassword,
   expertUpdateStatus,
-  addExpert,
 } from '@/services/expert';
 import api from '@/services/api';
 
@@ -19,7 +24,11 @@ import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import EditForm from './components/EditForm';
 
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import { addRule, removeRule, updateRule } from './service';
+
+import expertImportFile from '@/assets/file/专家批量导入模板.xlsx';
+import expertAvatarImportFile from '@/assets/file/专家头像导入模板.zip';
+
 /**
  * 添加节点
  * @param fields
@@ -441,6 +450,33 @@ const TableList = props => {
     editForm.current.modalShow();
   };
 
+  const handleImportMenuClick = ({ key }) => {
+    switch (key) {
+      case 'help':
+        Modal.info({
+          title: '导入模板说明',
+          width: 720,
+          content: (
+            <div>
+              <h4>专家批量导入</h4>
+              <p>
+                格式：表格，xlsx格式 <br />
+                内容参考表格头即可
+              </p>
+              <h4>头像批量导入</h4>
+              <p>
+                格式：压缩包，zip格式 <br />
+                zip包文件：在zip包根目录下，以"专家ID.jpg"命名格式放入头像图片。如专家"A000001"，则头像名为"A000001.jpg"
+              </p>
+            </div>
+          ),
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <PageHeaderWrapper className="customer-service-list">
       <ProTable
@@ -472,6 +508,29 @@ const TableList = props => {
               {imgLoading ? <LoadingOutlined /> : <PlusOutlined />} 头像批量导入
             </Button>
           </Upload>,
+          <Dropdown
+            overlay={
+              <Menu onClick={handleImportMenuClick}>
+                <Menu.Item key="help">
+                  <QuestionCircleOutlined /> 导入说明
+                </Menu.Item>
+                <Menu.Item key="expert">
+                  <a href={expertImportFile} download="专家批量导入模板">
+                    <DownloadOutlined /> 专家批量导入模板
+                  </a>
+                </Menu.Item>
+                <Menu.Item key="avatar">
+                  <a href={expertAvatarImportFile} download="头像批量导入模板">
+                    <DownloadOutlined /> 头像批量导入模板
+                  </a>
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Button>
+              导入模板 <DownOutlined />
+            </Button>
+          </Dropdown>,
           <Button type="primary" onClick={handleModalShow}>
             <PlusOutlined /> 新增
           </Button>,
