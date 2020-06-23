@@ -49,10 +49,14 @@ export default {
   expertResetPassword: '/system/expert/reset-passwd',
   expertUpdateStatus: '/system/expert/status',
 
+  expertIllegalReport: '/expert/illegal-report',
+
   // 用户
   userList: '/system/user/list',
   userResetPassword: '/system/user/reset-passwd',
   userUpdateStatus: '/system/user/status',
+  userVerifyList: '/system/user/pending-list',
+  userVerify: '/system/user/verify',
 
   // 地区
   continentList: '/system/continent/list',

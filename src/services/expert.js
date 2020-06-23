@@ -182,8 +182,23 @@ export const addExpert = async ({
 
 export const getContinentList = async () => request(api.getContinentList);
 
-/* export const getCountryList = async ({ id }) => request(api.getCountryList, {
-  params: {
-    id
-  }
-}) */
+export const expertIllegalReport = async ({
+  contentType,
+  expertId,
+  expertName,
+  isValid,
+  pageNum,
+  pageSize,
+  reportUserId,
+}) =>
+  request(api.expertIllegalReport, {
+    params: {
+      contentType,
+      expertId,
+      expertName,
+      isValid,
+      pageNum,
+      pageSize,
+      reportUserId,
+    },
+  });

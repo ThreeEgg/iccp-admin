@@ -117,6 +117,12 @@ export default {
                   component: './expertList',
                   authority: ['admin'],
                 },
+                {
+                  name: '内容举报',
+                  path: '/expert/illegalReport',
+                  component: './expertList/illegalReport',
+                  authority: ['admin'],
+                },
               ],
             },
             {
@@ -127,6 +133,12 @@ export default {
                   name: '用户列表',
                   path: '/userManage/list',
                   component: './userManageList',
+                  authority: ['admin'],
+                },
+                {
+                  name: '审核列表',
+                  path: '/userManage/verify',
+                  component: './userManageList/verifyList',
                   authority: ['admin'],
                 },
               ],

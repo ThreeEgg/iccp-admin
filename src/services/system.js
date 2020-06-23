@@ -66,3 +66,30 @@ export const deleteAccount = async ({ userId }) =>
       userId,
     },
   });
+
+export const userVerifyList = async ({
+  isVerified,
+  pageNum = 1,
+  pageSize = 10,
+  registryDateFrom,
+  registryDateTo,
+  userId,
+}) =>
+  request(api.userVerifyList, {
+    params: {
+      isVerified,
+      pageNum,
+      pageSize,
+      registryDateFrom,
+      registryDateTo,
+      userId,
+    },
+  });
+
+export const userVerify = async ({ userId, isVerified }) =>
+  request(api.userVerify, {
+    params: {
+      userId,
+      isVerified,
+    },
+  });
