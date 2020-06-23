@@ -1,7 +1,5 @@
 import slash from 'slash2';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
-
-import themePluginConfig from './themePluginConfig';
 import proxy from './proxy';
 import webpackPlugin from './plugin.config';
 
@@ -271,9 +269,22 @@ export default {
                   authority: ['admin'],
                 },
                 {
-                  name: '经典案例',
+                  name: '新增经典案例',
                   path: '/platform/case/add',
                   component: './platform/AddClassicCase',
+                  authority: ['admin'],
+                  hideInMenu: true,
+                },
+                {
+                  name: '帮助中心',
+                  path: '/platform/helpCenter',
+                  component: './platform/helpCenter',
+                  authority: ['admin'],
+                },
+                {
+                  name: '新增',
+                  path: '/platform/helpCenter/add',
+                  component: './platform/NewAdd',
                   authority: ['admin'],
                   hideInMenu: true,
                 },

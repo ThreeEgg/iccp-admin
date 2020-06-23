@@ -1,6 +1,6 @@
 import React, { Component, createRef } from 'react';
 import { getParameter } from '@/utils/const.js';
-import { Button, Card, Form, Input, message } from 'antd';
+import { Button, Card, Form, Input, message, Radio } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import router from 'umi/router';
 import { RollbackOutlined } from '@ant-design/icons';
@@ -23,6 +23,12 @@ export class NewAdd extends Component {
         break;
       case 'clause':
         label = ['条款规定标题', '条款规定详情'];
+        break;
+      case 'helpCenter':
+        label = ['帮助中心标题', '帮助中心详情'];
+        break;
+      default:
+        break;
     }
     this.setState({
       label,
@@ -42,40 +48,33 @@ export class NewAdd extends Component {
   }
 
   onFinish = params => {
-    if (getParameter('type') === 'commonQuestion') {
-      this.addCommonProblems(params);
-    } else if (getParameter('type') === 'clause') {
-      this.addClause(params);
+    const type = getParameter('type');
+    const supportedType = ['commonQuestion', 'clause', 'helpCenter'];
+    if (supportedType.indexOf(type) > -1) {
+      this.add(params);
     }
   };
 
-  addCommonProblems = async params => {
-    const { title, content } = params;
-    const { msg, code } = await imService.addPartner({
-      type: 'commonQuestion',
-      language: 'zh_CN',
-      title,
-      content,
-      id: '',
+  add = async params => {
+    const { type, data } = this.props.location.query;
+
+    const body = {
+      type,
+      ...params,
       image: '',
-    });
+      id: data ? data.id : null,
+    };
+
+    if (data) {
+      delete body.language;
+      delete body.type;
+    }
+
+    const { msg, code } = await imService.addPartner(body);
     if (code === '0') {
       message.success(msg);
       this.actionRef.current.resetFields();
       this.back();
-    }
-  };
-
-  addClause = async params => {
-    const { msg, code } = await imService.addPartner({
-      type: 'clause',
-      language: 'zh_CN',
-      ...params,
-      id: '',
-      image: '',
-    });
-    if (code === '0') {
-      message.success(msg);
     }
   };
 
@@ -85,6 +84,7 @@ export class NewAdd extends Component {
 
   render() {
     const { label, title, data } = this.state;
+
     return (
       <PageHeaderWrapper
         title={title}
@@ -104,7 +104,17 @@ export class NewAdd extends Component {
                 { type: 'string', max: 100, message: `最多输入100个字符` },
               ]}
             >
-              <Input placeholder="最多输入100个字符" maxLength={100} />
+              <Input placeholder="最多输入100个字符" maxLength={100} allowClear />
+            </Form.Item>
+            <Form.Item
+              label={label[0]}
+              name="language"
+              rules={[{ required: true, message: `请选择内容的语言` }]}
+            >
+              <Radio.Group disabled={!!data}>
+                <Radio value="en">英文</Radio>
+                <Radio value="zh_CN">中文</Radio>
+              </Radio.Group>
             </Form.Item>
             <Form.Item
               name="content"
