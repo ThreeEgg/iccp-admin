@@ -1,5 +1,5 @@
 import { LogoutOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Spin } from 'antd';
+import { Avatar, Menu, Spin, Row } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { router } from 'umi';
@@ -18,11 +18,13 @@ class AvatarDropdown extends React.Component {
           type: 'user/logout',
         });
       }
-
       return;
     }
-
     router.push(`/account/${key}`);
+  };
+
+  modifyPassword = () => {
+    router.push(`/system/modifyPassword`);
   };
 
   render() {
@@ -33,6 +35,7 @@ class AvatarDropdown extends React.Component {
       },
       // menu,
     } = this.props;
+
     const menuHeaderDropdown = (
       <Menu className="menu" selectedKeys={[]} onClick={this.onMenuClick}>
         {/* {menu && (
@@ -48,20 +51,30 @@ class AvatarDropdown extends React.Component {
           </Menu.Item>
         )}
         {menu && <Menu.Divider />} */}
-
+        {/* <Menu.Item key="password">
+          <LogoutOutlined />
+          修改密码
+        </Menu.Item>
+        <Menu.Divider /> */}
         <Menu.Item key="logout">
           <LogoutOutlined />
           退出登录
         </Menu.Item>
       </Menu>
     );
+
     return userInfo && userInfo.name ? (
-      <HeaderDropdown overlay={menuHeaderDropdown}>
-        <span className="action account">
-          <Avatar size="small" className="avatar" src={userInfo.image} alt="avatar" />
-          <span className="name">{userInfo.name}</span>
-        </span>
-      </HeaderDropdown>
+      <Row>
+        <a style={{ color: '#666' }} onClick={this.modifyPassword}>
+          修改密码
+        </a>
+        <HeaderDropdown overlay={menuHeaderDropdown}>
+          <span className="action account">
+            <Avatar size="small" className="avatar" src={userInfo.image} alt="avatar" />
+            <span className="name">{userInfo.name}</span>
+          </span>
+        </HeaderDropdown>
+      </Row>
     ) : (
       <Spin
         size="small"
