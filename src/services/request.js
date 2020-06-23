@@ -13,7 +13,7 @@ export const getCommonHeader = () => {
     timezone: new Date().getTimezoneOffset() / 60,
   };
 
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('adminAccessToken');
   if (token) {
     header['x-auth-token'] = token;
   }

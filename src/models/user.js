@@ -80,7 +80,7 @@ export default {
       localStorage.removeItem('userInfo');
       localStorage.removeItem('imInfo');
       localStorage.removeItem('isLogin');
-      localStorage.removeItem('accessToken');
+      localStorage.removeItem('adminAccessToken');
 
       // Cookie.remove('userId');
       // Cookie.remove('token');

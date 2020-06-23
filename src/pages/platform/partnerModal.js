@@ -170,7 +170,7 @@ export class partnerModal extends Component {
               className="avatar-uploader"
               showUploadList={false}
               action={uploadUrl}
-              headers={{ 'x-auth-token': localStorage.accessToken }}
+              headers={{ 'x-auth-token': localStorage.adminAccessToken }}
               data={{
                 uploadUserId: localStorage.userId,
                 type: 0,

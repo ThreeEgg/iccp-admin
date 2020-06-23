@@ -1,7 +1,7 @@
 export function getAuthorityToken() {
-  return localStorage.getItem('accessToken');
+  return localStorage.getItem('adminAccessToken');
 }
 
 export function setAuthorityToken(token) {
-  return localStorage.setItem('accessToken', token);
+  return localStorage.setItem('adminAccessToken', token);
 }

@@ -27,7 +27,7 @@ export function getAuthority(str) {
 export function setAuthority(authority) {
   const { userInfo, imInfo, accessToken, isLogin, platform, userId } = authority;
   localStorage.setItem('iccp-authority', JSON.stringify(['admin'])); // auto reload
-  localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('adminAccessToken', accessToken);
   localStorage.setItem('userId', userId);
   localStorage.setItem('userInfo', JSON.stringify(userInfo));
   localStorage.setItem('imInfo', JSON.stringify(imInfo));

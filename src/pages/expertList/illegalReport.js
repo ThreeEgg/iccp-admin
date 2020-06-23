@@ -50,13 +50,16 @@ export default class extends Component {
     },
     {
       title: '操作',
-      dataIndex: 'id',
+      dataIndex: 'expertUserId',
       valueType: 'option',
       hideInSearch: true,
       render: (item, data) => [
         <a
           style={{ textDecoration: 'underline', marginRight: '10px' }}
-          onClick={() => this.gotoAdd('clause', data)}
+          href={`/professor?id=${item}&tabName=${
+            data.contentType === 'case' ? 'caseExample' : data.contentType
+          }`}
+          target="_blank"
         >
           查看
         </a>,
@@ -83,6 +86,17 @@ export default class extends Component {
           request={params => {
             params.pageNum = params.current;
             delete params.current;
+            if (params.expertUserId) {
+              params.expertId = params.expertUserId;
+              delete params.expertUserId;
+            }
+            if (params.name) {
+              params.expertName = params.name;
+              delete params.name;
+            }
+            if (!params.reportUserId) {
+              delete params.reportUserId;
+            }
             return expertService.expertIllegalReport(params);
           }}
           postData={data => {

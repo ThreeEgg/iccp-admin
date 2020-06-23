@@ -32,7 +32,7 @@ export class NewAdd extends Component {
     }
     this.setState({
       label,
-      data: data ?? '',
+      data: data || '',
       title: data ? '编辑页面' : '新增页面',
     });
     if (data) {

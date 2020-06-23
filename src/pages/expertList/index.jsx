@@ -181,7 +181,7 @@ const TableList = props => {
     name: 'file',
     action: `/api${api.fileUpload}`,
     headers: {
-      'x-auth-token': localStorage.accessToken,
+      'x-auth-token': localStorage.adminAccessToken,
     },
     showUploadList: false,
     data: {
@@ -375,7 +375,7 @@ const TableList = props => {
     name: 'multipartFile',
     action: `/api${api.expertBatchImport}`,
     headers: {
-      'x-auth-token': localStorage.accessToken,
+      'x-auth-token': localStorage.adminAccessToken,
     },
     showUploadList: false,
   };
@@ -383,7 +383,7 @@ const TableList = props => {
     name: 'multipartFile',
     action: `/api${api.expertBatchImportImage}`,
     headers: {
-      'x-auth-token': localStorage.accessToken,
+      'x-auth-token': localStorage.adminAccessToken,
     },
     showUploadList: false,
   };

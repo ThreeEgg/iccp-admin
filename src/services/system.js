@@ -87,9 +87,9 @@ export const userVerifyList = async ({
   });
 
 export const userVerify = async ({ userId, isVerified }) =>
-  request(api.userVerify, {
+  request.post(api.userVerify, {
     params: {
       userId,
-      isVerified,
+      isVerified: isVerified ? 1 : 2,
     },
   });

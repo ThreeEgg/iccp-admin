@@ -1,9 +1,8 @@
-import React, { Component, useState } from 'react';
-import { Modal, Cascader, Form, Input, Select, Upload, Button, message } from 'antd';
+import React, { Component } from 'react';
+import { Button, Cascader, Form, Input, message, Modal, Select, Upload } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import api from '@/services/api';
 import * as imService from '@/services/expert';
-import moment from 'moment';
 
 class EditForm extends Component {
   state = {
@@ -215,7 +214,7 @@ class EditForm extends Component {
               className="avatar-uploader"
               showUploadList={false}
               action={uploadUrl}
-              headers={{ 'x-auth-token': localStorage.accessToken }}
+              headers={{ 'x-auth-token': localStorage.adminAccessToken }}
               data={{
                 uploadUserId: localStorage.userId,
                 type: 0,

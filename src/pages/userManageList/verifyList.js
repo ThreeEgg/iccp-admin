@@ -2,10 +2,8 @@ import React, { Component, createRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
-import { message, Modal } from 'antd';
+import { message } from 'antd';
 import * as systemService from '@/services/system';
-import router from 'umi/router';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 export default class extends Component {
   state = {
@@ -14,66 +12,13 @@ export default class extends Component {
 
   actionRef = createRef();
 
-  handleDelete = item => {
-    const { confirm } = Modal;
-    const that = this;
-    confirm({
-      title: '删除',
-      icon: <ExclamationCircleOutlined />,
-      content: '确认删除?',
-      okText: '删除',
-      okType: 'danger',
-      cancelText: '取消',
-      onOk() {
-        that.deleteProblems(item);
-      },
-      onCancel() {
-        message.warning('已经取消');
-      },
-    });
-  };
+  verify = async (userId, isVerified) => {
+    const result = await systemService.userVerify({ userId, isVerified });
 
-  deleteProblems = async item => {
-    // const { code, msg } = await systemService.deleteCommonProblems({
-    //   id: item,
-    // });
-    // if (code === '0') {
-    //   message.success(msg);
-    //   this.actionRef.current.reload();
-    // }
-  };
-
-  gotoAdd = (type, data) => {
-    if (type === 'clause') {
-      router.push({
-        pathname: `/platform/problems/add`,
-        query: {
-          data,
-          type,
-        },
-      });
+    if (result.code === '0') {
+      message.success('操作成功');
     }
   };
-
-  /* getPtIntroduction = async () => {
-    const { currentPage } = this.state
-    const { data: {
-      items,
-      pageNumber,
-      pageInfo: { totalResults }
-    }, code } = await systemService.listPlatformContent({
-      pageNum: currentPage,
-      pageSize: 10,
-      type: 'clause'
-    })
-    if (code === "0") {
-      this.setState({
-        list: items.filter(item => item.type === "clause"),
-        currentPage: pageNumber,
-        total: totalResults,
-      })
-    }
-  } */
 
   columns = [
     {
@@ -130,23 +75,18 @@ export default class extends Component {
     },
     {
       title: '操作',
-      dataIndex: 'id',
+      dataIndex: 'userId',
       valueType: 'option',
       hideInSearch: true,
-      render: (item, data) => (
+      render: item => (
         <>
           <a
             style={{ textDecoration: 'underline', marginRight: '10px' }}
-            onClick={() => this.gotoAdd('clause', data)}
+            onClick={() => this.verify(item, true)}
           >
             通过审核
           </a>
-          <a
-            style={{ textDecoration: 'underline' }}
-            onClick={() => {
-              this.handleDelete(item);
-            }}
-          >
+          <a style={{ textDecoration: 'underline' }} onClick={() => this.verify(item, false)}>
             拒绝审核
           </a>
         </>

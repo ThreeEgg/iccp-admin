@@ -7,7 +7,7 @@ import request from './request';
  */
 export const fileUpload = async ({ clientUserId, expertUserId, file, fileName, type = 0 }) => {
   const form = new FormData();
-  form.append('file', file, fileName ?? file.name);
+  form.append('file', file, fileName || file.name);
 
   let userInfo = window.localStorage.getItem('userInfo');
   if (!userInfo) {
