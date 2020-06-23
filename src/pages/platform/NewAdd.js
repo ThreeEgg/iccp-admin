@@ -1,6 +1,6 @@
 import React, { Component, createRef } from 'react';
 import { getParameter } from '@/utils/const.js';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Card, Form, Input, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import router from 'umi/router';
 import { RollbackOutlined } from '@ant-design/icons';
@@ -16,17 +16,19 @@ export class NewAdd extends Component {
 
   componentWillMount() {
     const { type, data } = this.props.location.query;
-    if (type === 'commonQuestion') {
-      // 常见问题
-      this.setState({
-        label: ['常见问题标题', '常见问题详情'],
-      });
-    } else if (type === 'clause') {
-      // 条款规定
-      this.setState({
-        label: ['条款规定标题', '条款规定详情'],
-      });
+    let label = [];
+    switch (type) {
+      case 'commonQuestion':
+        label = ['常见问题标题', '常见问题详情'];
+        break;
+      case 'clause':
+        label = ['条款规定标题', '条款规定详情'];
     }
+    this.setState({
+      label,
+      data: data ?? '',
+      title: data ? '编辑页面' : '新增页面',
+    });
     if (data) {
       this.setState({
         title: '编辑页面',
@@ -92,34 +94,41 @@ export class NewAdd extends Component {
           </Button>,
         ]}
       >
-        <Form name="basic" onFinish={this.onFinish} ref={this.actionRef} initialValues={data}>
-          <Form.Item
-            label={label[0]}
-            name="title"
-            rules={[
-              { required: true, message: `请输入${label[0]}` },
-              { type: 'string', max: 100, message: `最多输入100个字符` },
-            ]}
-          >
-            <Input placeholder="最多输入100个字符" maxLength={100} />
-          </Form.Item>
-          <Form.Item
-            name="content"
-            label={label[1]}
-            rules={[
-              { required: true, message: `请输入${label[1]}` },
-              { type: 'string', max: 2000, message: `最多输入2000个字符` },
-            ]}
-          >
-            <Input.TextArea placeholder="最多输入2000个字符" maxLength={2000} />
-          </Form.Item>
+        <Card>
+          <Form name="basic" onFinish={this.onFinish} ref={this.actionRef} initialValues={data}>
+            <Form.Item
+              label={label[0]}
+              name="title"
+              rules={[
+                { required: true, message: `请输入${label[0]}` },
+                { type: 'string', max: 100, message: `最多输入100个字符` },
+              ]}
+            >
+              <Input placeholder="最多输入100个字符" maxLength={100} />
+            </Form.Item>
+            <Form.Item
+              name="content"
+              label={label[1]}
+              rules={[
+                { required: true, message: `请输入${label[1]}` },
+                { type: 'string', max: 2000, message: `最多输入2000个字符` },
+              ]}
+            >
+              <Input.TextArea
+                placeholder="最多输入2000个字符"
+                maxLength={2000}
+                allowClear
+                autoSize={{ minRows: 10 }}
+              />
+            </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              保存
-            </Button>
-          </Form.Item>
-        </Form>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                保存
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
       </PageHeaderWrapper>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Input, message, Modal, Select, Upload } from 'antd';
+import { Form, Input, message, Modal, Radio, Select, Upload } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import * as imService from '@/services/platform';
 import api from '../../services/api';
@@ -9,7 +9,9 @@ export class partnerModal extends Component {
     visible: false,
     loading: false,
     imageUrl: '',
-    data: '',
+    data: {
+      language: 'en',
+    },
     title: '',
   };
 
@@ -68,7 +70,9 @@ export class partnerModal extends Component {
     this.setState({
       visible: false,
       imageUrl: '',
-      data: '',
+      data: {
+        language: 'en',
+      },
       loading: false,
     });
   };
@@ -120,8 +124,13 @@ export class partnerModal extends Component {
         visible={visible}
         ref={this.formRef}
         destroyOnClose
-        footer={null}
         closable={false}
+        okText={'保存'}
+        okButtonProps={{
+          form: 'basic',
+          htmlType: 'submit',
+        }}
+        onCancel={this.handleCancel}
       >
         <Form
           // {...layout}
@@ -144,15 +153,10 @@ export class partnerModal extends Component {
             name="language"
             rules={[{ required: true, message: '请选择语言' }]}
           >
-            <Select
-              style={{
-                width: '100%',
-              }}
-              disabled={data ? true : false}
-            >
-              <Option value="en">英文</Option>
-              <Option value="zh_CN">中文</Option>
-            </Select>
+            <Radio.Group>
+              <Radio value="en">英文</Radio>
+              <Radio value="zh_CN">中文</Radio>
+            </Radio.Group>
           </Form.Item>
           <Form.Item
             label="logo"
@@ -181,13 +185,6 @@ export class partnerModal extends Component {
               )}
             </Upload>
           </Form.Item>
-          <Button key="submit" type="primary" htmlType="submit">
-            保存
-          </Button>
-          ,
-          <Button key="back" onClick={this.handleCancel}>
-            取消
-          </Button>
         </Form>
       </Modal>
     );

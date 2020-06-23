@@ -8,7 +8,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://221.215.57.110:9821',
+      target: process.env.PROXY_URL ?? 'http://172.16.110.5:9090',
       changeOrigin: false,
       // pathRewrite: {
       //   '^': '',

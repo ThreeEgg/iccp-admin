@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Button, Card, Form, Input, message, Select } from 'antd';
+import { Button, Card, Form, Input, message, Radio, Select } from 'antd';
 import { controls, myUploadFn, validateFn } from '@/utils/const';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
@@ -98,15 +98,10 @@ export class AddClassicCase extends Component {
               name="language"
               rules={[{ required: true, message: '请选择语言' }]}
             >
-              <Select
-                style={{
-                  width: '100%',
-                }}
-                disabled={id ? true : false}
-              >
-                <Option value="en">英文</Option>
-                <Option value="zh_CN">中文</Option>
-              </Select>
+              <Radio.Group>
+                <Radio value="en">英文</Radio>
+                <Radio value="zh_CN">中文</Radio>
+              </Radio.Group>
             </Form.Item>
             {/* <Form.Item
               name="brief"
