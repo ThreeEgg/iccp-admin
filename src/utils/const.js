@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { fileUpload } from '@/services/common';
 
 export const getParameter = param => {
   const query = window.location.search;
@@ -29,18 +30,36 @@ export const controls = [
 export const myUploadFn = async param => {
   const successFn = result => {
     param.success({
-      url: result.res.requestUrls[0].split('?')[0],
+      url: result.webUrl,
       meta: {
-        id: result.res.requestUrls[0].split('?')[0],
-        title: '测试',
-        alt: '测绘',
+        id: result.id,
+        title: result.oldFileName,
+        alt: result.oldFileName,
         loop: false, // 指定音视频是否循环播放
         autoPlay: false, // 指定音视频是否自动播放
         controls: true, // 指定音视频是否显示控制栏
-        // poster: 'http://xxx/xx.png', // 指定视频播放器的封面
       },
     });
   };
+
+  const progressFn = event => {
+    // 上传进度发生变化时调用param.progress
+    param.progress((event.loaded / event.total) * 100);
+  };
+
+  const errorFn = response => {
+    // 上传发生错误时调用param.error
+    param.error({
+      msg: '上传失败',
+    });
+  };
+
+  const result = await fileUpload({ file: param.file });
+  if (result.code === '0') {
+    successFn(result.data);
+  } else {
+    errorFn(result);
+  }
 };
 
 export const validateFn = file => {

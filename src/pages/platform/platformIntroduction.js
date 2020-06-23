@@ -3,12 +3,22 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform';
-import { Row, Pagination } from 'antd';
 import router from 'umi/router';
 
 export class PlatformIntroduction extends Component {
   state = {
     total: 0,
+  };
+
+  gotoEdit = (type, data) => {
+    // router.push(`/platform/introduction/edit?chatId=${type}`)
+    router.push({
+      pathname: '/platform/introduction/edit',
+      query: {
+        type,
+        data,
+      },
+    });
   };
 
   columns = [
@@ -18,7 +28,7 @@ export class PlatformIntroduction extends Component {
       // hideInSearch:true,
       valueEnum: {
         en: { text: '英文' },
-        'zh-CN': { text: '中文' },
+        zh_CN: { text: '中文' },
       },
     },
     {
@@ -61,17 +71,6 @@ export class PlatformIntroduction extends Component {
       ),
     },
   ];
-
-  gotoEdit = (type, data) => {
-    // router.push(`/platform/introduction/edit?chatId=${type}`)
-    router.push({
-      pathname: '/platform/introduction/edit',
-      query: {
-        type,
-        data,
-      },
-    });
-  };
 
   /* getPtIntroduction = async () => {
     const { currentPage } = this.state

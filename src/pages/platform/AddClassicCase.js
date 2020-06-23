@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Button, Form, Input, message, Select } from 'antd';
-import { controls, myUploadFn, validateFn, getParameter } from '@/utils/const';
+import { Button, Card, Form, Input, message, Select } from 'antd';
+import { controls, myUploadFn, validateFn } from '@/utils/const';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
-import { SearchOutlined, RollbackOutlined } from '@ant-design/icons';
+import { RollbackOutlined } from '@ant-design/icons';
 import router from 'umi/router';
 import * as imService from '@/services/platform';
+import { unescape } from 'lodash';
 
 export class AddClassicCase extends Component {
   state = {
@@ -29,7 +30,7 @@ export class AddClassicCase extends Component {
         data,
         title: '编辑案例',
         id: data.id,
-        editorState: BraftEditor.createEditorState(data.content),
+        editorState: BraftEditor.createEditorState(unescape(unescape(data.content))),
       });
     }
   }
@@ -104,7 +105,7 @@ export class AddClassicCase extends Component {
                 disabled={id ? true : false}
               >
                 <Option value="en">英文</Option>
-                <Option value="zh-CN">中文</Option>
+                <Option value="zh_CN">中文</Option>
               </Select>
             </Form.Item>
             {/* <Form.Item

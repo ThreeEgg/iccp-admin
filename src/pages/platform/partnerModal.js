@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input, Button, Upload, message, Select } from 'antd';
+import { Button, Form, Input, message, Modal, Select, Upload } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import * as imService from '@/services/platform';
 import api from '../../services/api';
@@ -151,7 +151,7 @@ export class partnerModal extends Component {
               disabled={data ? true : false}
             >
               <Option value="en">英文</Option>
-              <Option value="zh-CN">中文</Option>
+              <Option value="zh_CN">中文</Option>
             </Select>
           </Form.Item>
           <Form.Item

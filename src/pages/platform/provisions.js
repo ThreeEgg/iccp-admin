@@ -3,7 +3,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/platform';
-import { Row, Button, Pagination, message, Modal } from 'antd';
+import { Button, message, Modal, Row } from 'antd';
 import router from 'umi/router';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
@@ -14,6 +14,67 @@ export class Provisions extends Component {
 
   actionRef = createRef();
 
+  handleDelete = item => {
+    const { confirm } = Modal;
+    const that = this;
+    confirm({
+      title: '删除',
+      icon: <ExclamationCircleOutlined />,
+      content: '确认删除?',
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        that.deleteProblems(item);
+      },
+      onCancel() {
+        message.warning('已经取消');
+      },
+    });
+  };
+
+  deleteProblems = async item => {
+    const { code, msg } = await imService.deleteCommonProblems({
+      id: item,
+    });
+    if (code === '0') {
+      message.success(msg);
+      this.actionRef.current.reload();
+    }
+  };
+
+  gotoAdd = (type, data) => {
+    if (type === 'clause') {
+      router.push({
+        pathname: `/platform/problems/add`,
+        query: {
+          data,
+          type,
+        },
+      });
+    }
+  };
+
+  /* getPtIntroduction = async () => {
+    const { currentPage } = this.state
+    const { data: {
+      items,
+      pageNumber,
+      pageInfo: { totalResults }
+    }, code } = await imService.listPlatformContent({
+      pageNum: currentPage,
+      pageSize: 10,
+      type: 'clause'
+    })
+    if (code === "0") {
+      this.setState({
+        list: items.filter(item => item.type === "clause"),
+        currentPage: pageNumber,
+        total: totalResults,
+      })
+    }
+  } */
+
   columns = [
     {
       title: '语言',
@@ -21,7 +82,7 @@ export class Provisions extends Component {
       // hideInSearch:true,
       valueEnum: {
         en: { text: '英文' },
-        'zh-CN': { text: '中文' },
+        zh_CN: { text: '中文' },
       },
     },
     {
@@ -75,67 +136,6 @@ export class Provisions extends Component {
       ),
     },
   ];
-
-  handleDelete = item => {
-    const { confirm } = Modal;
-    const that = this;
-    confirm({
-      title: '删除',
-      icon: <ExclamationCircleOutlined />,
-      content: '确认删除?',
-      okText: '删除',
-      okType: 'danger',
-      cancelText: '取消',
-      onOk() {
-        that.deleteProblems(item);
-      },
-      onCancel() {
-        message.warning('已经取消');
-      },
-    });
-  };
-
-  deleteProblems = async item => {
-    const { code, msg } = await imService.deleteCommonProblems({
-      id: item,
-    });
-    if (code === '0') {
-      message.success(msg);
-      this.actionRef.current.reload();
-    }
-  };
-
-  /* getPtIntroduction = async () => {
-    const { currentPage } = this.state
-    const { data: {
-      items,
-      pageNumber,
-      pageInfo: { totalResults }
-    }, code } = await imService.listPlatformContent({
-      pageNum: currentPage,
-      pageSize: 10,
-      type: 'clause'
-    })
-    if (code === "0") {
-      this.setState({
-        list: items.filter(item => item.type === "clause"),
-        currentPage: pageNumber,
-        total: totalResults,
-      })
-    }
-  } */
-
-  gotoAdd = (type, data) => {
-    if (type === 'clause') {
-      router.push({
-        pathname: `/platform/problems/add`,
-        query: {
-          data,
-          type,
-        },
-      });
-    }
-  };
 
   render() {
     const { columns } = this;

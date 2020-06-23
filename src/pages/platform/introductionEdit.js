@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import router from 'umi/router';
-import { message, Card, Button, Form, Input } from 'antd';
+import { Button, Card, Form, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
 import { controls, myUploadFn, validateFn } from '@/utils/const';
-import { SearchOutlined, RollbackOutlined } from '@ant-design/icons';
+import { RollbackOutlined } from '@ant-design/icons';
 import * as imService from '@/services/platform';
+import { unescape } from 'lodash';
 
 export default class introduction extends Component {
   state = {
@@ -35,7 +36,7 @@ export default class introduction extends Component {
       });
     }
     this.setState({
-      editorState: BraftEditor.createEditorState(data.content),
+      editorState: BraftEditor.createEditorState(unescape(unescape(data.content))),
     });
   }
 
@@ -88,6 +89,10 @@ export default class introduction extends Component {
                 defaultValue={editorState}
                 controls={controls}
                 placeholder="请输入文章详情"
+                media={{
+                  uploadFn: myUploadFn,
+                  validateFn,
+                }}
               />
             </Form.Item>
             <Form.Item style={{ textAlign: 'center' }}>

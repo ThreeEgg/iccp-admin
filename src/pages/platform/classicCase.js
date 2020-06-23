@@ -1,7 +1,7 @@
 import React, { Component, createRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Modal, message, Row, Button } from 'antd';
-import { SearchOutlined, RetweetOutlined, PlusOutlined, FireOutlined } from '@ant-design/icons';
+import { Button, message, Modal, Row } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import router from 'umi/router';
@@ -16,6 +16,46 @@ export class ClassicCase extends Component {
 
   actionRef = createRef();
 
+  goToEdit = (type, data) => {
+    router.push({
+      pathname: '/platform/case/add',
+      query: {
+        type,
+        data,
+      },
+    });
+  };
+
+  /* getPtIntroduction = async () => {
+    const { currentPage } = this.state;
+    const {
+      code,
+      data: {
+        items,
+        pageNumber,
+        pageInfo: { totalResults },
+      },
+    } = await imService.listPlatformContent({
+      pageNum: currentPage,
+      pageSize: 10,
+      type: 'classicCase'
+    });
+    if (code === '0') {
+      this.setState({
+        list: items.filter(item => item.type === 'classicCase'),
+        currentPage: pageNumber,
+        total: totalResults,
+      });
+    }
+  }; */
+
+  showDelModal = id => {
+    this.setState({
+      delVisible: true,
+      delId: id,
+    });
+  };
+
   columns = [
     {
       title: '语言',
@@ -23,7 +63,7 @@ export class ClassicCase extends Component {
       // hideInSearch:true,
       valueEnum: {
         en: { text: '英文' },
-        'zh-CN': { text: '中文' },
+        zh_CN: { text: '中文' },
       },
     },
     {
@@ -76,46 +116,6 @@ export class ClassicCase extends Component {
       ),
     },
   ];
-
-  /* getPtIntroduction = async () => {
-    const { currentPage } = this.state;
-    const {
-      code,
-      data: {
-        items,
-        pageNumber,
-        pageInfo: { totalResults },
-      },
-    } = await imService.listPlatformContent({
-      pageNum: currentPage,
-      pageSize: 10,
-      type: 'classicCase'
-    });
-    if (code === '0') {
-      this.setState({
-        list: items.filter(item => item.type === 'classicCase'),
-        currentPage: pageNumber,
-        total: totalResults,
-      });
-    }
-  }; */
-
-  goToEdit = (type, data) => {
-    router.push({
-      pathname: '/platform/case/add',
-      query: {
-        type,
-        data,
-      },
-    });
-  };
-
-  showDelModal = id => {
-    this.setState({
-      delVisible: true,
-      delId: id,
-    });
-  };
 
   deleteCase = async () => {
     const { delId } = this.state;

@@ -1,6 +1,6 @@
 import React, { Component, createRef } from 'react';
 import { getParameter } from '@/utils/const.js';
-import { Form, Input, Button, message } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import router from 'umi/router';
 import { RollbackOutlined } from '@ant-design/icons';
@@ -51,7 +51,7 @@ export class NewAdd extends Component {
     const { title, content } = params;
     const { msg, code } = await imService.addPartner({
       type: 'commonQuestion',
-      language: 'zh-CN',
+      language: 'zh_CN',
       title,
       content,
       id: '',
@@ -67,7 +67,7 @@ export class NewAdd extends Component {
   addClause = async params => {
     const { msg, code } = await imService.addPartner({
       type: 'clause',
-      language: 'zh-CN',
+      language: 'zh_CN',
       ...params,
       id: '',
       image: '',
