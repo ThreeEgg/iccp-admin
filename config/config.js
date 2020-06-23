@@ -130,15 +130,15 @@ export default {
               path: '/userManage',
               routes: [
                 {
-                  name: '用户列表',
-                  path: '/userManage/list',
-                  component: './userManageList',
+                  name: '申请列表',
+                  path: '/userManage/verify',
+                  component: './userManageList/verifyList',
                   authority: ['admin'],
                 },
                 {
-                  name: '审核列表',
-                  path: '/userManage/verify',
-                  component: './userManageList/verifyList',
+                  name: '用户列表',
+                  path: '/userManage/list',
+                  component: './userManageList',
                   authority: ['admin'],
                 },
               ],

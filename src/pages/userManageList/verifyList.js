@@ -28,50 +28,63 @@ export default class extends Component {
     {
       title: '用户昵称',
       dataIndex: 'name',
-      // hideInSearch:true,
+      hideInSearch: true,
     },
     {
       title: '用户邮箱',
       dataIndex: 'email',
+      hideInSearch: true,
     },
     {
       title: '申请状态',
-      dataIndex: 'isValid',
+      dataIndex: 'isVerified',
+      valueEnum: {
+        0: { text: '待审核' },
+        1: { text: '已通过' },
+        2: { text: '已拒绝' },
+      },
     },
     {
       title: '申请时间',
-      dataIndex: 'createTime',
+      dataIndex: 'requestTime',
       valueType: 'dateTimeRange',
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '提交审核次数',
-      dataIndex: 'chatCount',
+      dataIndex: 'requestNum',
+      hideInSearch: true,
     },
     {
       title: '公司',
-      dataIndex: 'id',
+      dataIndex: 'company',
+      hideInSearch: true,
     },
     {
       title: '职位',
-      dataIndex: 'id',
+      dataIndex: 'position',
+      hideInSearch: true,
     },
     {
       title: '称呼',
-      dataIndex: 'id',
+      dataIndex: 'callName',
+      hideInSearch: true,
     },
     {
       title: '性别',
-      dataIndex: 'id',
+      dataIndex: 'sex',
+      hideInSearch: true,
     },
     {
       title: '联系方式',
-      dataIndex: 'id',
+      dataIndex: 'phone',
+      hideInSearch: true,
     },
 
     {
       title: '创建人',
       dataIndex: 'createId',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -112,9 +125,9 @@ export default class extends Component {
           request={params => {
             params.pageNum = params.current;
             delete params.current;
-            if (params.registryDate) {
-              params.registryDateFrom = params.registryDate[0];
-              params.registryDateTo = params.registryDate[1];
+            if (params.requestTime) {
+              params.registryDateFrom = params.requestTime[0];
+              params.registryDateTo = params.requestTime[1];
               delete params.registryDate;
             }
             return systemService.userVerifyList(params);
