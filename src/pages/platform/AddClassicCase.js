@@ -9,6 +9,8 @@ import router from 'umi/router';
 import * as imService from '@/services/platform';
 import { unescape } from 'lodash';
 
+const { TextArea } = Input;
+
 export class AddClassicCase extends Component {
   state = {
     title: '',
@@ -48,7 +50,6 @@ export class AddClassicCase extends Component {
     } else {
       params.type = 'classicCase';
     }
-    console.log(params);
     const { code, msg } = await imService.addPartner({
       id,
       ...params,
@@ -91,7 +92,7 @@ export class AddClassicCase extends Component {
                 { type: 'string', min: 1, max: 50, message: '最多输入50个字符' },
               ]}
             >
-              <Input placeholder="请输入文章标题" />
+              <Input placeholder="请输入标题" />
             </Form.Item>
             <Form.Item
               label="语言"
@@ -103,7 +104,7 @@ export class AddClassicCase extends Component {
                 <Radio value="zh_CN">中文</Radio>
               </Radio.Group>
             </Form.Item>
-            {/* <Form.Item
+            <Form.Item
               name="brief"
               label="简介"
               validateFirst="true"
@@ -112,17 +113,17 @@ export class AddClassicCase extends Component {
                 { type: 'string', min: 1, max: 400, message: '最多输入400个字符' },
               ]}
             >
-              <TextArea placeholder="请输入文章简介" />
-            </Form.Item> */}
+              <TextArea placeholder="请输入简介" />
+            </Form.Item>
             <Form.Item
               name="content"
-              label="文章详情"
+              label="详情"
               rules={[{ required: true, message: '这是必填项～' }]}
             >
               <BraftEditor
                 className="my-editor"
                 controls={controls}
-                placeholder="请输入文章详情"
+                placeholder="请输入详情"
                 defaultValue={editorState}
                 media={{
                   uploadFn: myUploadFn,

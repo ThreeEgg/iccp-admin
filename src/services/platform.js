@@ -59,7 +59,7 @@ export const updatePlatformContent = async ({ id, content }) =>
     },
   });
 
-export const addPartner = async ({ type, language, id, image, title, content }) =>
+export const addPartner = async ({ type, language, id, image, title, content, brief }) =>
   request.post(api.platformUpdate, {
     data: {
       type,
@@ -68,5 +68,6 @@ export const addPartner = async ({ type, language, id, image, title, content }) 
       image,
       title,
       content,
+      brief,
     },
   });

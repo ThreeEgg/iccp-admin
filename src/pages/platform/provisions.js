@@ -46,7 +46,7 @@ export class Provisions extends Component {
   gotoAdd = (type, data) => {
     if (type === 'clause') {
       router.push({
-        pathname: `/platform/problems/add`,
+        pathname: `/platform/regulation/add`,
         query: {
           data,
           type,

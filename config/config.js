@@ -281,7 +281,7 @@ export default {
                   authority: ['admin'],
                 },
                 {
-                  name: '新增经典案例',
+                  name: '',
                   path: '/platform/case/add',
                   component: './platform/AddClassicCase',
                   authority: ['admin'],
