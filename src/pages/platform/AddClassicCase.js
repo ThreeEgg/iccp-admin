@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Button, Card, Form, Input, message, Radio, Select } from 'antd';
+import { Button, Card, Form, Input, message, Radio, Select, Upload } from 'antd';
 import { controls, myUploadFn, validateFn } from '@/utils/const';
 import 'braft-editor/dist/index.css';
 import BraftEditor from 'braft-editor';
@@ -8,14 +8,25 @@ import { RollbackOutlined } from '@ant-design/icons';
 import router from 'umi/router';
 import * as imService from '@/services/platform';
 import { unescape } from 'lodash';
+import api from '@/services/api';
+import LoadingOutlined from '@ant-design/icons/lib/icons/LoadingOutlined';
+import PlusOutlined from '@ant-design/icons/lib/icons/PlusOutlined';
 
 const { TextArea } = Input;
+
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
 
 export class AddClassicCase extends Component {
   state = {
     title: '',
     editorState: BraftEditor.createEditorState(null),
     id: '',
+    loading: false,
+    imageUrl: '',
   };
 
   componentWillMount() {
@@ -32,13 +43,16 @@ export class AddClassicCase extends Component {
         data,
         title: '编辑案例',
         id: data.id,
+        imageUrl: data.image,
         editorState: BraftEditor.createEditorState(unescape(unescape(data.content))),
       });
     }
   }
 
   onFinish = params => {
-    params.content = params.content.toHTML();
+    if (params.content.toHTML) {
+      params.content = params.content.toHTML();
+    }
     this.updateCase(params);
   };
 
@@ -49,6 +63,13 @@ export class AddClassicCase extends Component {
       delete params.language;
     } else {
       params.type = 'classicCase';
+    }
+    // 图片字段预处理
+    if (params.image) {
+      // 如果是本地上传的，则进行处理
+      if (params.image.file) {
+        params.image = params.image.file.response.data.webUrl;
+      }
     }
     const { code, msg } = await imService.addPartner({
       id,
@@ -67,11 +88,46 @@ export class AddClassicCase extends Component {
     router.goBack();
   };
 
+  handleChange = info => {
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: true });
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, imageUrl =>
+        this.setState({
+          imageUrl,
+          loading: false,
+        }),
+      );
+    }
+  };
+
+  beforeUpload = file => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt10M = file.size / 1024 / 1024 < 10;
+    if (!isLt10M) {
+      message.error('Image must smaller than 10MB!');
+    }
+    return isJpgOrPng && isLt10M;
+  };
+
   render() {
-    const { title, data, editorState, id } = this.state;
+    const { title, data, editorState, imageUrl } = this.state;
     const { Option } = Select;
 
-    // const { TextArea } = Input;
+    const uploadButton = (
+      <div>
+        {this.state.loading ? <LoadingOutlined /> : <PlusOutlined />}
+        <div className="ant-upload-text">上传</div>
+      </div>
+    );
+
+    const uploadUrl = `/api${api.fileUpload}`;
 
     return (
       <PageHeaderWrapper
@@ -108,12 +164,31 @@ export class AddClassicCase extends Component {
               name="brief"
               label="简介"
               validateFirst="true"
-              rules={[
-                { required: true, message: '这是必填项～' },
-                { type: 'string', min: 1, max: 400, message: '最多输入400个字符' },
-              ]}
+              rules={[{ type: 'string', min: 1, max: 400, message: '最多输入400个字符' }]}
             >
               <TextArea placeholder="请输入简介" />
+            </Form.Item>
+            <Form.Item name="image" label="简介配图">
+              <Upload
+                name="file"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList={false}
+                action={uploadUrl}
+                headers={{ 'x-auth-token': localStorage.adminAccessToken }}
+                data={{
+                  uploadUserId: localStorage.userId,
+                  type: 0,
+                }}
+                beforeUpload={this.beforeUpload}
+                onChange={this.handleChange}
+              >
+                {imageUrl ? (
+                  <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+                ) : (
+                  uploadButton
+                )}
+              </Upload>
             </Form.Item>
             <Form.Item
               name="content"
