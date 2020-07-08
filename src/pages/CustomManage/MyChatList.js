@@ -137,6 +137,9 @@ export class MyChatList extends Component {
             });
             return data.items;
           }}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
       </PageHeaderWrapper>
     );

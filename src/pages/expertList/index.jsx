@@ -557,6 +557,9 @@ const TableList = props => {
         tableAlertRender={false}
         columns={columns}
         rowSelection={{}}
+        options={
+          { fullScreen: false, reload: true, setting: true }
+        }
       />
       <EditForm ref={editForm} />
       <CreateForm

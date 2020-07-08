@@ -171,8 +171,14 @@ class EditForm extends Component {
     const { Option } = Select;
     const { visible, continentList, data, imageUrl, countryList, options } = this.state;
     return (
-      <Modal title="新建" visible={visible} onCancel={this.modalHide} footer={null} destroyOnClose>
-        <Form name="basic" onFinish={this.onFinish} initialValues={data}>
+      <Modal title="新建" visible={visible} onCancel={this.modalHide}
+        destroyOnClose
+        okButtonProps={{
+          form: 'expertForm',
+          htmlType: 'submit',
+        }}
+      >
+        <Form name="expertForm" onFinish={this.onFinish} initialValues={data}>
           <Form.Item
             label="专家ID"
             name="userId"
@@ -184,7 +190,7 @@ class EditForm extends Component {
             <Input placeholder="请输入专家ID" maxLength={50} />
           </Form.Item>
           <Form.Item
-            label="专家姓名"
+            label="专家名称"
             name="name"
             rules={[
               { required: true, message: '请输入专家名称' },
@@ -225,8 +231,8 @@ class EditForm extends Component {
               {imageUrl ? (
                 <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
               ) : (
-                uploadButton
-              )}
+                  uploadButton
+                )}
             </Upload>
           </Form.Item>
           <Form.Item
@@ -271,13 +277,6 @@ class EditForm extends Component {
           >
             <Input placeholder="请输入职务" maxLength={50} />
           </Form.Item>
-          <Button key="submit" type="primary" htmlType="submit">
-            保存
-          </Button>
-          ,
-          <Button key="back" onClick={this.modalHide}>
-            取消
-          </Button>
         </Form>
       </Modal>
     );

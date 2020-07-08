@@ -77,11 +77,14 @@ export default class AccountModal extends Component {
       <Modal
         title={title}
         visible={visible}
-        footer={null}
         onCancel={this.modalHidden}
+        okButtonProps={{
+          form: 'accountForm',
+          htmlType: 'submit',
+        }}
         destroyOnClose
       >
-        <Form name="basic" onFinish={this.onFinish} initialValues={data}>
+        <Form name="accountForm" onFinish={this.onFinish} initialValues={data}>
           {!isAdd && (
             <Form.Item
               label="账号"
@@ -100,7 +103,7 @@ export default class AccountModal extends Component {
             <Select placeholder="请选择角色" style={{ width: '80%' }}>
               {roleList.map(item => (
                 <Option value={item.roleName} key={item.id}>
-                  {item.roleName}
+                  {item.description}
                 </Option>
               ))}
             </Select>
@@ -115,11 +118,6 @@ export default class AccountModal extends Component {
             ]}
           >
             <Input placeholder="请输入名称" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              保存
-            </Button>
           </Form.Item>
         </Form>
       </Modal>

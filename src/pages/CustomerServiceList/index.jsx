@@ -229,6 +229,9 @@ const TableList = props => {
         tableAlertRender={false}
         columns={columns}
         rowSelection={{}}
+        options={
+          { fullScreen: false, reload: true, setting: true }
+        }
       />
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable

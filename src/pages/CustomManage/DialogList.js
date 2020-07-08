@@ -192,15 +192,21 @@ export class DialogList extends Component {
             });
             return data.items;
           }}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
         <Modal
           title="更换客服"
           visible={visible}
           onCancel={this.handleCancel}
-          footer={null}
+          okButtonProps={{
+            form: 'dialogListForm',
+            htmlType: 'submit',
+          }}
           destroyOnClose
         >
-          <Form onFinish={this.onFinish} name="basic">
+          <Form onFinish={this.onFinish} name="dialogListForm">
             <Form.Item
               label="更换客服"
               name="serviceUserId"
@@ -215,9 +221,6 @@ export class DialogList extends Component {
                   ))}
               </Select>
             </Form.Item>
-            <Button key="submit" type="primary" htmlType="submit">
-              保存
-            </Button>
           </Form>
         </Modal>
       </PageHeaderWrapper>

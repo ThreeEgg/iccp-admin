@@ -129,6 +129,9 @@ export class PlatformIntroduction extends Component {
             return data.items;
           }}
           rowKey="id"
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
       </PageHeaderWrapper>
     );

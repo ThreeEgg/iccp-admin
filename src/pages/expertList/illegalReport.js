@@ -58,7 +58,7 @@ export default class extends Component {
           style={{ textDecoration: 'underline', marginRight: '10px' }}
           href={`/professor?id=${item}&tabName=${
             data.contentType === 'case' ? 'caseExample' : data.contentType
-          }`}
+            }`}
           target="_blank"
         >
           查看
@@ -105,6 +105,9 @@ export default class extends Component {
             });
             return data.items;
           }}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
       </PageHeaderWrapper>
     );

@@ -95,7 +95,7 @@ export class CaseNotice extends Component {
           <p>{item}</p>
         </div>
       ),
-      onOk() {},
+      onOk() { },
     });
   };
 
@@ -194,6 +194,9 @@ export class CaseNotice extends Component {
             });
             return data.items;
           }}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
         {/* <div style={{ backgroundColor: '#FFF' }}>
           <Row style={{ padding: '16px 16px' }} justify="end">

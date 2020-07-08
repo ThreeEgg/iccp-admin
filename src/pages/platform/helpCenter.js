@@ -179,6 +179,9 @@ export class HelpCenter extends Component {
               <Button onClick={() => this.gotoAdd(type)}>新建</Button>
             </Row>,
           ]}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
       </PageHeaderWrapper>
     );

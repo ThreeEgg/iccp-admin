@@ -128,6 +128,9 @@ export class Record extends Component {
           dataSource={list}
           search={false}
           pagination={false}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
         <div style={{ backgroundColor: '#FFF' }}>
           <Row style={{ padding: '16px 16px' }} justify="end">

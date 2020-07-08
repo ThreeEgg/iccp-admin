@@ -87,14 +87,19 @@ export class partnerModal extends Component {
   };
 
   addPartner = async params => {
-    const { imageUrl, data } = this.state;
-    if (!data) {
+    const { imageUrl, data, title } = this.state;
+    if (title === '新增') {
       params.type = 'partner';
       params.id = '';
+      params.language = data.language
+      delete params.image
+      params.id = null;
+      params.content = ''
     } else {
       delete params.language;
       params.id = data.id;
     }
+    console.log(title, params)
     const { code, msg } = await imService.addPartner({
       // language: 'zh-CN',
       ...params,
@@ -106,6 +111,14 @@ export class partnerModal extends Component {
       this.props.getList();
     }
   };
+
+  onRadioChange = (value) => {
+    this.setState({
+      data: {
+        language: value,
+      }
+    })
+  }
 
   render() {
     const uploadUrl = `/api${api.fileUpload}`;
@@ -153,7 +166,7 @@ export class partnerModal extends Component {
             name="language"
             rules={[{ required: true, message: '请选择语言' }]}
           >
-            <Radio.Group>
+            <Radio.Group disabled={title !== '新增'} onChange={(e) => this.onRadioChange(e.target.value)}>
               <Radio value="en">英文</Radio>
               <Radio value="zh_CN">中文</Radio>
             </Radio.Group>
@@ -181,8 +194,8 @@ export class partnerModal extends Component {
               {imageUrl ? (
                 <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
               ) : (
-                uploadButton
-              )}
+                  uploadButton
+                )}
             </Upload>
           </Form.Item>
         </Form>

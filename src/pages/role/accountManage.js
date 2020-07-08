@@ -193,6 +193,9 @@ export class AccountManage extends Component {
               <Button onClick={() => this.modalShow('add')}>新建</Button>
             </Row>,
           ]}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
         <AccountModal
           ref={el => {

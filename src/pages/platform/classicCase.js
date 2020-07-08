@@ -190,6 +190,9 @@ export class ClassicCase extends Component {
               </Button>
             </Row>,
           ]}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
       </PageHeaderWrapper>
     );

@@ -103,8 +103,15 @@ export class RoleAddUpdate extends Component {
 
     const { visible, title, data, roleLimitTree } = this.state;
     return (
-      <Modal title={title} visible={visible} footer={null} closable={false} destroyOnClose>
-        <Form onFinish={this.onFinish} initialValues={data}>
+      <Modal title={title} visible={visible}
+        onCancel={this.handleCancel}
+        destroyOnClose
+        okButtonProps={{
+          form: 'roleForm',
+          htmlType: 'submit',
+        }}
+      >
+        <Form onFinish={this.onFinish} initialValues={data} name="roleForm">
           <Form.Item
             label="角色名称"
             name="description"
@@ -132,13 +139,6 @@ export class RoleAddUpdate extends Component {
               {/* {roleLimitTree && this.renderTreeNode(roleLimitTree)} */}
             </Tree>
           </Form.Item>
-          <Button key="submit" type="primary" htmlType="submit">
-            保存
-          </Button>
-          ,
-          <Button key="back" onClick={this.handleCancel}>
-            取消
-          </Button>
         </Form>
       </Modal>
     );

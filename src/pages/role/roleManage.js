@@ -191,6 +191,9 @@ export class roleManage extends Component {
               <Button onClick={() => this.roleModalShow('add')}>新建</Button>
             </Row>,
           ]}
+          options={
+            { fullScreen: false, reload: true, setting: true }
+          }
         />
         <RoleAddUpdate
           ref={el => {
