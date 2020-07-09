@@ -72,26 +72,6 @@ export class PlatformIntroduction extends Component {
     },
   ];
 
-  /* getPtIntroduction = async () => {
-    const { currentPage } = this.state
-    const { data: {
-      items,
-      pageNumber,
-      pageInfo: { totalResults }
-    }, code } = await imService.listPlatformContent({
-      pageNum: currentPage,
-      pageSize: 10,
-      type: 'platformIntro'
-    })
-    if (code === "0") {
-      this.setState({
-        list: items.filter(item => item.type === "platformIntro"),
-        currentPage: pageNumber,
-        total: totalResults,
-      })
-    }
-  } */
-
   render() {
     const { columns } = this;
     const { total } = this.state;

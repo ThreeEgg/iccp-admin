@@ -133,7 +133,7 @@ export class NewAdd extends Component {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" key="newAddBtn" htmlType="submit">
                 保存
               </Button>
             </Form.Item>

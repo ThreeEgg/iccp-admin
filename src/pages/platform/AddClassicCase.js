@@ -155,7 +155,7 @@ export class AddClassicCase extends Component {
               name="language"
               rules={[{ required: true, message: '请选择语言' }]}
             >
-              <Radio.Group>
+              <Radio.Group disabled={title === '编辑案例' ? true : false}>
                 <Radio value="en">英文</Radio>
                 <Radio value="zh_CN">中文</Radio>
               </Radio.Group>
@@ -164,7 +164,9 @@ export class AddClassicCase extends Component {
               name="brief"
               label="简介"
               validateFirst="true"
-              rules={[{ type: 'string', min: 1, max: 400, message: '最多输入400个字符' }]}
+              rules={[
+                { required: true, message: '请输入简介' },
+                { type: 'string', min: 1, max: 400, message: '最多输入400个字符' }]}
             >
               <TextArea placeholder="请输入简介" />
             </Form.Item>
@@ -186,8 +188,8 @@ export class AddClassicCase extends Component {
                 {imageUrl ? (
                   <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
                 ) : (
-                  uploadButton
-                )}
+                    uploadButton
+                  )}
               </Upload>
             </Form.Item>
             <Form.Item

@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { userList, userUpdateStatus, userResetPassword } from '@/services/userManage';
+import moment from 'moment';
 
 const TableList = props => {
   const [sorter, setSorter] = useState('');
@@ -75,11 +76,13 @@ const TableList = props => {
       title: '注册时间',
       dataIndex: 'createTime',
       valueType: 'dateTimeRange',
+      render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '最近登录时间',
       dataIndex: 'lastLoginTime',
       hideInSearch: true,
+      render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '已沟通专家',
