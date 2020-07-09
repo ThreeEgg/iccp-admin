@@ -121,6 +121,8 @@ class EditForm extends Component {
     if (code === '0') {
       message.success(msg);
       this.modalHide();
+      const { reloadCurrent } = this.props
+      reloadCurrent && reloadCurrent.reload()
     }
   };
 

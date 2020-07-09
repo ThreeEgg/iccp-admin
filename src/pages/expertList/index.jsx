@@ -561,7 +561,7 @@ const TableList = props => {
           { fullScreen: false, reload: true, setting: true }
         }
       />
-      <EditForm ref={editForm} />
+      <EditForm ref={editForm} reloadCurrent={actionRef.current} />
       <CreateForm
         onCancel={() => handleModalVisible(false)}
         modalVisible={createModalVisible}

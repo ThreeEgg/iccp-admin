@@ -45,7 +45,7 @@ export default class introduction extends Component {
   };
 
   onFinish = params => {
-    this.updateIntroduction({ content: params.content.toHTML() });
+    this.updateIntroduction({ content: params.content.toHTML ? params.content.toHTML() : params.content });
   };
 
   updateIntroduction = async params => {
