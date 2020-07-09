@@ -74,6 +74,7 @@ export const userVerifyList = async ({
   registryDateFrom,
   registryDateTo,
   userId,
+  email,
 }) =>
   request(api.userVerifyList, {
     params: {
@@ -83,6 +84,7 @@ export const userVerifyList = async ({
       registryDateFrom,
       registryDateTo,
       userId,
+      email,
     },
   });
 

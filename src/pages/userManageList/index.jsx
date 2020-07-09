@@ -58,7 +58,6 @@ const TableList = props => {
     {
       title: '用户邮箱',
       dataIndex: 'email',
-      hideInSearch: true,
     },
     {
       title: '账号状态',
@@ -138,9 +137,7 @@ const TableList = props => {
         tableAlertRender={false}
         columns={columns}
         rowSelection={{}}
-        options={
-          { fullScreen: false, reload: true, setting: true }
-        }
+        options={{ fullScreen: false, reload: true, setting: true }}
       />
     </PageHeaderWrapper>
   );

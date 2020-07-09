@@ -8,6 +8,7 @@ export const userList = async ({
   registryDateFrom,
   registryDateTo,
   userId,
+  email,
 }) =>
   request(api.userList, {
     params: {
@@ -17,6 +18,7 @@ export const userList = async ({
       registryDateFrom,
       registryDateTo,
       userId,
+      email,
     },
   });
 
