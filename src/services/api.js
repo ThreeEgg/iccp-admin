@@ -43,6 +43,7 @@ export default {
   // 专家
   expertGetList: '/system/expert/list',
   expertCreate: '/system/expert/create',
+  expertUpdate: '/system/expert/update',
   expertBatchImport: '/system/expert/import',
   expertBatchImportImage: '/system/expert/image/import',
   expertNotify: '/system/expert/notify-schedule',

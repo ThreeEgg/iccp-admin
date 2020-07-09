@@ -14,6 +14,7 @@ class EditForm extends Component {
     countryList: '',
     id: '',
     currentData: '',
+    isAdd: true,
   };
 
   componentDidMount() {
@@ -27,6 +28,7 @@ class EditForm extends Component {
         item.label = item.cn_name;
         item.value = item.id;
         item.isLeaf = false;
+
       });
       /* data.forEach(item => {
         this.getCountryList(item.id)
@@ -47,6 +49,7 @@ class EditForm extends Component {
       data.forEach(item => {
         item.label = item.fullCname;
         item.value = item.countryCode;
+        item.key = item.fullCname
       });
       this.setState({
         currentData: data,
@@ -82,10 +85,32 @@ class EditForm extends Component {
     ); */
   };
 
-  modalShow = data => {
+  modalShow = async (value, editData) => {
+    console.log('editData', editData)
+    if (value === 2) {
+      editData.countryCode = typeof (editData.countryCode) === 'string' ? [editData.continentId, editData.countryCode] : editData.countryCode
+      await this.getCountryList(editData.continentId)
+      const { currentData, continentList } = this.state;
+      const isSetState = true;
+      continentList.forEach(item => {
+        if (item.id === editData.continentId && !item.children) {    // 找到大洲数据 加到它的children里   如果有了就不加了
+          item.children = currentData
+        } else if (item.id === editData.continentId) {
+          isSetState: false
+        }
+      })
+      if (isSetState) {
+        this.setState({
+          continentList: continentList,
+        });
+      }
+    }
+    console.log('editData', editData)
     this.setState({
       visible: true,
-      data,
+      data: editData,
+      isAdd: value === 1 ? true : false,
+      imageUrl: editData.image
     });
   };
 
@@ -99,13 +124,37 @@ class EditForm extends Component {
 
   // FIXME:
   onFinish = params => {
-    const { imageUrl } = this.state;
+    const { imageUrl, isAdd } = this.state;
     if (!imageUrl) {
       message.warning('请上传头像');
       return;
     }
-    this.addExpert(params);
+    if (isAdd) {
+      this.addExpert(params);
+    } else {
+      console.log('editParams', params);
+      this.updateExport(params);
+    }
   };
+
+  updateExport = async params => {
+    const { imageUrl } = this.state;
+    console.log('params', params, imageUrl);
+    const countryCode = params.countryCode[1];
+    delete params.countryCode;
+    delete params.image;
+    const { code, msg } = await imService.updateExpert({
+      image: imageUrl,
+      countryCode,
+      ...params
+    })
+    if (code === "0") {
+      message.success(msg);
+      this.modalHide();
+      const { reloadCurrent } = this.props;
+      reloadCurrent && reloadCurrent.reload();
+    }
+  }
 
   addExpert = async params => {
     const { imageUrl } = this.state;
@@ -116,13 +165,13 @@ class EditForm extends Component {
     const { code, msg } = await imService.addExpert({
       image: imageUrl,
       countryCode,
-      ...params,
-    });
-    if (code === '0') {
+      ...params
+    })
+    if (code === "0") {
       message.success(msg);
       this.modalHide();
-      const { reloadCurrent } = this.props
-      reloadCurrent && reloadCurrent.reload()
+      const { reloadCurrent } = this.props;
+      reloadCurrent && reloadCurrent.reload();
     }
   };
 
@@ -171,9 +220,12 @@ class EditForm extends Component {
       </div>
     );
     const { Option } = Select;
-    const { visible, continentList, data, imageUrl, countryList, options } = this.state;
+    const { visible, continentList, data, imageUrl, countryList, options, isAdd } = this.state;
     return (
-      <Modal title="新建" visible={visible} onCancel={this.modalHide}
+      <Modal
+        title={(isAdd ? '新建' : '编辑') + '专家'}
+        visible={visible}
+        onCancel={this.modalHide}
         destroyOnClose
         okButtonProps={{
           form: 'expertForm',
@@ -189,7 +241,7 @@ class EditForm extends Component {
               { type: 'string', max: 50, message: `最多输入50个字符` },
             ]}
           >
-            <Input placeholder="请输入专家ID" maxLength={50} />
+            <Input placeholder="请输入专家ID" maxLength={50} disabled={!isAdd} />
           </Form.Item>
           <Form.Item
             label="专家名称"
@@ -266,6 +318,13 @@ class EditForm extends Component {
             />
           </Form.Item>
           <Form.Item
+            label="联系方式"
+            name="phone"
+            rules={[{ max: 50, message: `最多输入50个字符` }]}
+          >
+            <Input placeholder="请输入联系方式" maxLength={50} />
+          </Form.Item>
+          <Form.Item
             label="所属公司"
             name="companyName"
             rules={[{ type: 'string', max: 50, message: `最多输入50个字符` }]}
@@ -279,6 +338,7 @@ class EditForm extends Component {
           >
             <Input placeholder="请输入职务" maxLength={50} />
           </Form.Item>
+
         </Form>
       </Modal>
     );

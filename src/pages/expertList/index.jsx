@@ -293,17 +293,17 @@ const TableList = props => {
     },
     {
       title: '联系方式',
-      // dataIndex: 'email',
+      dataIndex: 'phone',
       hideInForm: true,
     },
     {
       title: '所属公司',
-      dataIndex: 'serviceUserId',
+      dataIndex: 'company',
       hideInSearch: true,
     },
     {
       title: '职务',
-      dataIndex: 'serviceUserName',
+      dataIndex: 'position',
       hideInSearch: true,
     },
     {
@@ -363,6 +363,7 @@ const TableList = props => {
       valueType: 'option',
       hideInForm: true,
       render: (_, record) => [
+        <a onClick={() => editExportDetail(record)}>编辑</a>,
         <a onClick={() => gotoDetail(record)}>详细资料</a>,
         <a onClick={() => sendNotify(record)}>日程提醒</a>,
         <a onClick={() => updateStatus(record)}>{record.isValid > 0 ? '停用' : '启用'}</a>,
@@ -447,8 +448,12 @@ const TableList = props => {
   };
 
   const handleModalShow = () => {
-    editForm.current.modalShow();
+    editForm.current.modalShow(1, { countryCode: [] });
   };
+
+  const editExportDetail = (editData) => {
+    editForm.current.modalShow(2, editData)
+  }
 
   const handleImportMenuClick = ({ key }) => {
     switch (key) {

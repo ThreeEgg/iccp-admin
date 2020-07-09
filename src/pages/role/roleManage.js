@@ -114,37 +114,6 @@ export class roleManage extends Component {
     }
   };
 
-  /* addRole = async () => {  // 添加新角色
-    message.warning('现在是写死的，写好表单后修改')
-    const { code, msg } = await imService.addRole({
-      description: '角色名称',
-      roleType: 'service'
-    })
-    if (code === "0") {
-      message.success(msg)
-      this.getRoleInfo()
-    }
-  } */
-
-  /* getRoleInfo = async () => {
-    const { currentPage } = this.state
-    const { data: {
-      items,
-      pageNumber,
-      pageInfo: { totalResults }
-    }, code } = await imService.getRoleInfo({
-      pageNum: currentPage,
-      pageSize: 10
-    })
-    if (code === "0") {
-      this.setState({
-        list: items,
-        currentPage: pageNumber,
-        total: totalResults,
-      })
-    }
-  } */
-
   roleModalShow = (type, data) => {
     this.roleAddUpdate.modalShow(type, data);
   };
