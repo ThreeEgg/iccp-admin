@@ -11,6 +11,35 @@ export class ChatList extends Component {
     total: 0,
   };
 
+  gotoChatDetail = item => {
+    // 跳转到聊天详情
+    router.push(`/chat/im`);
+  };
+
+  checkCaseInfo = (item, data) => {
+    // 查看案件信息表
+    message.warning('查看案件信息表');
+    console.log('data', data);
+    this.getCaseInfo(item);
+  };
+
+  getCaseInfo = async caseId => {
+    const { data, code } = await imService.getCaseInfo({
+      caseId,
+    });
+    if (code === '0') {
+      // this.setState({
+      //   visible: true,
+      //   data
+      // })
+    }
+  };
+
+  checkChatRecord = item => {
+    // 跳转通话记录
+    router.push(`/im/list/record?chatId=${item}`);
+  };
+
   columns = [
     {
       title: '用户ID',
@@ -59,6 +88,7 @@ export class ChatList extends Component {
             </a>
           </div>
           {/* <div style={{ marginRight: "5px" }}>
+
             <a onClick={() => { this.checkCaseInfo(item, data) }}>查看案件信息表</a>
           </div> */}
           <div style={{ marginRight: '5px' }}>
@@ -75,36 +105,6 @@ export class ChatList extends Component {
       ),
     },
   ];
-
-  gotoChatDetail = item => {
-    // 跳转到聊天详情
-    // console.log(item)
-    router.push(`/im/list/chatDetail?chatId=${item}`);
-  };
-
-  checkCaseInfo = (item, data) => {
-    // 查看案件信息表
-    message.warning('查看案件信息表');
-    console.log('data', data);
-    this.getCaseInfo(item);
-  };
-
-  getCaseInfo = async caseId => {
-    const { data, code } = await imService.getCaseInfo({
-      caseId,
-    });
-    if (code === '0') {
-      // this.setState({
-      //   visible: true,
-      //   data
-      // })
-    }
-  };
-
-  checkChatRecord = item => {
-    // 跳转通话记录
-    router.push(`/im/list/record?chatId=${item}`);
-  };
 
   /* getChatList = async () => {
     const { currentPage } = this.state
@@ -162,9 +162,7 @@ export class ChatList extends Component {
             });
             return data.items;
           }}
-          options={
-            { fullScreen: false, reload: true, setting: true }
-          }
+          options={{ fullScreen: false, reload: true, setting: true }}
         />
       </PageHeaderWrapper>
     );
