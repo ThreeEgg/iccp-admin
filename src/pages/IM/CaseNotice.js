@@ -19,7 +19,7 @@ export class CaseNotice extends Component {
 
   checkExportNotes = item => {
     Modal.info({
-      title: '专家详情',
+      title: '专家说明',
       content: (
         <div>
           <p>{item}</p>

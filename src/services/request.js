@@ -121,7 +121,7 @@ request.interceptors.response.use(async (response, options) => {
         message: data.msg,
       });
     }
-    return {};
+    return data;
   }
   return response;
 });
