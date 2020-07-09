@@ -6,7 +6,6 @@ import { message, Modal } from 'antd';
 import * as systemService from '@/services/system';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
-
 export default class extends Component {
   state = {
     total: 0,
@@ -22,7 +21,7 @@ export default class extends Component {
   verify = async (userId, isVerified) => {
     this.setState({
       loading: true,
-      cancelDisabled: true
+      cancelDisabled: true,
     });
     const result = await systemService.userVerify({ userId, isVerified });
 
@@ -30,11 +29,10 @@ export default class extends Component {
       message.success('操作成功');
       this.setState({
         loading: false,
-        cancelDisabled: false
+        cancelDisabled: false,
       });
-      this.hideModal()
+      this.hideModal();
       this.actionRef.current.reload();
-
     }
   };
 
@@ -51,7 +49,6 @@ export default class extends Component {
     {
       title: '用户邮箱',
       dataIndex: 'email',
-      hideInSearch: true,
     },
     {
       title: '申请状态',
@@ -120,7 +117,10 @@ export default class extends Component {
           >
             通过审核
           </a>
-          <a style={{ textDecoration: 'underline' }} onClick={() => this.verifyConfirm(item, false)}>
+          <a
+            style={{ textDecoration: 'underline' }}
+            onClick={() => this.verifyConfirm(item, false)}
+          >
             拒绝审核
           </a>
         </>
@@ -130,28 +130,28 @@ export default class extends Component {
 
   handleVerify = () => {
     const { userId, isVerified } = this.state;
-    this.verify(userId, isVerified)
-  }
+    this.verify(userId, isVerified);
+  };
 
   verifyConfirm = (item, value) => {
-    this.showModal()
+    this.showModal();
     this.setState({
       userId: item,
-      isVerified: value
-    })
-  }
+      isVerified: value,
+    });
+  };
 
   showModal = () => {
     this.setState({
       visible: true,
-    })
-  }
+    });
+  };
 
   hideModal = () => {
     this.setState({
       visible: false,
-    })
-  }
+    });
+  };
   render() {
     const { columns } = this;
     const { cancelDisabled, isVerified, total, loading, visible } = this.state;
@@ -160,7 +160,7 @@ export default class extends Component {
         <ProTable
           actionRef={this.actionRef}
           form={{
-            initialValues: { isVerified: '0' }
+            initialValues: { isVerified: '0' },
           }}
           columns={columns}
           rowKey="userId"
@@ -187,9 +187,7 @@ export default class extends Component {
             });
             return data.items;
           }}
-          options={
-            { fullScreen: false, reload: true, setting: true }
-          }
+          options={{ fullScreen: false, reload: true, setting: true }}
         />
         <Modal
           title="操作"
@@ -202,10 +200,10 @@ export default class extends Component {
           cancelText="取消"
           maskClosable={false}
           okButtonProps={{
-            loading: loading
+            loading: loading,
           }}
           cancelButtonProps={{
-            disabled: cancelDisabled
+            disabled: cancelDisabled,
           }}
         >
           <p>{isVerified ? '通过审核?' : '拒绝审核?'}</p>
