@@ -4,12 +4,23 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/customer';
 import router from 'umi/router';
-import { Row, Pagination, message } from 'antd';
 import { connect } from 'dva';
 
 export class MyChatList extends Component {
   state = {
     total: 0,
+  };
+
+  gotoChat = (item, chatItem) => {
+    // 发起会话
+    // console.log(chatItem, this.props);
+    // this.props.dispatch({
+    //   type: 'im/initSession',
+    //   serviceAccid: this.props.im.userUID,
+    //   userAccid: chatItem.userImId,
+    //   to: chatItem.userImId,
+    // });
+    router.push('/customService/im/');
   };
 
   columns = [
@@ -43,16 +54,6 @@ export class MyChatList extends Component {
       render: item => moment(item).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
-      title: '当前客服ID',
-      dataIndex: 'serviceUserId',
-      hideInSearch: true,
-    },
-    {
-      title: '当前客服',
-      dataIndex: 'serviceUserName',
-      hideInSearch: true,
-    },
-    {
       title: '操作',
       dataIndex: 'userImId',
       valueType: 'option',
@@ -67,38 +68,6 @@ export class MyChatList extends Component {
     },
   ];
 
-  gotoChat = (item, chatItem) => {
-    // 发起会话
-    console.log(chatItem, this.props);
-    this.props.dispatch({
-      type: 'im/initSession',
-      serviceAccid: this.props.im.userUID,
-      userAccid: chatItem.userImId,
-      to: chatItem.userImId,
-    });
-    router.push('/chat/im');
-  };
-
-  /* getMyChatList = async () => {
-    const { currentPage } = this.state
-    const { data: {
-      items,
-      pageNumber,
-      pageInfo: { totalResults }
-    }, code } = await imService.getDialogList({
-      pageNum: currentPage,
-      pageSize: 10,
-      serviceUserId: localStorage.userId
-    })
-    if (code === "0") {
-      this.setState({
-        list: items,
-        currentPage: pageNumber,
-        total: totalResults,
-      })
-    }
-  }
- */
   render() {
     const { columns } = this;
     const { total } = this.state;
@@ -137,9 +106,7 @@ export class MyChatList extends Component {
             });
             return data.items;
           }}
-          options={
-            { fullScreen: false, reload: true, setting: true }
-          }
+          options={{ fullScreen: false, reload: true, setting: true }}
         />
       </PageHeaderWrapper>
     );

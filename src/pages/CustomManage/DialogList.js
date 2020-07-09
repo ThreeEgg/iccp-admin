@@ -4,7 +4,7 @@ import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/customer';
 import router from 'umi/router';
-import { message, Modal, Form, Select, Button } from 'antd';
+import { Form, message, Modal, Select } from 'antd';
 
 export class DialogList extends Component {
   state = {
@@ -12,6 +12,49 @@ export class DialogList extends Component {
     customerList: '',
     visible: false,
     userId: '',
+  };
+
+  componentDidMount() {
+    this.getCustomerList();
+  }
+
+  /* getDialogList = async () => {
+    const { currentPage } = this.state;
+    const { data: {
+      items,
+      pageNumber,
+      pageInfo: { totalResults }
+    }, code } = await imService.getDialogList({
+      pageNum: currentPage,
+      pageSize: 10
+    })
+    if (code === "0") {
+      this.setState({
+        list: items,
+        currentPage: pageNumber,
+        total: totalResults,
+      })
+    }
+  } */
+
+  getCustomerList = async () => {
+    const { code, data } = await imService.getCustomerAccount();
+    if (code === '0') {
+      this.setState({
+        customerList: data,
+      });
+    }
+  };
+
+  gotoChatDetail = item => {
+    router.push('/customService/im/');
+  };
+
+  changeCustom = userId => {
+    this.setState({
+      visible: true,
+      userId,
+    });
   };
 
   columns = [
@@ -84,49 +127,6 @@ export class DialogList extends Component {
     },
   ];
 
-  /* getDialogList = async () => {
-    const { currentPage } = this.state;
-    const { data: {
-      items,
-      pageNumber,
-      pageInfo: { totalResults }
-    }, code } = await imService.getDialogList({
-      pageNum: currentPage,
-      pageSize: 10
-    })
-    if (code === "0") {
-      this.setState({
-        list: items,
-        currentPage: pageNumber,
-        total: totalResults,
-      })
-    }
-  } */
-
-  componentDidMount() {
-    this.getCustomerList();
-  }
-
-  getCustomerList = async () => {
-    const { code, data } = await imService.getCustomerAccount();
-    if (code === '0') {
-      this.setState({
-        customerList: data,
-      });
-    }
-  };
-
-  gotoChatDetail = item => {
-    message.warning('查看聊天详情');
-  };
-
-  changeCustom = userId => {
-    this.setState({
-      visible: true,
-      userId,
-    });
-  };
-
   /* handleTableChange = pagination => {
     this.setState(
       {
@@ -192,9 +192,7 @@ export class DialogList extends Component {
             });
             return data.items;
           }}
-          options={
-            { fullScreen: false, reload: true, setting: true }
-          }
+          options={{ fullScreen: false, reload: true, setting: true }}
         />
         <Modal
           title="更换客服"

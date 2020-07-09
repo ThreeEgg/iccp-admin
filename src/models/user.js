@@ -13,32 +13,59 @@ export default {
     imInfo: {},
     isLogin: false,
     currentAuthority: 'admin',
+    isService: false,
   },
   effects: {
-    *getUserInfo(_, { put, call }) {
-      const res = yield call(userService.getUserInfo);
+    *updateUserInfo({ userInfo }, { put, call }) {
+      let newUserInfo = userInfo;
+      let update = false;
+      if (!userInfo) {
+        update = true;
+        const res = yield call(userService.getUserInfo);
 
-      if (res.code === '0') {
-        const { baseInfo, imInfo } = res.data;
+        if (res.code === '0') {
+          newUserInfo = res.data;
+        } else {
+          return;
+        }
+      }
+      const { baseInfo, imInfo, roles, accessToken } = newUserInfo;
 
-        updateAuthority({
-          userId: baseInfo.userId,
+      const isService = !!roles.find(role => role.roleType === 'service');
+
+      if (!update) {
+        setAuthority({
           userInfo: baseInfo,
           imInfo,
+          accessToken,
           isLogin: 1,
+          platform: 'admin',
+          userId: baseInfo.userId,
+          isService: isService ? 1 : 0,
         });
-
-        yield put({
-          type: 'save',
-          payload: {
-            userInfo: baseInfo,
-            imInfo,
-            isLogin: true,
-          },
+      } else {
+        updateAuthority({
+          userInfo: baseInfo,
+          imInfo,
+          accessToken,
+          isLogin: 1,
+          platform: 'admin',
+          userId: baseInfo.userId,
+          isService: isService ? 1 : 0,
         });
-
-        // router.replace('/map');
       }
+
+      yield put({
+        type: 'save',
+        payload: {
+          accessToken,
+          userInfo: baseInfo,
+          imInfo,
+          roles,
+          isService,
+          isLogin: true,
+        },
+      });
     },
     *login({ payload }, { put, call }) {
       const { password, platform = 'admin', userName } = payload;
@@ -46,27 +73,10 @@ export default {
 
       if (res.code === '0') {
         message.success('登录成功');
-        const { baseInfo, imInfo, accessToken } = res.data;
-
-        setAuthority({
-          userInfo: baseInfo,
-          imInfo,
-          accessToken,
-          isLogin: 1,
-          platform,
-          userId: baseInfo.userId,
-        });
-
-        // Cookie.set('userId', baseInfo.userId);
-        // Cookie.set('token', accessToken);
 
         yield put({
-          type: 'save',
-          payload: {
-            userInfo: baseInfo,
-            imInfo,
-            isLogin: true,
-          },
+          type: 'updateUserInfo',
+          userInfo: res.data,
         });
 
         router.replace('/');

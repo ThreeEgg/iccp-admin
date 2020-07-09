@@ -8,7 +8,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'umi';
 import { connect } from 'dva';
 import { GithubOutlined } from '@ant-design/icons';
-import { Result, Button } from 'antd';
+import { Button, Result } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
@@ -98,7 +98,7 @@ const BasicLayout = props => {
   useEffect(() => {
     if (dispatch) {
       dispatch({
-        type: 'user/getUserInfo',
+        type: 'user/updateUserInfo',
       });
     }
   }, []);

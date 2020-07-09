@@ -1,11 +1,11 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import moment from 'moment';
 import * as imService from '@/services/im';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Row, Pagination, message, Modal } from 'antd';
+import { Modal } from 'antd';
 import NoticeModal from './NoticeModal';
 
 export class CaseNotice extends Component {
@@ -16,6 +16,44 @@ export class CaseNotice extends Component {
     visible: false,
     data: '',
   };
+
+  checkExportNotes = item => {
+    Modal.info({
+      title: '专家详情',
+      content: (
+        <div>
+          <p>{item}</p>
+        </div>
+      ),
+      onOk() {},
+    });
+  };
+
+  /* componentDidMount() {
+    this.getNoticeList()
+  } */
+
+  gotoChatDetail = item => {
+    router.push(`/chat/im`);
+  };
+
+  checkCaseInfo = caseId => {
+    // message.warning('查看案件信息表')
+    this.getCaseInfo(caseId);
+  };
+
+  /* gotoChat = (item, chatItem) => {
+    // 发起会话
+    console.log("chatItem", chatItem, this.props)
+    return;
+    props.dispatch({
+      type: 'im/initSession',
+      serviceAccid: props.imInfo.accid,
+      userAccid: chatItem.userImId,
+      to: chatItem.userImId,
+    });
+    router.push('/chat/im');
+  }; */
 
   columns = [
     {
@@ -82,44 +120,6 @@ export class CaseNotice extends Component {
       ),
     },
   ];
-
-  /* componentDidMount() {
-    this.getNoticeList()
-  } */
-
-  checkExportNotes = item => {
-    Modal.info({
-      title: '专家详情',
-      content: (
-        <div>
-          <p>{item}</p>
-        </div>
-      ),
-      onOk() { },
-    });
-  };
-
-  gotoChatDetail = item => {
-    router.push(`/im/list/chatDetail?chatId=${item}`);
-  };
-
-  /* gotoChat = (item, chatItem) => {
-    // 发起会话
-    console.log("chatItem", chatItem, this.props)
-    return;
-    props.dispatch({
-      type: 'im/initSession',
-      serviceAccid: props.imInfo.accid,
-      userAccid: chatItem.userImId,
-      to: chatItem.userImId,
-    });
-    router.push('/chat/im');
-  }; */
-
-  checkCaseInfo = caseId => {
-    // message.warning('查看案件信息表')
-    this.getCaseInfo(caseId);
-  };
 
   getCaseInfo = async caseId => {
     const { data, code } = await imService.getCaseInfo({
@@ -194,9 +194,7 @@ export class CaseNotice extends Component {
             });
             return data.items;
           }}
-          options={
-            { fullScreen: false, reload: true, setting: true }
-          }
+          options={{ fullScreen: false, reload: true, setting: true }}
         />
         {/* <div style={{ backgroundColor: '#FFF' }}>
           <Row style={{ padding: '16px 16px' }} justify="end">

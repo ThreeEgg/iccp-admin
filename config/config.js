@@ -191,6 +191,13 @@ export default {
                   component: './CustomManage/MyChatList',
                   authority: ['admin'],
                 },
+                {
+                  name: '对话窗口',
+                  path: '/customService/im',
+                  component: './IM',
+                  hideInMenu: true,
+                  authority: ['admin'],
+                },
               ],
             },
             {

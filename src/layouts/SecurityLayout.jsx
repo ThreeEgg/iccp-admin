@@ -20,7 +20,7 @@ inject({
     set:
       typeof window !== 'undefined'
         ? window.localStorage.setItem.bind(window.localStorage)
-        : () => { },
+        : () => {},
     get:
       typeof window !== 'undefined'
         ? window.localStorage.getItem.bind(window.localStorage)
@@ -57,11 +57,7 @@ class SecurityLayout extends React.Component {
           imInfo: localStorage.imInfo ? JSON.parse(localStorage.imInfo) : {},
           isLogin: localStorage.isLogin > 0,
         },
-      })
-      // 提交sdk连接请求
-      if (!this.props.imIsLogin) {
-        this.props.dispatch({ type: 'im/connect' });
-      }
+      });
     }
   }
 
@@ -85,7 +81,7 @@ class SecurityLayout extends React.Component {
   }
 }
 
-export default connect(({ user, loading, im, }) => ({
+export default connect(({ user, loading, im }) => ({
   isLogin: user.isLogin,
   imIsLogin: im.isLogin,
   loading: loading.models.user,

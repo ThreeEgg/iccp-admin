@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { message, notification } from 'antd';
+import router from 'umi/router';
 
 export const getCommonHeader = () => {
   const header = {
@@ -113,6 +114,7 @@ request.interceptors.response.use(async (response, options) => {
     // 12000 需要人机验证
     if (data.code === '16000') {
       message.error('登录失效');
+      router.replace('/user/login');
     } else {
       notification.error({
         description: data.errorInfo,
